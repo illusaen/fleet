@@ -28,8 +28,5 @@ jobs:
           name: illusaen
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
-      - name: Build bambu-studio
-        run: nix build .#nixosConfigurations.odin.pkgs.bambu-studio
-
-      - name: Build CUDA llama-cpp service package
-        run: nix build .#nixosConfigurations.odin.config.services.llama-cpp.package
+      - name: Build cache targets
+        run: nix build --no-link .#bambu-studio .#llama-cpp-cuda

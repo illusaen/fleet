@@ -51,26 +51,18 @@ in {
     };
   };
   modules.nixos = {
-    lib,
-    options,
-    ...
-  }:
-    lib.mkMerge [
-      {
-        programs.zsh.shellAliases = shellAliases;
+    programs.zsh.shellAliases = shellAliases;
 
-        environment.sessionVariables = {
-          ZSH_COMPDUMP = "$HOME/.cache/zsh/zcompdump-$ZSH_VERSION";
-          FZF_DEFAULT_OPTS = "--no-height --style=full";
-        };
+    environment.sessionVariables = {
+      ZSH_COMPDUMP = "$HOME/.cache/zsh/zcompdump-$ZSH_VERSION";
+      FZF_DEFAULT_OPTS = "--no-height --style=full";
+    };
+
+    persistUser.files = [
+      {
+        file = historyFile;
+        how = "symlink";
       }
-      (lib.optionalAttrs (options ? persistUser) {
-        persistUser.files = [
-          {
-            file = historyFile;
-            how = "symlink";
-          }
-        ];
-      })
     ];
+  };
 }

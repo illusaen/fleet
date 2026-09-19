@@ -12,24 +12,16 @@
   modules.nixos = {
     user,
     config,
-    lib,
-    options,
     ...
-  }:
-    lib.mkMerge [
+  }: {
+    programs._1password-gui.polkitPolicyOwners = [user.name];
+    systemdAutostart = [
       {
-        programs._1password-gui.polkitPolicyOwners = [user.name];
-        systemdAutostart = [
-          {
-            name = "one-password";
-            package = config.programs._1password-gui.package;
-          }
-        ];
+        name = "one-password";
+        package = config.programs._1password-gui.package;
       }
-      (lib.optionalAttrs (options ? persistUser) {
-        persistUser.directories = [
-          ".config/1Password"
-        ];
-      })
     ];
+
+    persistUser.directories = [".config/1Password"];
+  };
 }

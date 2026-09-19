@@ -57,28 +57,20 @@ in {
   };
 
   modules.nixos = {
-    lib,
-    options,
-    ...
-  }:
-    lib.mkMerge [
-      {
-        programs.nix-ld.enable = true;
+    programs.nix-ld.enable = true;
 
-        environment.sessionVariables = {
-          # Pki files for certificate files for electron apps
-          NSS_DEFAULT_DB_TYPE = "sql";
-          NSS_USE_SHARED_DB = "sql:$HOME/.local/share/pki/nssdb";
-          # Redirect the OpenGL/Vulkan shader cache
-          __GL_SHADER_DISK_CACHE_PATH = "$HOME/.cache/nv";
-          CUDA_CACHE_PATH = "$HOME/.cache/nv/ComputeCache";
-          # pulseaudio
-          PULSE_COOKIE = "$HOME/.config/pulse/cookie";
-          NIXOS_OZONE_WL = 1;
-        };
-      }
-      (lib.optionalAttrs (options ? persistUser) {
-        persistUser.directories = [".local/share/zoxide"];
-      })
-    ];
+    environment.sessionVariables = {
+      # Pki files for certificate files for electron apps
+      NSS_DEFAULT_DB_TYPE = "sql";
+      NSS_USE_SHARED_DB = "sql:$HOME/.local/share/pki/nssdb";
+      # Redirect the OpenGL/Vulkan shader cache
+      __GL_SHADER_DISK_CACHE_PATH = "$HOME/.cache/nv";
+      CUDA_CACHE_PATH = "$HOME/.cache/nv/ComputeCache";
+      # pulseaudio
+      PULSE_COOKIE = "$HOME/.config/pulse/cookie";
+      NIXOS_OZONE_WL = 1;
+    };
+
+    persistUser.directories = [".local/share/zoxide"];
+  };
 }

@@ -1,10 +1,5 @@
 {
-  modules.nixos = {
-    pkgs,
-    lib,
-    options,
-    ...
-  }: let
+  modules.nixos = {pkgs, ...}: let
     wrappedYtDlp = pkgs.writeShellApplication {
       name = "yt-dlp";
       text = ''
@@ -12,16 +7,9 @@
       '';
     };
     music = pkgs.pear-desktop;
-  in
-    lib.mkMerge [
-      {
-        environment.systemPackages = [music wrappedYtDlp];
-        systemdAutostart = [{package = music;}];
-      }
-      (lib.optionalAttrs (options ? persistUser) {
-        persistUser.directories = [
-          ".config/YouTube Music"
-        ];
-      })
-    ];
+  in {
+    environment.systemPackages = [music wrappedYtDlp];
+    systemdAutostart = [{package = music;}];
+    persistUser.directories = [".config/YouTube Music"];
+  };
 }

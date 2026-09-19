@@ -7,23 +7,13 @@
   }: let
     service = helpers.requireRoutedService host "llama-cpp";
     iniFormat = pkgs.formats.ini {};
-    llamaCpp =
-      (pkgs.llama-cpp.override {
-        cudaSupport = true;
-      }).overrideAttrs (old: {
-        passthru =
-          (old.passthru or {})
-          // {
-            cudaSupport = true;
-          };
-      });
   in {
-    environment.systemPackages = [llamaCpp];
+    environment.systemPackages = [pkgs.llama-cpp-cuda];
 
     services.llama-cpp = {
       enable = true;
       openFirewall = true;
-      package = llamaCpp;
+      package = pkgs.llama-cpp-cuda;
       settings = {
         host = "0.0.0.0";
         inherit (service) port;

@@ -3,7 +3,7 @@
   lib,
 }: let
   inherit (builtins) attrNames concatLists concatMap filter listToAttrs readDir elem;
-  inherit (lib) optionals pipe unique filterAttrs;
+  inherit (lib) concatStringsSep optionals pipe unique filterAttrs;
 
   mergeFeatures = fragments: let
     declaredModulePlatforms = concatMap (fragment: attrNames (fragment.modules or {})) fragments;
@@ -27,9 +27,6 @@
       })
       platformNames
     );
-    tests = builtins.foldl' (acc: fragment: acc // (fragment.tests or {})) {} fragments;
-    serviceSecrets = args:
-      concatMap (fragment: (fragment.serviceSecrets or (_: [])) args) fragments;
   };
 
   loadFeaturePath = path: let
@@ -45,20 +42,24 @@
   in
     mergeFeatures (localFeatures ++ [feature]);
 
-  features = let
-    featureRoot = ../features;
-  in
+  loadFeatureRoot = featureRoot:
     pipe featureRoot [
       readDir
       (filterAttrs (_name: value: value == "directory"))
       (builtins.mapAttrs (name: _value: (loadFeaturePath (featureRoot + "/${name}"))))
     ];
 
-  featuresForHost = {
-    host,
-    services ? [],
-  }: let
+  regularFeatures = loadFeatureRoot ../features;
+  serviceFeatures = loadFeatureRoot ../services;
+  duplicateFeatureNames = filter (name: builtins.hasAttr name serviceFeatures) (attrNames regularFeatures);
+  features =
+    if duplicateFeatureNames != []
+    then throw "Feature names must be unique across features/ and services/: ${concatStringsSep ", " duplicateFeatureNames}"
+    else regularFeatures // serviceFeatures;
+
+  featuresForHost = host: let
     tags = host.tags or [];
+    services = host.services or [];
     isLinux = host.platform == "nixos";
     isDesktop = builtins.elem "desktop" tags;
     featureGroups = [
@@ -82,10 +83,7 @@
     unique (concatLists featureGroups);
 in {
   modulesForHost = host: let
-    names = featuresForHost {
-      inherit host;
-      services = host.services or [];
-    };
+    names = featuresForHost host;
   in
     concatMap (
       name:

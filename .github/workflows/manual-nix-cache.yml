@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       bambu_studio:
-        description: Build Bambu Studio from Odin's overlaid package set
+        description: Build the shared Bambu Studio package
         type: boolean
         default: false
       llama_cpp:
-        description: Build Odin's CUDA llama.cpp service package
+        description: Build the shared CUDA llama.cpp package
         type: boolean
         default: false
       entire_host:
@@ -47,12 +47,12 @@ jobs:
 
       - name: Build Bambu Studio
         if: ${{ inputs.bambu_studio }}
-        run: nix build .#bambu-studio
+        run: nix build --no-link .#bambu-studio
 
       - name: Build CUDA llama.cpp service package
         if: ${{ inputs.llama_cpp }}
-        run: nix build .#llama-cpp-cuda
+        run: nix build --no-link .#llama-cpp-cuda
 
       - name: Build entire Odin NixOS system
         if: ${{ inputs.entire_host }}
-        run: nix build .#odin
+        run: nix build --no-link .#nixosConfigurations.odin.config.system.build.toplevel

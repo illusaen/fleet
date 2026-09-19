@@ -1,6 +1,4 @@
 {inputs}: {
-  imports = [./options.nix];
-
   modules.nixos = {
     config,
     host,
@@ -16,6 +14,47 @@
     preservation = {
       enable = true;
       preserveAt.${persistMount} = config.persist // {users.${user.name} = config.persistUser;};
+    };
+
+    persist = {
+      directories = [
+        "/var/log"
+        "/var/lib/systemd/timers"
+        "/var/lib/systemd/rfkill"
+        "/var/lib/systemd/coredump"
+        {
+          directory = "/var/lib/nixos";
+          inInitrd = true;
+        }
+      ];
+      files = [
+        {
+          file = "/etc/machine-id";
+          inInitrd = true;
+        }
+        {
+          file = "/var/lib/systemd/random-seed";
+          how = "symlink";
+          inInitrd = true;
+          configureParent = true;
+        }
+      ];
+    };
+
+    persistUser = {
+      commonMountOptions = [
+        "x-gvfs-hide"
+        "x-gvfs-trash"
+      ];
+      directories = [
+        {
+          directory = ".local/share/keyrings";
+          mode = "0700";
+        }
+        "Downloads"
+        "Projects"
+        "Pictures"
+      ];
     };
 
     boot.initrd.systemd.services.zfs-rollback = {

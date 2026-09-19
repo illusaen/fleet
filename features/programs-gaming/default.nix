@@ -4,7 +4,6 @@
     fleet,
     lib,
     pkgs,
-    options,
     ...
   }: let
     cursorPackage = pkgs.${fleet.theming.cursor.packageName} or null;
@@ -16,28 +15,22 @@
       icon = ../../resources/icons/viking-rise-icon.png;
       categories = ["Game"];
     };
-  in
-    lib.mkMerge [
-      {
-        programs.steam = {
-          enable = true;
-          package = lib.mkIf (cursorPackage != null) (pkgs.steam.override {
-            extraPkgs = _pkgs': [cursorPackage];
-          });
-        };
+  in {
+    programs.steam = {
+      enable = true;
+      package = lib.mkIf (cursorPackage != null) (pkgs.steam.override {
+        extraPkgs = _pkgs': [cursorPackage];
+      });
+    };
 
-        environment.systemPackages = [
-          vikingRiseDesktopItem
-        ];
-
-        systemdAutostart = [
-          {package = config.programs.steam.package;}
-        ];
-      }
-      (lib.optionalAttrs (options ? persistUser) {
-        persistUser.directories = [
-          ".local/share/Steam"
-        ];
-      })
+    environment.systemPackages = [
+      vikingRiseDesktopItem
     ];
+
+    systemdAutostart = [
+      {package = config.programs.steam.package;}
+    ];
+
+    persistUser.directories = [".local/share/Steam"];
+  };
 }

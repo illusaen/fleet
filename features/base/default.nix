@@ -3,20 +3,13 @@
     ./shell-utils
     ./networking.nix
     ./nix-settings.nix
+    ../preservation/options.nix
     ./secrets.nix
     ./ssh.nix
     ./tailscale.nix
   ];
 
-  modules.generic = {
-    host,
-    user,
-    ...
-  }: {
-    nixpkgs = {
-      config.allowUnfree = true;
-      hostPlatform = host.system;
-    };
+  modules.generic = {user, ...}: {
     hjem.users.${user.name}.enable = true;
   };
 

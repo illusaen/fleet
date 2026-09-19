@@ -116,22 +116,14 @@
   };
 
   modules.nixos = {
-    lib,
-    options,
-    ...
-  }:
-    lib.mkMerge [
-      {
-        system.userActivationScripts.syncVscodeProfiles = ''
-          echo "Syncing vscode profiles."
-          syncVscodeProfiles
-        '';
-      }
-      (lib.optionalAttrs (options ? persistUser) {
-        persistUser.directories = [
-          ".config/Code/User/globalStorage"
-          ".config/Code/User/workspaceStorage"
-        ];
-      })
+    system.userActivationScripts.syncVscodeProfiles = ''
+      echo "Syncing vscode profiles."
+      syncVscodeProfiles
+    '';
+
+    persistUser.directories = [
+      ".config/Code/User/globalStorage"
+      ".config/Code/User/workspaceStorage"
     ];
+  };
 }

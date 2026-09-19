@@ -1,10 +1,8 @@
 {
-  inputs,
-  system,
   pkgs,
   treefmt,
 }:
-inputs.devshell.legacyPackages.${system}.mkShell (
+pkgs.devshell.mkShell (
   {extraModulesPath, ...}: {
     imports = [
       "${extraModulesPath}/git/hooks.nix"
@@ -14,8 +12,8 @@ inputs.devshell.legacyPackages.${system}.mkShell (
       name = "nix-fleet";
       motd = "\n🔨 Welcome to {45}${name}{reset}!\nType {45}'menu'{reset} for a list of commands.\n";
       packages = [
-        inputs.agenix.packages.${system}.agenix
-        inputs.colmena.packages.${system}.colmena
+        pkgs.agenix
+        pkgs.colmena
         treefmt
         pkgs.nixd
       ];

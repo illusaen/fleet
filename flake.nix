@@ -25,6 +25,7 @@
     colmena = {
       url = "github:nix-community/colmena";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.stable.follows = "nixpkgs";
     };
     devshell = {
       url = "github:numtide/devshell";
@@ -51,35 +52,51 @@
   };
 
   outputs = {
+    self,
     nixpkgs,
     treefmt-nix,
     colmena,
     ...
   } @ inputs: let
-    forAllSystems = f:
-      nixpkgs.lib.genAttrs (import ./flake/systems.nix) (system:
-        f {
-          pkgs = import nixpkgs {
-            inherit system;
-            overlays = [(import ./flake/packages.nix {inherit (nixpkgs) lib;})];
-          };
-          inherit system;
-        });
-    treefmtFor = import ./flake/treefmt.nix {inherit treefmt-nix;};
+    inherit (nixpkgs) lib;
+
+    featureLib = import ./lib/feature.nix {inherit inputs lib;};
+    systemContexts = lib.genAttrs (import ./flake/systems.nix) (system: let
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = import ./flake/overlays.nix {inherit inputs lib;};
+        config.allowUnfree = true;
+      };
+    in {
+      inherit pkgs system;
+      treefmt = (import ./flake/treefmt.nix {inherit treefmt-nix;}) pkgs;
+    });
+
+    forAllSystems = f: lib.mapAttrs (_system: f) systemContexts;
   in
     {
+      checks = forAllSystems ({treefmt, ...}: {treefmt = treefmt.config.build.check self;});
       devShells = forAllSystems ({
-        system,
         pkgs,
+        treefmt,
+        ...
       }: {
         default = import ./flake/devshell.nix {
-          inherit inputs system pkgs;
-          treefmt = treefmtFor pkgs;
+          inherit pkgs;
+          treefmt = treefmt.config.build.wrapper;
         };
       });
-      formatter = forAllSystems ({pkgs, ...}: treefmtFor pkgs);
-      packages = forAllSystems ({pkgs, ...}: pkgs.local);
+      formatter = forAllSystems ({treefmt, ...}: treefmt.config.build.wrapper);
+      packages = forAllSystems ({
+        pkgs,
+        system,
+        ...
+      }:
+        pkgs.local
+        // lib.optionalAttrs (system == "x86_64-linux") {
+          inherit (pkgs) bambu-studio llama-cpp-cuda;
+        });
       colmenaHive = import ./flake/hive.nix {inherit colmena;};
     }
-    // import ./flake/configurations.nix {inherit inputs;};
+    // import ./flake/configurations.nix {inherit featureLib lib systemContexts;};
 }

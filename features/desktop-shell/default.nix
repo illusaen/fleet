@@ -5,34 +5,27 @@
     config,
     lib,
     pkgs,
-    options,
     ...
-  }:
-    lib.mkMerge [
-      {
-        environment.systemPackages = with pkgs; [
-          ddcutil
-          local.misc-scripts
-        ];
-
-        hardware = {
-          bluetooth.settings.General.Experimental = true;
-          i2c.enable = true;
-        };
-        services.blueman.enable = true;
-
-        systemdAutostart = [
-          rec {
-            inherit (config.services.tailscale) package;
-            name = "tailscale-systray";
-            exec = "${lib.getExe package} systray";
-          }
-        ];
-      }
-      (lib.optionalAttrs (options ? persist) {
-        persist.directories = [
-          "/var/lib/bluetooth"
-        ];
-      })
+  }: {
+    environment.systemPackages = with pkgs; [
+      ddcutil
+      local.misc-scripts
     ];
+
+    hardware = {
+      bluetooth.settings.General.Experimental = true;
+      i2c.enable = true;
+    };
+    services.blueman.enable = true;
+
+    systemdAutostart = [
+      rec {
+        inherit (config.services.tailscale) package;
+        name = "tailscale-systray";
+        exec = "${lib.getExe package} systray";
+      }
+    ];
+
+    persist.directories = ["/var/lib/bluetooth"];
+  };
 }

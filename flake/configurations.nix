@@ -1,11 +1,17 @@
-{inputs}: let
-  inherit (inputs.nixpkgs) lib;
+{
+  featureLib,
+  lib,
+  systemContexts,
+}: let
+  serviceLib = import ../lib/service.nix {inherit lib;};
 
-  fleetLib = import ../lib/fleet.nix {inherit lib;};
-  fleet = fleetLib.eval (import ../fleet/config);
-  serviceLib = import ../lib/service.nix {inherit lib fleetLib;};
-  featureLib = import ../lib/feature.nix {inherit inputs lib;};
-  localOverlay = import ./packages.nix {inherit lib;};
+  fleet =
+    (lib.evalModules {
+      modules = [
+        (import ../fleet/options {inherit lib;})
+        {fleet = import ../fleet/config;}
+      ];
+    }).config.fleet;
 
   nixosHosts =
     lib.filterAttrs (
@@ -25,14 +31,13 @@
       inherit (host) system;
       modules =
         [
-          {nixpkgs.overlays = [localOverlay];}
+          {nixpkgs.pkgs = systemContexts.${host.system}.pkgs;}
         ]
         ++ featureLib.modulesForHost host;
       specialArgs = {
         inherit fleet host user;
         helpers = {
-          inherit (fleetLib) hostIps primaryIpV4;
-          inherit (serviceLib) requireRoutedService reverseProxy;
+          inherit (serviceLib) hostIps primaryIpV4 requireRoutedService reverseProxy;
         };
       };
     };

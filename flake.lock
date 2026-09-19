@@ -50,7 +50,9 @@
         "nixpkgs": [
           "nixpkgs"
         ],
-        "stable": "stable"
+        "stable": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1786742289,
@@ -242,11 +244,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1789684949,
-        "narHash": "sha256-ZKhUe/2IJUq1JhKxKMu8rbkgSGmPP2ZCqlIPn40aGCM=",
+        "lastModified": 1789785513,
+        "narHash": "sha256-B44WL6h0XoLjJ41bUPJk0X5SDinLCII//6EcBLXKiJ0=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e554fab72f81915600f3f449b786fd9af40439a5",
+        "rev": "20b1ddd1aa5ace70c9468305030aa4f9ef79671b",
         "type": "github"
       },
       "original": {
@@ -303,22 +305,6 @@
         "noctalia": "noctalia",
         "preservation": "preservation",
         "treefmt-nix": "treefmt-nix"
-      }
-    },
-    "stable": {
-      "locked": {
-        "lastModified": 1783625654,
-        "narHash": "sha256-pI1244/PJfTyKhlAr2QYQC55vR6UQdnGA0rJUgtO2IQ=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "a0230bd8d5cbd13893b2263918d396a2c7dd0407",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "release-26.05",
-        "repo": "nixpkgs",
-        "type": "github"
       }
     },
     "systems": {
