@@ -5,6 +5,9 @@
     ...
   }: {
     nix.settings = {
+      max-jobs = 1;
+      cores = 4;
+
       abort-on-warn = true;
       accept-flake-config = true;
       auto-optimise-store = true;
@@ -36,6 +39,11 @@
   };
 
   modules.nixos = {
+    zramSwap = {
+      enable = true;
+      memoryPercent = 50;
+    };
+
     security.sudo-rs = {
       enable = true;
       wheelNeedsPassword = false;

@@ -21,6 +21,10 @@ pkgs.devshell.mkShell (
 
     commands = [
       {
+        package = pkgs.nh;
+        help = "Build and deploy";
+      }
+      {
         package = pkgs.nix-tree;
         help = "Interactively browse dependency graphs of Nix derivations";
       }
