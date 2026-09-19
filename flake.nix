@@ -60,7 +60,6 @@
   } @ inputs: let
     inherit (nixpkgs) lib;
 
-    featureLib = import ./lib/feature.nix {inherit inputs lib;};
     systemContexts = lib.genAttrs (import ./flake/systems.nix) (system: let
       pkgs = import nixpkgs {
         inherit system;
@@ -73,8 +72,10 @@
     });
 
     configurations = import ./flake/configurations.nix {
-      inherit featureLib lib systemContexts;
+      inherit lib systemContexts;
+      featureLib = import ./lib/feature.nix {inherit inputs lib;};
     };
+
     forAllSystems = f: lib.mapAttrs (_system: f) systemContexts;
   in {
     checks = forAllSystems ({
@@ -83,18 +84,9 @@
       ...
     }: {
       treefmt = treefmt.config.build.check self;
-      unit =
-        pkgs.runCommandLocal "unit-tests" {
-          nativeBuildInputs = [pkgs.nix-unit];
-        } ''
-          export HOME="$TMPDIR"
-          nix-unit \
-            --arg lib 'import ${nixpkgs}/lib' \
-            --arg root ${self} \
-            ${./tests/unit.nix}
-          touch "$out"
-        '';
+      unit = import ./tests {inherit self pkgs nixpkgs;};
     });
+
     devShells = forAllSystems ({
       pkgs,
       treefmt,
@@ -105,7 +97,9 @@
         treefmt = treefmt.config.build.wrapper;
       };
     });
+
     formatter = forAllSystems ({treefmt, ...}: treefmt.config.build.wrapper);
+
     packages = forAllSystems ({
       pkgs,
       system,
@@ -115,10 +109,12 @@
       // lib.optionalAttrs (system == "x86_64-linux") {
         inherit (pkgs) bambu-studio llama-cpp-cuda;
       });
+
     colmenaHive = import ./flake/hive.nix {
       inherit colmena lib;
       inherit (configurations) hostConfigurations;
     };
+
     inherit (configurations) nixosConfigurations;
   };
 }
