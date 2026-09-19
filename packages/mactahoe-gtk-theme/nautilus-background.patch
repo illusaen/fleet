@@ -9,8 +9,8 @@ index c4f9579..7d60abe 100644
 +// Keep the Nautilus surface tinted enough to remain legible over light windows.
 +// It stays slightly translucent and follows libadwaita's light/dark sidebar color.
 +$nautilus_background: if($trans == 'true',
-+  color-mix(in srgb, gtkcolor(sidebar_bg_color) 98%, transparent),
-+  $dark_sidebar_bg);
++  color-mix(in srgb, gtkcolor(header_bg) 96%, transparent),
++  $dark_header_bg);
 +
  @if $nautilus_style == 'stable' {
    $nautilus_header_image: linear-gradient(90deg, transparent $flap_sidebar_size,

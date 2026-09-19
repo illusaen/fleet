@@ -21,7 +21,8 @@ pkgs.devshell.mkShell (
 
     commands = [
       {
-        package = pkgs.nh;
+        name = "odin";
+        command = "colmena apply-local --sudo";
         help = "Build and deploy";
       }
       {
