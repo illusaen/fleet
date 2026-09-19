@@ -53,7 +53,7 @@ DCONF_SETTINGS
 
 def _run(command):
     return run(
-        command, encoding="UTF-8", capture_output=True, shell=True, check=True
+        command, encoding="UTF-8", capture_output=True, check=True
     ).stdout
 
 
@@ -66,7 +66,10 @@ def dconf_read_recursive(dconf_dir, output_entries=None):
       }
     }
     """
-    dir_entries = _run("dconf list " + dconf_dir).split("\n")
+    if output_entries is None:
+        output_entries = {}
+
+    dir_entries = _run(["dconf", "list", dconf_dir]).splitlines()
 
     for key in dir_entries:
         if key == "":
@@ -74,7 +77,7 @@ def dconf_read_recursive(dconf_dir, output_entries=None):
         if key.endswith("/"):
             output_entries = dconf_read_recursive(dconf_dir + key, output_entries)
         else:
-            value = _run("dconf read " + dconf_dir + key).removesuffix("\n")
+            value = _run(["dconf", "read", dconf_dir + key]).removesuffix("\n")
             if dconf_dir not in output_entries:
                 output_entries[dconf_dir] = {}
             output_entries[dconf_dir][key] = value

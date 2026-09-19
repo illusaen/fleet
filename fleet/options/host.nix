@@ -1,6 +1,6 @@
 {lib}: let
   inherit (lib) mkOption;
-  inherit (lib.types) str bool enum path nullOr submodule attrsOf listOf;
+  inherit (lib.types) str bool int enum path either nullOr submodule attrsOf listOf;
   supportedSystems = import ../../flake/systems.nix;
 
   networkInterfaceType = submodule {
@@ -95,6 +95,18 @@ in
         type = bool;
         default = false;
         description = "Whether this host may only be deployed locally.";
+      };
+
+      maxJobs = mkOption {
+        type = either int str;
+        default = "auto";
+        description = "Max number of packages to build in parallel.";
+      };
+
+      cores = mkOption {
+        type = int;
+        default = 0;
+        description = "Number of cores used to build.";
       };
 
       hostId = mkOption {

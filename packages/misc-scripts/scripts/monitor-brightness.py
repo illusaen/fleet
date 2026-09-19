@@ -44,12 +44,11 @@ def find_current_brightness(bus):
     sys.exit("Error: failed to parse current brightness value")
 
 
-def setCommand(bus, cmd):
-    result = subprocess.run(
+def set_command(bus, cmd):
+    subprocess.run(
         ["ddcutil", "setvcp", "10", cmd, "5", "-b", str(bus)], check=True
     )
-    if result.returncode == 0:
-        print(find_current_brightness(bus))
+    print(find_current_brightness(bus))
 
 
 def send(bus, cmd):
@@ -60,7 +59,7 @@ def send(bus, cmd):
     if (cmd == "-" and current >= MIN_BRIGHTNESS + 5) or (
         cmd == "+" and current <= MAX_BRIGHTNESS - 5
     ):
-        return setCommand(bus, cmd)
+        return set_command(bus, cmd)
     sys.exit(
         f"Could not {'increase' if cmd == '+' else 'decrease'} brightness, already at {current}."
     )

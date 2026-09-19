@@ -12,7 +12,7 @@
   (_final: prev: {
     nautilus = prev.nautilus.overrideAttrs (oldAttrs: {
       buildInputs =
-        oldAttrs.buildInputs
+        (oldAttrs.buildInputs or [])
         ++ (with prev.gst_all_1; [
           gst-plugins-good
           gst-plugins-bad
@@ -22,7 +22,6 @@
 
   (_final: prev: {
     bambu-studio = prev.bambu-studio.overrideAttrs (oldAttrs: {
-      buildInputs = oldAttrs.buildInputs or [];
       postFixup =
         (oldAttrs.postFixup or "")
         + ''

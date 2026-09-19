@@ -2,6 +2,9 @@
   odin = {
     system = "x86_64-linux";
     owner = "wendy";
+
+    maxJobs = 1;
+    cores = 4;
     targetHost = "odin.home.arpa";
     localDeploymentOnly = true;
     hostId = "abf835ae";

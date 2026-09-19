@@ -1,12 +1,13 @@
 {
   modules.generic = {
     fleet,
+    host,
     pkgs,
     ...
   }: {
     nix.settings = {
-      max-jobs = 1;
-      cores = 4;
+      max-jobs = host.maxJobs;
+      inherit (host) cores;
 
       abort-on-warn = true;
       accept-flake-config = true;

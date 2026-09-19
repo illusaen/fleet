@@ -12,7 +12,7 @@ DEFAULTS = {
     "sans": "Inter",
     "main": "DP-2",
     "secondary": "HDMI-A-2",
-    "image": "resources/wallpapers/dark-silk.jpeg",
+    "image": "resources/wallpapers/dark/dark-silk.jpeg",
     "imageDirectory": "resources/wallpapers",
     "location": "Chicago",
 }
@@ -27,7 +27,7 @@ def repo_root() -> Path:
         ["git", "rev-parse", "--show-toplevel"],
         capture_output=True,
         text=True,
-        check=True,
+        check=False,
     )
     if result.returncode == 0:
         return Path(result.stdout.strip()).resolve()

@@ -21,7 +21,7 @@ from pathlib import Path
 
 def niri_json(*args):
     result = subprocess.run(
-        ["niri", "msg", "--json", *args], capture_output=True, text=True, check=True
+        ["niri", "msg", "--json", *args], capture_output=True, text=True, check=False
     )
     if result.returncode != 0:
         detail = result.stderr.strip() or result.stdout.strip() or "unknown error"
@@ -154,7 +154,7 @@ def choose_window(windows):
         if is_focused(window):
             return window
 
-    return max(windows, key=lambda window: window_id(window) or 0)[-1]
+    return max(windows, key=lambda window: window_id(window) or 0)
 
 
 def find_new_window(previous_window_ids):
@@ -276,3 +276,6 @@ if __name__ == "__main__":
     except RuntimeError as error:
         print(f"ndrop: {error}", file=sys.stderr)
         sys.exit(1)
+    except subprocess.CalledProcessError as error:
+        print(f"ndrop: command failed: {error}", file=sys.stderr)
+        sys.exit(error.returncode)

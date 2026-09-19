@@ -32,7 +32,7 @@
           };
           "niri/config.kdl".source = ./niri-config.kdl;
         }
-        // lib.optionalAttrs (host.monitors.secondary != null) {
+        // lib.optionalAttrs ((host.monitors.secondary or null) != null) {
           "niri/niri-monitors.kdl".text = ''
             "output" "${host.monitors.secondary}" {
               "hot-corners"  {
