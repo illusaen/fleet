@@ -1,0 +1,15 @@
+"layout"  {
+  "shadow"  {
+    "color" "#@base00@66"
+  }
+  "tab-indicator"  {
+    "active-gradient" "from"="#@base0C@" "to"="#@base15@"
+    "inactive-gradient" "from"="#@base02@" "relative-to"="workspace-view" "to"="#@base03@"
+    "urgent-gradient" "from"="#@base08@" "to"="#@base12@"
+  }
+}
+"recent-windows"  {
+  "highlight"  {
+    "active-color" "#@base0D@ff"
+  }
+}

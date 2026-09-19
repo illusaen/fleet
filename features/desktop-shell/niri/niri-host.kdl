@@ -1,0 +1,28 @@
+"workspace" "__ndrop" {
+  "open-on-output" "@main@"
+}
+"workspace" "chat" {
+  "open-on-output" "@main@"
+}
+"workspace" "code" {
+  "open-on-output" "@main@"
+}
+"workspace" "gaming" {
+  "open-on-output" "@main@"
+}
+"workspace" "music" {
+  "open-on-output" "@secondary@"
+}
+
+"output" "@main@" {
+  "focus-at-startup" 
+  "mode" "5120x2160@100.035"
+  "position" "x"=0 "y"=0
+  "scale" 1
+  "transform" "normal"
+}
+
+"cursor"  {
+  "xcursor-size" @cursorSize@
+  "xcursor-theme" "@cursor@"
+}

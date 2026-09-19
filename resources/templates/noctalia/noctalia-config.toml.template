@@ -1,0 +1,466 @@
+[backdrop]
+blur_intensity = 0.39999999105930328
+enabled = true
+
+[bar.default]
+background_opacity = 0.89999997988343239
+border = "primary"
+capsule = false
+capsule_border = "on_primary"
+capsule_fill = "surface"
+capsule_group = []
+capsule_opacity = 0.80000000000000004
+capsule_padding = 16.0
+capsule_radius = 12
+capsule_thickness = 1.0
+center = ["clock", "date"]
+end = ["tray", "clipboard", "control-center"]
+margin_edge = 8
+margin_ends = 720
+padding = 16
+position = "right"
+reserve_space = false
+start = ["session", "workspaces", "audio_visualizer"]
+thickness = 48
+widget_spacing = 16
+
+[bar.default.monitor.@secondary@]
+enabled = false
+
+[calendar]
+enabled = true
+
+[control_center]
+hidden_tabs = ["monitor", "power", "screen-time"]
+
+[[control_center.shortcuts]]
+type = "wifi"
+
+[[control_center.shortcuts]]
+type = "bluetooth"
+
+[[control_center.shortcuts]]
+type = "notification"
+
+[[control_center.shortcuts]]
+type = "dark_mode"
+
+[[control_center.shortcuts]]
+type = "audio"
+
+[[control_center.shortcuts]]
+type = "mic_mute"
+
+[desktop_widgets]
+schema_version = 2
+widget_order = [
+  "desktop-widget-0000000000000001",
+  "desktop-widget-0000000000000002",
+  "desktop-widget-0000000000000003",
+  "desktop-widget-0000000000000004",
+  "desktop-widget-0000000000000005",
+  "desktop-widget-0000000000000006",
+  "desktop-widget-0000000000000007",
+  "desktop-widget-0000000000000008",
+  "desktop-widget-0000000000000009",
+  "desktop-widget-000000000000000a",
+  "desktop-widget-000000000000000b",
+  "desktop-widget-000000000000000c"
+]
+
+[desktop_widgets.grid]
+cell_size = 8
+major_interval = 4
+visible = true
+
+[desktop_widgets.widget.desktop-widget-0000000000000001]
+box_height = 160.0
+box_width = 288.0
+cx = 676.0
+cy = 1769.300048828125
+output = "@secondary@"
+rotation = 0.0
+type = "clock"
+
+[desktop_widgets.widget.desktop-widget-0000000000000001.settings]
+background_padding = 16
+color = "on_surface"
+font_family = "@mono@"
+format = "{:%H:%M}"
+
+[desktop_widgets.widget.desktop-widget-0000000000000002]
+box_height = 48.0
+box_width = 104.0
+cx = 472.0
+cy = 1825.300048828125
+output = "@secondary@"
+rotation = 0.0
+type = "sysmon"
+
+[desktop_widgets.widget.desktop-widget-0000000000000002.settings]
+display = "gauge"
+gauge_layout = "horizontal"
+stat = "cpu_temp"
+stat2 = "gpu_temp"
+
+[desktop_widgets.widget.desktop-widget-0000000000000003]
+box_height = 160.0
+box_width = 240.0
+cx = 948.0
+cy = 1769.300048828125
+output = "@secondary@"
+rotation = 0.0
+type = "media_player"
+
+[desktop_widgets.widget.desktop-widget-0000000000000004]
+box_height = 48.0
+box_width = 72.0
+cx = 940.79998779296875
+cy = 1880.0
+output = "@secondary@"
+rotation = 0.0
+type = "button"
+
+[desktop_widgets.widget.desktop-widget-0000000000000004.settings]
+background = true
+command = "switcher hdmi1"
+glyph = "device-desktop"
+label = "HD"
+variant = "secondary"
+
+[desktop_widgets.widget.desktop-widget-0000000000000005]
+box_height = 48.0
+box_width = 72.0
+cx = 864.0
+cy = 1880.0
+output = "@secondary@"
+rotation = 0.0
+type = "button"
+
+[desktop_widgets.widget.desktop-widget-0000000000000005.settings]
+background = true
+command = "switcher dp"
+glyph = "device-desktop"
+label = "DP"
+variant = "primary"
+
+[desktop_widgets.widget.desktop-widget-0000000000000006]
+box_height = 56.0
+box_width = 288.0
+cx = 676.0
+cy = 1884.0
+output = "@secondary@"
+rotation = 0.0
+type = "clock"
+
+[desktop_widgets.widget.desktop-widget-0000000000000006.settings]
+background_padding = 16
+format = "{:%A, %B %d}"
+
+[desktop_widgets.widget.desktop-widget-0000000000000007]
+box_height = 56.0
+box_width = 208.0
+cx = 420.0
+cy = 1884.0
+output = "@secondary@"
+rotation = 0.0
+type = "weather"
+
+[desktop_widgets.widget.desktop-widget-0000000000000007.settings]
+forecast_days = 2
+show_forecast = false
+
+[desktop_widgets.widget.desktop-widget-0000000000000008]
+box_height = 48.0
+box_width = 96.0
+cx = 364.0
+cy = 1769.300048828125
+output = "@secondary@"
+rotation = 0.0
+type = "sysmon"
+
+[desktop_widgets.widget.desktop-widget-0000000000000008.settings]
+display = "gauge"
+gauge_layout = "horizontal"
+stat = "gpu_usage"
+stat2 = "gpu_temp"
+
+[desktop_widgets.widget.desktop-widget-0000000000000009]
+box_height = 48.0
+box_width = 104.0
+cx = 472.0
+cy = 1769.300048828125
+output = "@secondary@"
+rotation = 0.0
+type = "sysmon"
+
+[desktop_widgets.widget.desktop-widget-0000000000000009.settings]
+display = "gauge"
+gauge_layout = "horizontal"
+stat = "cpu_usage"
+stat2 = "gpu_temp"
+
+[desktop_widgets.widget.desktop-widget-000000000000000a]
+box_height = 48.0
+box_width = 96.0
+cx = 364.0
+cy = 1825.300048828125
+output = "@secondary@"
+rotation = 0.0
+type = "sysmon"
+
+[desktop_widgets.widget.desktop-widget-000000000000000a.settings]
+display = "gauge"
+gauge_layout = "horizontal"
+stat = "gpu_temp"
+stat2 = "gpu_temp"
+
+[desktop_widgets.widget.desktop-widget-000000000000000b]
+box_height = 48.0
+box_width = 104.0
+cx = 472.0
+cy = 1713.300048828125
+output = "@secondary@"
+rotation = 0.0
+type = "sysmon"
+
+[desktop_widgets.widget.desktop-widget-000000000000000b.settings]
+display = "gauge"
+gauge_layout = "horizontal"
+stat = "ram_pct"
+stat2 = "gpu_temp"
+
+[desktop_widgets.widget.desktop-widget-000000000000000c]
+box_height = 48.0
+box_width = 96.0
+cx = 364.0
+cy = 1713.300048828125
+output = "@secondary@"
+rotation = 0.0
+type = "sysmon"
+
+[desktop_widgets.widget.desktop-widget-000000000000000c.settings]
+display = "gauge"
+gauge_layout = "horizontal"
+stat = "gpu_vram"
+
+[idle]
+behavior_order = ["lock", "screen-off", "lock-and-suspend"]
+
+[idle.behavior.lock]
+action = "lock"
+enabled = false
+timeout = 600.0
+
+[idle.behavior.lock-and-suspend]
+action = "lock_and_suspend"
+enabled = false
+timeout = 900.0
+
+[idle.behavior.screen-off]
+action = "screen_off"
+enabled = true
+timeout = 600.0
+
+[location]
+address = "@location@"
+
+[lockscreen]
+monitors = ["@main@"]
+
+[lockscreen_widgets]
+enabled = true
+schema_version = 2
+widget_order = [
+  "lockscreen-login-box@@main@",
+  "lockscreen-login-box@@secondary@",
+  "lockscreen-widget-0000000000000001",
+  "lockscreen-widget-0000000000000002"
+]
+
+[lockscreen_widgets.grid]
+cell_size = 8
+major_interval = 4
+visible = true
+
+[lockscreen_widgets.widget."lockscreen-login-box@@main@"]
+box_height = 70.0
+box_width = 400.0
+cx = 2552.0
+cy = 1080.0
+output = "@main@"
+rotation = 0.0
+type = "login_box"
+
+[lockscreen_widgets.widget."lockscreen-login-box@@main@".settings]
+background_color = "surface_variant"
+background_opacity = 0.88
+background_radius = 12.0
+input_opacity = 1.0
+input_radius = 6.0
+show_login_button = true
+
+[lockscreen_widgets.widget.lockscreen-widget-0000000000000001]
+box_height = 80.0
+box_width = 200.0
+cx = 2552.0
+cy = 248.0
+output = "@main@"
+rotation = 0.0
+type = "clock"
+
+[lockscreen_widgets.widget.lockscreen-widget-0000000000000001.settings]
+font_family = "@mono@"
+
+[lockscreen_widgets.widget.lockscreen-widget-0000000000000002]
+box_height = 48.0
+box_width = 200.0
+cx = 2552.0
+cy = 320.0
+output = "@main@"
+rotation = 0.0
+type = "clock"
+
+[lockscreen_widgets.widget.lockscreen-widget-0000000000000002.settings]
+color = "outline"
+format = "{:%a, %b %d}"
+
+[notification]
+background_opacity = 0.80000000000000004
+offset_y = 64
+position = "bottom_center"
+
+[osd]
+offset_y = 64
+position = "bottom_center"
+
+[shell]
+app_icon_color = "surface"
+font_family = "@sans@"
+settings_show_advanced = true
+time_format = "{:%I:%M %p}"
+ui_scale = 1.1000000000000001
+
+[shell.launcher]
+app_grid = true
+
+[shell.panel]
+clipboard_placement = "attached"
+session_placement = "floating"
+session_position = "center"
+transparency_mode = "glass"
+
+[[shell.session.actions]]
+action = "lock"
+countdown_seconds = 0.0
+enabled = true
+shortcut = "1"
+variant = "default"
+
+[[shell.session.actions]]
+action = "logout"
+countdown_seconds = 0.0
+enabled = true
+shortcut = "2"
+variant = "default"
+
+[[shell.session.actions]]
+action = "lock_and_suspend"
+countdown_seconds = 0.0
+enabled = false
+shortcut = "3"
+variant = "default"
+
+[[shell.session.actions]]
+action = "reboot"
+countdown_seconds = 0.0
+enabled = true
+shortcut = "4"
+variant = "default"
+
+[[shell.session.actions]]
+action = "shutdown"
+countdown_seconds = 0.0
+enabled = false
+shortcut = "5"
+variant = "destructive"
+
+[theme]
+builtin = "Catppuccin"
+community_palette = "Catppuccin Lavender"
+mode = "dark"
+source = "community"
+wallpaper_scheme = "m3-fruit-salad"
+
+[theme.templates]
+builtin_ids = ["alacritty", "gtk3", "gtk4", "qt", "starship"]
+community_ids = ["zathura"]
+
+[wallpaper]
+directory = "@imageDirectory@"
+directory_dark = "@imageDirectory@/dark"
+directory_light = "@imageDirectory@/light"
+fill_mode = "center"
+
+[wallpaper.default]
+path = "@image@"
+
+[wallpaper.monitors.@main@]
+path = "@image@"
+
+[wallpaper.monitors.@secondary@]
+path = "@image@"
+
+[weather]
+unit = "imperial"
+
+[widget.audio_visualizer]
+bands = 24
+color_2 = "secondary"
+scale = 1.25
+width = 100
+
+[widget.clipboard]
+font_weight = 600
+
+[widget.clock]
+anchor = true
+color = "primary"
+font_family = "@mono@"
+format = "{:%I:%M %p}"
+scale = 1.25
+vertical_format = "{:%I\\n%M %p}"
+
+[widget.control-center]
+font_weight = 600
+glyph = "settings-2"
+
+[widget.date]
+color = "secondary"
+format = "{:%a %b %d }"
+scale = 1.1000000000000001
+
+[widget.media]
+art_size = 24
+hide_when_no_media = true
+min_length = 54
+title_scroll = "always"
+
+[widget.notifications]
+font_weight = 600
+
+[widget.session]
+font_weight = 600
+
+[widget.tray]
+drawer = true
+drawer_columns = 5
+font_weight = 600
+pinned = ["1password"]
+
+[widget.workspaces]
+display = "none"
+empty_color = "primary"
+focused_color = "secondary"
+occupied_color = "primary"
+pill_scale = 0.84999999999999998

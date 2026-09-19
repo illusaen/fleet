@@ -1,0 +1,58 @@
+name: Manually build and cache Nix targets
+
+on:
+  workflow_dispatch:
+    inputs:
+      bambu_studio:
+        description: Build Bambu Studio from Odin's overlaid package set
+        type: boolean
+        default: false
+      llama_cpp:
+        description: Build Odin's CUDA llama.cpp service package
+        type: boolean
+        default: false
+      entire_host:
+        description: Build the entire Odin NixOS system
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Require at least one target
+        if: ${{ !inputs.bambu_studio && !inputs.llama_cpp && !inputs.entire_host }}
+        run: |
+          echo "Select at least one build target when dispatching the workflow."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+            experimental-features = nix-command flakes
+            max-jobs = auto
+            cores = 0
+
+      - uses: cachix/cachix-action@v16
+        with:
+          name: illusaen
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - name: Build Bambu Studio
+        if: ${{ inputs.bambu_studio }}
+        run: nix build .#bambu-studio
+
+      - name: Build CUDA llama.cpp service package
+        if: ${{ inputs.llama_cpp }}
+        run: nix build .#llama-cpp-cuda
+
+      - name: Build entire Odin NixOS system
+        if: ${{ inputs.entire_host }}
+        run: nix build .#odin
