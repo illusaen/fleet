@@ -77,7 +77,24 @@
     };
     forAllSystems = f: lib.mapAttrs (_system: f) systemContexts;
   in {
-    checks = forAllSystems ({treefmt, ...}: {treefmt = treefmt.config.build.check self;});
+    checks = forAllSystems ({
+      pkgs,
+      treefmt,
+      ...
+    }: {
+      treefmt = treefmt.config.build.check self;
+      unit =
+        pkgs.runCommandLocal "unit-tests" {
+          nativeBuildInputs = [pkgs.nix-unit];
+        } ''
+          export HOME="$TMPDIR"
+          nix-unit \
+            --arg lib 'import ${nixpkgs}/lib' \
+            --arg root ${self} \
+            ${./tests/unit.nix}
+          touch "$out"
+        '';
+    });
     devShells = forAllSystems ({
       pkgs,
       treefmt,

@@ -82,6 +82,8 @@
   in
     unique (concatLists featureGroups);
 in {
+  inherit featuresForHost;
+
   modulesForHost = host: let
     names = featuresForHost host;
   in
