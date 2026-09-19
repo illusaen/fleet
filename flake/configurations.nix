@@ -19,28 +19,37 @@
     )
     fleet.hosts;
 
-  mkNixosConfiguration = hostName: fleetHost: let
+  mkHostConfiguration = hostName: fleetHost: let
     host =
       fleetHost
       // {
         services = serviceLib.servicesForHost hostName fleet.services;
       };
     user = fleet.users.${host.owner};
-  in
-    lib.nixosSystem {
-      inherit (host) system;
-      modules =
-        [
-          {nixpkgs.pkgs = systemContexts.${host.system}.pkgs;}
-        ]
-        ++ featureLib.modulesForHost host;
-      specialArgs = {
-        inherit fleet host user;
-        helpers = {
-          inherit (serviceLib) hostIps primaryIpV4 requireRoutedService reverseProxy;
-        };
+  in {
+    inherit host;
+    modules = featureLib.modulesForHost host;
+    pkgs = systemContexts.${host.system}.pkgs;
+    specialArgs = {
+      inherit fleet host user;
+      helpers = {
+        inherit (serviceLib) hostIps primaryIpV4 requireRoutedService reverseProxy;
       };
     };
-in {
-  nixosConfigurations = builtins.mapAttrs mkNixosConfiguration nixosHosts;
+  };
+
+  mkNixosConfiguration = _hostName: {
+    host,
+    modules,
+    pkgs,
+    specialArgs,
+  }:
+    lib.nixosSystem {
+      inherit (host) system;
+      modules = [{nixpkgs.pkgs = pkgs;}] ++ modules;
+      inherit specialArgs;
+    };
+in rec {
+  hostConfigurations = builtins.mapAttrs mkHostConfiguration nixosHosts;
+  nixosConfigurations = builtins.mapAttrs mkNixosConfiguration hostConfigurations;
 }

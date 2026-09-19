@@ -3,6 +3,7 @@
     system = "x86_64-linux";
     owner = "wendy";
     targetHost = "odin.home.arpa";
+    localDeploymentOnly = true;
     hostId = "abf835ae";
 
     tags = ["desktop" "gpu:nvidia" "feature:creative" "feature:dev" "feature:gaming"];

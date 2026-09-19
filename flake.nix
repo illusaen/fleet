@@ -72,31 +72,36 @@
       treefmt = (import ./flake/treefmt.nix {inherit treefmt-nix;}) pkgs;
     });
 
+    configurations = import ./flake/configurations.nix {
+      inherit featureLib lib systemContexts;
+    };
     forAllSystems = f: lib.mapAttrs (_system: f) systemContexts;
-  in
-    {
-      checks = forAllSystems ({treefmt, ...}: {treefmt = treefmt.config.build.check self;});
-      devShells = forAllSystems ({
-        pkgs,
-        treefmt,
-        ...
-      }: {
-        default = import ./flake/devshell.nix {
-          inherit pkgs;
-          treefmt = treefmt.config.build.wrapper;
-        };
+  in {
+    checks = forAllSystems ({treefmt, ...}: {treefmt = treefmt.config.build.check self;});
+    devShells = forAllSystems ({
+      pkgs,
+      treefmt,
+      ...
+    }: {
+      default = import ./flake/devshell.nix {
+        inherit pkgs;
+        treefmt = treefmt.config.build.wrapper;
+      };
+    });
+    formatter = forAllSystems ({treefmt, ...}: treefmt.config.build.wrapper);
+    packages = forAllSystems ({
+      pkgs,
+      system,
+      ...
+    }:
+      pkgs.local
+      // lib.optionalAttrs (system == "x86_64-linux") {
+        inherit (pkgs) bambu-studio llama-cpp-cuda;
       });
-      formatter = forAllSystems ({treefmt, ...}: treefmt.config.build.wrapper);
-      packages = forAllSystems ({
-        pkgs,
-        system,
-        ...
-      }:
-        pkgs.local
-        // lib.optionalAttrs (system == "x86_64-linux") {
-          inherit (pkgs) bambu-studio llama-cpp-cuda;
-        });
-      colmenaHive = import ./flake/hive.nix {inherit colmena;};
-    }
-    // import ./flake/configurations.nix {inherit featureLib lib systemContexts;};
+    colmenaHive = import ./flake/hive.nix {
+      inherit colmena lib;
+      inherit (configurations) hostConfigurations;
+    };
+    inherit (configurations) nixosConfigurations;
+  };
 }

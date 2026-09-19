@@ -88,7 +88,13 @@ in
 
       targetHost = mkOption {
         type = str;
-        description = "SSH target or local deploy target for this host.";
+        description = "SSH target for this host.";
+      };
+
+      localDeploymentOnly = mkOption {
+        type = bool;
+        default = false;
+        description = "Whether this host may only be deployed locally.";
       };
 
       hostId = mkOption {
