@@ -8,8 +8,13 @@ pkgs.runCommandLocal "unit-tests" {
 } ''
   export HOME="$TMPDIR"
   nix-unit \
-    --arg lib 'import ${nixpkgs}/lib' \
+    --arg lib '
+      let
+        lib = import ${nixpkgs}/lib;
+      in
+        lib // (import ${pkgs.nix-unit.src}/lib { inherit lib; })
+    ' \
     --arg root ${self} \
-    ${./unit.nix}
+    ${./.}/unit.nix
   touch "$out"
 ''
