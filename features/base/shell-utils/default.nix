@@ -73,6 +73,7 @@ in {
 
       PROJECTS_FOLDER = projectsFolder;
       NIX_CONFIG_FOLDER = "$PROJECTS_FOLDER/fleet";
+      EDITOR = "nvim";
     };
 
     persistUser.directories = [".local/share/zoxide"];
