@@ -1,13 +1,12 @@
-{inputs}: {
-  modules.nixos = {pkgs, ...}: {
-    imports = [inputs.noctalia.nixosModules.default];
-
+{
+  modules.nixos = {
     programs.noctalia = {
       enable = true;
-      package = pkgs.noctalia;
       recommendedServices.enable = true;
       systemd.enable = true;
     };
+
+    services.power-profiles-daemon.enable = false;
 
     systemd.user.services.noctalia.environment.NOCTALIA_CONFIG_HOME = "%h/.local/state/nix-theme/current";
 

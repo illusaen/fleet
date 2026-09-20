@@ -55,11 +55,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1786742289,
-        "narHash": "sha256-r61K9svFDQkI5jONYksneDtDT5c4SkWrZVD3ni5O6Ak=",
+        "lastModified": 1789920906,
+        "narHash": "sha256-2z5LDmE7EAY2ITQ5Edz2uHt0k+8jaXv+4UubQDEU7CU=",
         "owner": "nix-community",
         "repo": "colmena",
-        "rev": "dc22786a43315b212eeafe13409a7203328e5a30",
+        "rev": "3c396f116d1b5572a7f6bdf59d216109815f4810",
         "type": "github"
       },
       "original": {
@@ -258,26 +258,6 @@
         "type": "github"
       }
     },
-    "noctalia": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1789735339,
-        "narHash": "sha256-KjnprW4lpS4ISCBnoNxlI9++LACjxlsQV7WWNT4cju8=",
-        "owner": "noctalia-dev",
-        "repo": "noctalia",
-        "rev": "960d4d46bd3149a556504e7c40ecd87abb251a36",
-        "type": "github"
-      },
-      "original": {
-        "owner": "noctalia-dev",
-        "repo": "noctalia",
-        "type": "github"
-      }
-    },
     "preservation": {
       "locked": {
         "lastModified": 1757436102,
@@ -302,7 +282,6 @@
         "disko": "disko",
         "hjem": "hjem",
         "nixpkgs": "nixpkgs",
-        "noctalia": "noctalia",
         "preservation": "preservation",
         "treefmt-nix": "treefmt-nix"
       }
