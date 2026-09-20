@@ -1,0 +1,9 @@
+result
+result-*
+.direnv
+.ruff_cache
+__pycache__
+.pre-commit-config.yaml
+.env
+node_modules
+.svelte

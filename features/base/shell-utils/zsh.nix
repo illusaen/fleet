@@ -21,9 +21,6 @@ let
     l = ''eza -alg -I "$(tr "\n" "|" < ~/.hidden | sed 's/|$//')"'';
     ll = ''eza -Ta --git-ignore -L 2 -I "$(tr "\n" "|" < ~/.hidden | sed 's/|$//')"'';
     whichstore = "nix_store_for_command";
-    nd = "dix /run/current-system";
-    hdmi = "switcher hdmi1";
-    dp = "switcher dp";
   };
 in {
   modules.generic = {

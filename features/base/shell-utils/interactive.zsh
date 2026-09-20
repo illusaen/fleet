@@ -58,6 +58,63 @@ git_commit_with_message() {
   git commit -m "$1"
 }
 
+dev() {
+  emulate -L zsh
+
+  if (( $# != 2 )); then
+    print -u2 -- "Usage: dev <folder> <template>"
+    return 2
+  fi
+
+  local project_name="$1"
+  local template_name="$2"
+  local templates_dir="$NIX_CONFIG_FOLDER/templates"
+  local project_dir="$PROJECTS_FOLDER/$project_name"
+  local template_dir="$templates_dir/$template_name"
+  local shared_dir="$templates_dir/shared"
+
+  if [[ "$project_name" == */* || "$project_name" == "." || "$project_name" == ".." ]]; then
+    print -u2 -- "Error: project must be a folder name, not a path: $project_name"
+    return 2
+  fi
+
+  if [[ "$template_name" == */* || "$template_name" == "." || "$template_name" == ".." ]]; then
+    print -u2 -- "Error: template must be a template name, not a path: $template_name"
+    return 2
+  fi
+
+  if ! cd -- "$PROJECTS_FOLDER"; then
+    print -u2 -- "Error: Projects folder does not exist: $PROJECTS_FOLDER"
+    return 1
+  fi
+
+  if [[ -e "$project_dir" ]]; then
+    print -u2 -- "Error: project folder already exists: $project_dir"
+    return 1
+  fi
+
+  if [[ ! -d "$template_dir" ]]; then
+    print -u2 -- "Error: template does not exist: $template_name"
+    return 1
+  fi
+
+  if [[ ! -d "$shared_dir" ]]; then
+    print -u2 -- "Error: shared template folder does not exist: $shared_dir"
+    return 1
+  fi
+
+  mkdir -- "$project_name" || return
+  cd -- "$project_dir" || return
+
+  nix flake init --template "path:$templates_dir#$template_name" || return
+  cp -a -- "$shared_dir"/. . || return
+  git init
+
+  if [[ "$template_name" == "node" ]]; then
+    pnpm init
+  fi
+}
+
 nix_store_for_command() {
   if [ "$#" -ne 1 ]; then
     echo "Usage: nix_store_for_command <command>" >&2

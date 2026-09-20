@@ -1,5 +1,6 @@
 let
   themeStateDir = "\${NIX_THEME_STATE_DIR:-\${XDG_STATE_HOME:-$HOME/.local/state}/nix-theme}";
+  projectsFolder = "$HOME/Projects";
 in {
   imports = [./git.nix ./starship.nix ./zsh.nix];
 
@@ -23,7 +24,7 @@ in {
       nix-direnv.enable = true;
       settings = {
         hide_env_diff = true;
-        whitelist.prefix = ["~/Projects"];
+        whitelist.prefix = [(builtins.replaceStrings ["$HOME"] ["~"] projectsFolder)];
       };
     };
 
@@ -69,6 +70,9 @@ in {
       # pulseaudio
       PULSE_COOKIE = "$HOME/.config/pulse/cookie";
       NIXOS_OZONE_WL = 1;
+
+      PROJECTS_FOLDER = projectsFolder;
+      NIX_CONFIG_FOLDER = "$PROJECTS_FOLDER/fleet";
     };
 
     persistUser.directories = [".local/share/zoxide"];

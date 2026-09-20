@@ -2,14 +2,15 @@
   modules.nixos = {lib, ...}: let
     inherit (lib) mkOption optionalAttrs;
     inherit (lib.types) attrsOf bool either listOf str submodule;
-    withOptionsType = attrsOf (either bool str);
+
     mkPersistList = description:
       mkOption {
-        type = listOf (either str withOptionsType);
+        type = listOf (either str (attrsOf (either bool str)));
         default = [];
         apply = lib.unique;
         inherit description;
       };
+
     mkPersistOption = withMountOptions: description:
       mkOption {
         type = submodule {

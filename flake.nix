@@ -116,5 +116,7 @@
     };
 
     inherit (configurations) nixosConfigurations;
+
+    templates = import ./templates;
   };
 }
