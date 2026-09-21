@@ -7,13 +7,15 @@ xwayland = false
 show_cheatsheet = false
 
 [output."@main@"]
-enabled = true               
-mode = "5120x2160@165.058"       
+enabled = true
+mode = "5120x2160@165.058"
+position = [0, 0]
 workspaces = "dynamic"
 
 [output."@secondary@"]
-enabled = true               
+enabled = true
 mode = "1920x1080@60"
+position = [5120, 0]
 workspaces = "dynamic"
 transform = "270"
 
@@ -136,11 +138,11 @@ default_position = { x = 20, y = 20, anchor = "bottom_right" }
 [[window_rule]]
 match.app_id = "com.github.th-ch.youtube-music"
 default_floating = true
-default_floating_size = { width = 1, height = 0.75 }
+default_floating_size = { width = 0.95, height = 0.75 }
 default_position = { x = 0, y = 0, anchor = "top" }
 
 [[window_rule]]
-match.app_id = "^alacritty$"
+match.app_id = "^Alacritty$"
 default_scrolling_column = "alacritty"
 default_workspace = "CODE"
 

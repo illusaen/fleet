@@ -34,7 +34,7 @@ interval_seconds           = 1000     # seconds between changes
 recursive                  = false    # include subdirectories when picking random wallpapers
 
 [theme]
-mode   = "auto"                     # dark | light | auto
+mode   = "dark"                     # dark | light | auto
 builtin = "Rosé Pine"               # Ayu | Catppuccin | Dracula | Eldritch | Gruvbox |
                                     # Kanagawa | Noctalia | Nord | Rosé Pine | Tokyo-Night
 pure_black_dark = true              # anchor dark surfaces to true black (OLED); applies to
@@ -48,13 +48,13 @@ enabled = true
 background_opacity = 0.8
 offset_x = 0
 offset_y = 64
-scale    = 1.2 
+scale    = 1.1
 position = "bottom_center"
 
 [osd]
 offset_x = 0
 offset_y = 64
-scale    = 1.2 
+scale    = 1.1
 background_opacity = 0.8
 position = "bottom_center"
 
@@ -88,7 +88,6 @@ margin_ends = 720
 margin_edge = 8
 padding = 16
 widget_spacing = 16
-reserve_space = false
 start = ["session", "workspaces"]
 center = [ "date", "clock", "weather" ]
 end = ["tray", "clipboard", "control-center"]

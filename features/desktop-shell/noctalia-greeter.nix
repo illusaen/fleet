@@ -17,7 +17,7 @@
           font_family = fleet.fonts.sans;
         };
         appearance.palette = {
-          primary = "#fff59b";
+          primary = "#7c80b4";
           on_primary = "#0e0e43";
           secondary = "#a9aefe";
           on_secondary = "#0e0e43";
@@ -25,17 +25,17 @@
           on_tertiary = "#0e0e43";
           error = "#FD4663";
           on_error = "#0e0e43";
-          surface = "#222436";
+          surface = "#0e0e43";
           on_surface = "#f3edf7";
-          surface_variant = "#222436";
+          surface_variant = "#0e0e43";
           on_surface_variant = "#7c80b4";
-          outline = "#222436";
-          shadow = "#222436";
+          outline = "#0e0e43";
+          shadow = "#0e0e43";
           hover = "#9BFECE";
           on_hover = "#0e0e43";
         };
-        "appearance.wallpaper" = {
-          fill_color = "#222436";
+        appearance.wallpaper = {
+          fill_color = "#0e0e43";
           fill_mode = "fit";
         };
         output.name = fleet.monitors.main;

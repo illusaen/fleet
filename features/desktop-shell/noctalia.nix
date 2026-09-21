@@ -18,5 +18,7 @@
         "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
       ];
     };
+
+    persistUser.files = [".local/state/noctalia/state.toml"];
   };
 }
