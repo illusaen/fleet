@@ -22,10 +22,6 @@ in
         python3
         dconf
       ])
-      (pythonScript "monitor-brightness" ./scripts/monitor-brightness.py [
-        python3
-        ddcutil
-      ])
       (pythonScript "switcher" ./scripts/switch-input.py [
         python3
         ddcutil

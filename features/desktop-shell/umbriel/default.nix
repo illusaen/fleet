@@ -18,7 +18,7 @@
       main = fleet.monitors.main;
       secondary = fleet.monitors.secondary;
       mainConnector = host.monitors.main;
-      themeStateDir = "\${NIX_THEME_STATE_DIR:-\${XDG_STATE_HOME:-$HOME/.local/state}/nix-theme/current/umbriel/umbriel-colors.toml}";
+      themeStateDir = "/home/${user.name}/.config/umbriel/umbriel-colors.toml";
       DEFAULT_AUDIO_SINK = null;
       DEFAULT_AUDIO_SOURCE = null;
     };

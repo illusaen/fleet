@@ -1,6 +1,6 @@
 let
   template = name: {
-    path = ./templates/${name};
+    path = ./${name};
     description = "nix flake new my-project -t github:illusaen/fleet#${name}";
   };
   languages = ["node" "rust"];

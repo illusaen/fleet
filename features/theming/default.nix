@@ -1,4 +1,4 @@
-{inputs}: {
+_: {
   modules.nixos = {
     fleet,
     host,
@@ -11,37 +11,9 @@
     inherit (fleet.fonts) sans sizes;
     inherit (fleet.theming) cursor gtk icon;
     localThemePackage = theme: pkgs.local.${theme.packageName};
-    profileStateDir = "\${XDG_STATE_HOME:-$HOME/.local/state}/nix-theme";
-    base16Lib = inputs.base16.lib {
-      inherit pkgs lib;
-    };
     themeNames = builtins.attrNames themes.profiles;
     themeListFile = pkgs.writeText "nix-theme-list" (lib.concatStringsSep "\n" themeNames);
     themeListJson = builtins.toJSON themeNames;
-
-    toGtkIni = lib.generators.toINI {
-      mkKeyValue = key: value: let
-        rendered =
-          if lib.isBool value
-          then lib.boolToString value
-          else toString value;
-      in "${lib.escape ["="] key}=${rendered}";
-    };
-
-    mkGtkIni = profile:
-      toGtkIni {
-        Settings = lib.filterAttrs (_name: value: value != null) {
-          gtk-font-name = "${sans.name} ${toString sizes.applications}";
-          gtk-theme-name = gtk.name;
-          gtk-icon-theme-name = icon.name;
-          gtk-cursor-theme-name = cursor.name;
-          gtk-cursor-theme-size = cursor.size;
-          gtk-application-prefer-dark-theme =
-            if profile.colorScheme == "dark"
-            then true
-            else null;
-        };
-      };
 
     gtkSettings = {
       gtk-font-name = "${sans.name} ${toString sizes.applications}";
@@ -52,157 +24,84 @@
     };
     gtkIni = lib.generators.toINI {} {Settings = gtkSettings;};
 
-    mkQtctConf = profile:
-      pkgs.writeText "qtct.conf" ''
-        [Appearance]
-        color_scheme_path=${profile.colorScheme}.conf
-        custom_palette=false
-        icon_theme=${icon.name}
-        standard_dialogs=default
-        style=Fusion
+    selectedWallpaper = profile:
+      if profile.wallpaper != null
+      then profile.wallpaper
+      else wallpaper.image;
 
-        [Fonts]
-        fixed="${fonts.mono.name},${toString sizes.applications},-1,5,50,0,0,0,0,0"
-        general="${sans.name},${toString sizes.applications},-1,5,50,0,0,0,0,0"
-      '';
+    secondaryMonitor =
+      if (host.monitors.secondary or null) != null
+      then host.monitors.secondary
+      else host.monitors.main;
 
-    mkAlacrittyToml = scheme:
-      pkgs.writeText "alacritty.toml" ''
-        [window]
-        padding = { x = 32, y = 32 }
-        dynamic_padding = true
-        opacity = 0.9
-        blur = true
+    mkNoctaliaConfig = profile:
+      builtins.replaceStrings
+      [
+        "@mono@"
+        "@sans@"
+        "@main@"
+        "@secondary@"
+        "@image@"
+        "@imageDirectory@"
+        "@location@"
+        ''mode   = "dark"''
+      ]
+      [
+        fonts.mono.name
+        fonts.sans.name
+        host.monitors.main
+        secondaryMonitor
+        (toString (selectedWallpaper profile))
+        (toString wallpaper.directory)
+        (lib.last (lib.splitString "/" fleet.timeZone))
+        ''mode   = "${profile.colorScheme}"''
+      ]
+      (builtins.readFile ../../resources/templates/noctalia/noctalia-config.toml.template);
 
-        [selection]
-        save_to_clipboard = true
-
-        [font]
-        size = ${toString sizes.terminal}
-
-        [font.normal]
-        family = "${fonts.mono.name}"
-
-        [colors.primary]
-        foreground = "${scheme.withHashtag.base05}"
-        background = "${scheme.withHashtag.base00}"
-        bright_foreground = "${scheme.withHashtag.base07}"
-
-        [colors.normal]
-        black = "${scheme.withHashtag.base00}"
-        red = "${scheme.withHashtag.red}"
-        green = "${scheme.withHashtag.green}"
-        yellow = "${scheme.withHashtag.yellow}"
-        blue = "${scheme.withHashtag.blue}"
-        magenta = "${scheme.withHashtag.magenta}"
-        cyan = "${scheme.withHashtag.cyan}"
-        white = "${scheme.withHashtag.base05}"
-
-        [colors.bright]
-        black = "${scheme.withHashtag.base03}"
-        red = "${scheme.withHashtag.bright-red}"
-        green = "${scheme.withHashtag.bright-green}"
-        yellow = "${scheme.withHashtag.bright-yellow}"
-        blue = "${scheme.withHashtag.bright-blue}"
-        magenta = "${scheme.withHashtag.bright-magenta}"
-        cyan = "${scheme.withHashtag.bright-cyan}"
-        white = "${scheme.withHashtag.base07}"
-      '';
-
-    mkZathurarc = scheme:
-      pkgs.writeText "zathurarc" ''
-        set font "monospace normal ${toString sizes.applications}"
-        set default-bg "${scheme.withHashtag.base00}"
-        set default-fg "${scheme.withHashtag.base01}"
-        set statusbar-fg "${scheme.withHashtag.base04}"
-        set statusbar-bg "${scheme.withHashtag.base02}"
-        set inputbar-bg "${scheme.withHashtag.base00}"
-        set inputbar-fg "${scheme.withHashtag.base07}"
-        set recolor-lightcolor "${scheme.withHashtag.base00}"
-        set recolor-darkcolor "${scheme.withHashtag.base06}"
-      '';
-
-    mkUmbrielColors = scheme:
-      pkgs.writeText "umbriel-colors.toml" ''
-        [colors]
-        background = "#${scheme.withHashtag.base01}FF"
-        text_primary = "#${scheme.withHashtag.base05}FF"
-        text_muted = "#${scheme.withHashtag.base04}FF"
-        accent_primary = "#${scheme.withHashtag.base0C}FF"
-        accent_secondary = "#${scheme.withHashtag.base08}FF"
-        warning = "#${scheme.withHashtag.base09}FF"
-        error = "#${scheme.withHashtag.base0F}FF"
-        insert_hint = "#${scheme.withHashtag.base0D}80"
-        backdrop = "#${scheme.withHashtag.base00}FF"
-        shadow = "#${scheme.withHashtag.base00}7F"
-      '';
-
-    mkProfileLinkCommands = files:
-      lib.concatStringsSep "\n" (
-        lib.mapAttrsToList (
-          target: source: ''ln -sfn ${lib.escapeShellArg source} "$out/${target}"''
-        )
-        files
-      );
-
-    mkProfile = name: profile: let
-      scheme = base16Lib.mkSchemeAttrs profile.base16Theme;
-      selectedWallpaper =
-        if profile.wallpaper != null
-        then profile.wallpaper
-        else wallpaper.image;
-      profileFiles = {
-        "env" = pkgs.writeText "theme-env" ''
-          THEME_NAME=${lib.escapeShellArg name}
-          COLOR_SCHEME=${lib.escapeShellArg (
+    themeContext = pkgs.writeText "nix-theme-context.json" (builtins.toJSON {
+      static = {
+        "application-font-size" = sizes.applications;
+        "cursor-size" = cursor.size;
+        "cursor-theme" = cursor.name;
+        "gtk-theme" = gtk.name;
+        "gtk4-theme-directory" = "${localThemePackage gtk}/share/libadwaita-themes";
+        "icon-theme" = icon.name;
+        "mono-font" = fonts.mono.name;
+        "sans-font" = fonts.sans.name;
+        "terminal-font-size" = sizes.terminal;
+      };
+      themes =
+        lib.mapAttrs (_name: profile: {
+          "color-scheme" =
             if profile.colorScheme == "dark"
             then "prefer-dark"
-            else "default"
-          )}
-          GTK_THEME=${lib.escapeShellArg gtk.name}
-          ICON_THEME=${lib.escapeShellArg icon.name}
-          CURSOR_THEME=${lib.escapeShellArg cursor.name}
-          CURSOR_SIZE=${lib.escapeShellArg (toString cursor.size)}
-          WALLPAPER=${lib.escapeShellArg (toString selectedWallpaper)}
-        '';
-        "alacritty/alacritty.toml" = mkAlacrittyToml scheme;
-        "bat/config" = pkgs.writeText "bat-config" ''
-          --theme="Base16"
-          --italic-text=always
-        '';
-        "bat/themes/Base16.tmTheme" = scheme {
-          template = ../../resources/templates/bat/bat.tmTheme.mustache;
-          extension = ".tmTheme";
-        };
-        "gtk-3.0/settings.ini" = pkgs.writeText "gtk-settings.ini" (mkGtkIni profile);
-        "gtk-4.0/settings.ini" = pkgs.writeText "gtk-settings.ini" (mkGtkIni profile);
-        "noctalia/config.toml" = pkgs.replaceVars ../../resources/templates/noctalia/noctalia-config.toml.template {
-          mono = fonts.mono.name;
-          sans = fonts.sans.name;
-          main = host.monitors.main;
-          secondary =
-            if (host.monitors.secondary or null) != null
-            then host.monitors.secondary
-            else host.monitors.main;
-          image = selectedWallpaper;
-          imageDirectory = wallpaper.directory;
-          location = lib.last (lib.splitString "/" fleet.timeZone);
-        };
-        "umbriel/umbriel-colors.toml" = mkUmbrielColors scheme;
-        "qt5ct/qt5ct.conf" = mkQtctConf profile;
-        "qt6ct/qt6ct.conf" = mkQtctConf profile;
-        "zathura/zathurarc" = mkZathurarc scheme;
-      };
-    in
-      pkgs.runCommand "nix-theme-profile-${name}" {} ''
-        mkdir -p "$out/alacritty" "$out/bat/themes" "$out/gtk-3.0" "$out/gtk-4.0" "$out/noctalia" "$out/qt5ct" "$out/qt6ct" "$out/zathura" "$out/umbriel"
-        cp -rs ${lib.escapeShellArg "${localThemePackage gtk}/share/libadwaita-themes"}/* "$out/gtk-4.0/" 2>/dev/null || true
-        ${mkProfileLinkCommands profileFiles}
-      '';
+            else "default";
+          "noctalia-config" = mkNoctaliaConfig profile;
+          "prefer-dark" = lib.boolToString (profile.colorScheme == "dark");
+          "qt-color-scheme" = profile.colorScheme;
+          wallpaper = toString (selectedWallpaper profile);
+        })
+        themes.profiles;
+    });
 
-    profilesPackage = pkgs.linkFarm "nix-theme-profiles" (
-      lib.mapAttrsToList (name: path: {inherit name path;}) (lib.mapAttrs mkProfile themes.profiles)
-    );
+    python = pkgs.python3.withPackages (pythonPackages: [
+      pythonPackages.pystache
+      pythonPackages.pyyaml
+    ]);
+
+    themeApply = pkgs.writeShellApplication {
+      name = "theme-apply";
+      runtimeInputs = [
+        pkgs.difftastic
+        pkgs.glib
+        pkgs.systemd
+      ];
+      text = ''
+        export NIX_CONFIG_FOLDER="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
+        export NIX_THEME_CONTEXT=${lib.escapeShellArg themeContext}
+        exec ${python}/bin/python ${./runtime_theme.py} "$@"
+      '';
+    };
 
     themeList = pkgs.writeShellApplication {
       name = "theme-list";
@@ -222,95 +121,13 @@
       runtimeInputs = [pkgs.coreutils];
       text = ''
         set -euo pipefail
-        state_dir="${profileStateDir}"
-        selected="$state_dir/selected"
+        repository="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
+        selected="$repository/dotfiles/built/selected"
         if [ -s "$selected" ]; then
           cat "$selected"
           exit 0
         fi
-        if [ -e "$state_dir/current" ]; then
-          basename "$(readlink -f "$state_dir/current")"
-          exit 0
-        fi
         exit 1
-      '';
-    };
-
-    themeApply = pkgs.writeShellApplication {
-      name = "theme-apply";
-      runtimeInputs = with pkgs; [
-        coreutils
-        dconf
-        glib
-        gnugrep
-        gnused
-      ];
-      text = ''
-        set -euo pipefail
-
-        dry_run=0
-        if [ "''${1:-}" = "--dry-run" ]; then
-          dry_run=1
-          shift
-        fi
-
-        theme="''${1:-${themes.default}}"
-        state_dir="${profileStateDir}"
-        profile_root="''${NIX_THEME_PROFILE_DIR:-${profilesPackage}}"
-        profile="$profile_root/$theme"
-
-        if [ ! -d "$profile" ]; then
-          echo "Unknown theme: $theme" >&2
-          echo "Available themes:" >&2
-          sed 's/^/  /' ${themeListFile} >&2
-          exit 1
-        fi
-
-        if [ "$dry_run" = 1 ]; then
-          echo "theme=$theme"
-          echo "profile=$profile"
-          echo "state_dir=$state_dir"
-          exit 0
-        fi
-
-        mkdir -p "$state_dir/umbriel"
-
-        # Noctalia appends /noctalia to NOCTALIA_CONFIG_HOME and may create
-        # current as a directory before the initial theme activation. Replace
-        # that generated directory so current can consistently be the active
-        # profile symlink.
-        if [ -d "$state_dir/current" ] && [ ! -L "$state_dir/current" ]; then
-          rm -rf -- "$state_dir/current"
-        fi
-
-        rm -rf -- "$state_dir/current.next"
-        ln -s "$profile" "$state_dir/current.next"
-        mv -Tf "$state_dir/current.next" "$state_dir/current"
-        ln -sfn "$state_dir/current/umbriel/umbriel-colors.toml" "$state_dir/umbriel/umbriel-colors.toml.next"
-        mv -Tf "$state_dir/umbriel/umbriel-colors.toml.next" "$state_dir/umbriel/umbriel-colors.toml"
-        printf '%s\n' "$theme" > "$state_dir/selected"
-
-        # shellcheck disable=SC1091
-        . "$profile/env"
-
-        mkdir -p "$HOME/.config/gtk-3.0" "$HOME/.config/qt5ct" "$HOME/.config/qt6ct"
-        ln -sfn "$state_dir/current/gtk-3.0/settings.ini" "$HOME/.config/gtk-3.0/settings.ini"
-        rm -rf "$HOME/.config/gtk-4.0"
-        ln -sfn "$state_dir/current/gtk-4.0" "$HOME/.config/gtk-4.0"
-        ln -sfn "$state_dir/current/qt5ct/qt5ct.conf" "$HOME/.config/qt5ct/qt5ct.conf"
-        ln -sfn "$state_dir/current/qt6ct/qt6ct.conf" "$HOME/.config/qt6ct/qt6ct.conf"
-
-        if command -v gsettings >/dev/null 2>&1 && gsettings list-schemas 2>/dev/null | grep -qx org.gnome.desktop.interface; then
-          gsettings set org.gnome.desktop.interface color-scheme "$COLOR_SCHEME" || true
-          gsettings set org.gnome.desktop.interface gtk-theme "$GTK_THEME" || true
-          gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME" || true
-          gsettings set org.gnome.desktop.interface cursor-theme "$CURSOR_THEME" || true
-          gsettings set org.gnome.desktop.interface cursor-size "uint32 $CURSOR_SIZE" || true
-        fi
-
-        if command -v systemctl >/dev/null 2>&1; then
-          systemctl --user try-restart noctalia.service waybar.service 2>/dev/null || true
-        fi
       '';
     };
 
@@ -378,7 +195,6 @@
         (localThemePackage cursor)
         (localThemePackage gtk)
         (localThemePackage icon)
-        profilesPackage
         themeApply
         themeCurrent
         themeCycle
@@ -387,9 +203,8 @@
       ];
 
       sessionVariables = {
-        BAT_CONFIG_DIR = "${profileStateDir}/current/bat";
+        BAT_CONFIG_DIR = "$HOME/.config/bat";
         GTK_THEME = gtk.name;
-        NIX_THEME_STATE_DIR = profileStateDir;
         QT_QPA_PLATFORMTHEME = "qt6ct";
         XCURSOR_SIZE = toString cursor.size;
         XCURSOR_THEME = cursor.name;

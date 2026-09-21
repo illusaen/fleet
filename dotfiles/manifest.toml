@@ -1,0 +1,43 @@
+version = 1
+clobber = true
+
+[[items]]
+source = "built/{theme}/{build}/alacritty/alacritty.toml"
+destination = "$XDG_CONFIG_HOME/alacritty/alacritty.toml"
+
+[[items]]
+source = "plain/bat/config"
+destination = "$XDG_CONFIG_HOME/bat/config"
+
+[[items]]
+source = "built/{theme}/{build}/bat/themes/Base16.tmTheme"
+destination = "$XDG_CONFIG_HOME/bat/themes/Base16.tmTheme"
+
+[[items]]
+source = "built/{theme}/{build}/gtk-3.0/settings.ini"
+destination = "$XDG_CONFIG_HOME/gtk-3.0/settings.ini"
+
+[[items]]
+source = "built/{theme}/{build}/gtk-4.0"
+destination = "$XDG_CONFIG_HOME/gtk-4.0"
+type = "directory"
+
+[[items]]
+source = "built/{theme}/{build}/noctalia/config.toml"
+destination = "$XDG_CONFIG_HOME/noctalia/config.toml"
+
+[[items]]
+source = "built/{theme}/{build}/umbriel/umbriel-colors.toml"
+destination = "$XDG_CONFIG_HOME/umbriel/umbriel-colors.toml"
+
+[[items]]
+source = "built/{theme}/{build}/qt5ct/qt5ct.conf"
+destination = "$XDG_CONFIG_HOME/qt5ct/qt5ct.conf"
+
+[[items]]
+source = "built/{theme}/{build}/qt6ct/qt6ct.conf"
+destination = "$XDG_CONFIG_HOME/qt6ct/qt6ct.conf"
+
+[[items]]
+source = "built/{theme}/{build}/zathura/zathurarc"
+destination = "$XDG_CONFIG_HOME/zathura/zathurarc"

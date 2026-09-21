@@ -1,5 +1,4 @@
 let
-  themeStateDir = "\${NIX_THEME_STATE_DIR:-\${XDG_STATE_HOME:-$HOME/.local/state}/nix-theme}";
   projectsFolder = "$HOME/Projects";
 in {
   imports = [./git.nix ./starship.nix ./zsh.nix];
@@ -41,7 +40,7 @@ in {
         writeShellApplication {
           name = "bat";
           text = ''
-            export BAT_CONFIG_DIR="${themeStateDir}/current/bat"
+            export BAT_CONFIG_DIR="''${XDG_CONFIG_HOME:-$HOME/.config}/bat"
             exec ${bat}/bin/bat "$@"
           '';
         }
@@ -50,7 +49,7 @@ in {
         writeShellApplication {
           name = "alacritty";
           text = ''
-            exec ${alacritty}/bin/alacritty --config-file "${themeStateDir}/current/alacritty/alacritty.toml" "$@"
+            exec ${alacritty}/bin/alacritty --config-file "''${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/alacritty.toml" "$@"
           '';
         }
       )
