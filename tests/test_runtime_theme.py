@@ -41,6 +41,7 @@ destination = "$HOME/.example"
             self.assertEqual(manifest.items[0].item_type, "file")
             self.assertIsNone(manifest.items[0].template)
             self.assertFalse(manifest.items[0].themed)
+            self.assertEqual(manifest.keep, runtime_theme.DEFAULT_BUILDS_TO_KEEP)
 
     def test_template_is_a_flat_file_name(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -166,12 +167,53 @@ destination = "$HOME/.example"
             with self.assertRaisesRegex(runtime_theme.ThemeError, "version"):
                 runtime_theme.load_manifest(path)
 
+    def test_manifest_keep_must_be_positive(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "manifest.toml"
+            path.write_text(
+                """\
+version = 1
+clobber = false
+keep = 0
+
+[[items]]
+source = "example"
+destination = "$HOME/.example"
+"""
+            )
+
+            with self.assertRaisesRegex(runtime_theme.ThemeError, "positive integer"):
+                runtime_theme.load_manifest(path)
+
     def test_theme_name_cannot_escape_theme_directories(self) -> None:
-        for theme in ("", ".", "..", "../example", "nested/example"):
+        for theme in (
+            "",
+            ".",
+            "..",
+            "../example",
+            "nested/example",
+            "selected",
+            "shared",
+        ):
             with self.subTest(theme=theme), self.assertRaisesRegex(
                 runtime_theme.ThemeError, "invalid theme"
             ):
                 runtime_theme.validate_theme_name(theme)
+
+    def test_items_are_partitioned_by_build_strategy(self) -> None:
+        plain = runtime_theme.ManifestItem("plain", "/plain", "file")
+        shared = runtime_theme.ManifestItem(
+            "shared", "/shared", "file", "shared"
+        )
+        themed = runtime_theme.ManifestItem(
+            "themed", "/themed", "file", "themed", True
+        )
+
+        partitions = runtime_theme.partition_items((themed, plain, shared))
+
+        self.assertEqual(partitions.plain, (plain,))
+        self.assertEqual(partitions.shared, (shared,))
+        self.assertEqual(partitions.themed, (themed,))
 
 
 class RenderTests(unittest.TestCase):
@@ -195,15 +237,15 @@ class RenderTests(unittest.TestCase):
                 ),
             )
 
-            first = runtime_theme.render_templates(
-                manifest,
+            first = runtime_theme.build_templates(
+                runtime_theme.partition_items(manifest.items),
                 dotfiles,
                 dotfiles / "built",
                 "example",
                 {"base00-hex": "112233"},
             )
-            second = runtime_theme.render_templates(
-                manifest,
+            second = runtime_theme.build_templates(
+                runtime_theme.partition_items(manifest.items),
                 dotfiles,
                 dotfiles / "built",
                 "example",
@@ -216,6 +258,33 @@ class RenderTests(unittest.TestCase):
             )
             self.assertEqual(
                 (second.path / "example.conf").read_text(), "color=445566\n"
+            )
+            self.assertEqual(first.items[0].source, first.path / "example.conf")
+
+    def test_shared_render_is_content_addressed(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            dotfiles = Path(temporary) / "dotfiles"
+            template = dotfiles / "files/example.mustache"
+            template.parent.mkdir(parents=True)
+            template.write_text("value={{value}}")
+            items = (
+                runtime_theme.ManifestItem(
+                    "example", "/example", "file", "example"
+                ),
+            )
+            partitions = runtime_theme.partition_items(items)
+
+            first = runtime_theme.build_templates(
+                partitions, dotfiles, dotfiles / "built", "example", {"value": "one"}
+            )
+            second = runtime_theme.build_templates(
+                partitions, dotfiles, dotfiles / "built", "example", {"value": "two"}
+            )
+
+            self.assertNotEqual(first.shared_path, second.shared_path)
+            self.assertEqual((first.shared_path / "example").read_text(), "value=one")
+            self.assertEqual(
+                (second.shared_path / "example").read_text(), "value=two"
             )
 
     def test_render_id_includes_file_mode(self) -> None:
@@ -235,12 +304,20 @@ class RenderTests(unittest.TestCase):
             )
 
             template.chmod(0o644)
-            first = runtime_theme.render_templates(
-                manifest, dotfiles, dotfiles / "built", "example", {}
+            first = runtime_theme.build_templates(
+                runtime_theme.partition_items(manifest.items),
+                dotfiles,
+                dotfiles / "built",
+                "example",
+                {},
             )
             template.chmod(0o755)
-            second = runtime_theme.render_templates(
-                manifest, dotfiles, dotfiles / "built", "example", {}
+            second = runtime_theme.build_templates(
+                runtime_theme.partition_items(manifest.items),
+                dotfiles,
+                dotfiles / "built",
+                "example",
+                {},
             )
 
             self.assertNotEqual(first.build_id, second.build_id)
@@ -267,8 +344,12 @@ class RenderTests(unittest.TestCase):
             )
 
             with self.assertRaisesRegex(runtime_theme.ThemeError, "cannot render"):
-                runtime_theme.render_templates(
-                    manifest, dotfiles, dotfiles / "built", "example", {}
+                runtime_theme.build_templates(
+                    runtime_theme.partition_items(manifest.items),
+                    dotfiles,
+                    dotfiles / "built",
+                    "example",
+                    {},
                 )
 
     def test_only_manifest_templates_are_rendered(self) -> None:
@@ -291,15 +372,61 @@ class RenderTests(unittest.TestCase):
                 ),
             )
 
-            runtime_theme.render_templates(
-                manifest, dotfiles, dotfiles / "built", "example", {}
+            build = runtime_theme.build_templates(
+                runtime_theme.partition_items(manifest.items),
+                dotfiles,
+                dotfiles / "built",
+                "example",
+                {},
             )
 
-            self.assertEqual((dotfiles / "built/included").read_text(), "included")
-            self.assertFalse((dotfiles / "built/ignored").exists())
+            self.assertEqual((build.shared_path / "included").read_text(), "included")
+            self.assertFalse((build.shared_path / "ignored").exists())
+            self.assertEqual(build.items[0].source, build.shared_path / "included")
+
+    def test_reused_template_retains_each_link_destination(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            dotfiles = Path(temporary) / "dotfiles"
+            files = dotfiles / "files"
+            files.mkdir(parents=True)
+            (files / "shared.mustache").write_text("content")
+            items = (
+                runtime_theme.ManifestItem("shared", "/first", "file", "shared"),
+                runtime_theme.ManifestItem("shared", "/second", "file", "shared"),
+            )
+
+            build = runtime_theme.build_templates(
+                runtime_theme.partition_items(items),
+                dotfiles,
+                dotfiles / "built",
+                "example",
+                {},
+            )
+
+            self.assertEqual(
+                tuple(item.destination for item in build.items),
+                ("/first", "/second"),
+            )
+            self.assertEqual(build.items[0].source, build.items[1].source)
 
 
 class LinkTests(unittest.TestCase):
+    def test_unchanged_links_are_filtered_out(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "source"
+            destination = root / "destination"
+            source.write_text("content")
+            destination.symlink_to(source)
+
+            changes = runtime_theme.changed_links(
+                (runtime_theme.BuiltItem(source, str(destination)),),
+                True,
+                {"HOME": str(root)},
+            )
+
+            self.assertEqual(changes, ())
+
     def test_source_comparison_detects_unchanged_and_changed_files(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -359,26 +486,13 @@ class LinkTests(unittest.TestCase):
                 "XDG_CONFIG_HOME": str(root / "home"),
             }
 
-            clobber_disabled = runtime_theme.Manifest(
-                False,
-                (
-                    runtime_theme.ManifestItem("new", "$XDG_CONFIG_HOME/config", "file"),
-                ),
-            )
-            clobber_enabled = runtime_theme.Manifest(
-                True,
-                (
-                    runtime_theme.ManifestItem("new", "$XDG_CONFIG_HOME/config", "file"),
-                ),
+            items = (
+                runtime_theme.BuiltItem(source, "$XDG_CONFIG_HOME/config"),
             )
 
             with mock.patch.object(runtime_theme, "sources_match", return_value=False):
-                skipped = runtime_theme.plan_links(
-                    clobber_disabled, dotfiles, "theme", "build", environment
-                )
-                replaced = runtime_theme.plan_links(
-                    clobber_enabled, dotfiles, "theme", "build", environment
-                )
+                skipped = runtime_theme.changed_links(items, False, environment)
+                replaced = runtime_theme.changed_links(items, True, environment)
 
             self.assertEqual(replaced[0].status, "replaced")
             self.assertEqual(skipped[0].status, "skipped")
@@ -392,21 +506,12 @@ class LinkTests(unittest.TestCase):
             source.write_text("source")
             destination = root / "destination"
             destination.write_text("owned by user")
-            manifest = runtime_theme.Manifest(
-                True,
-                (
-                    runtime_theme.ManifestItem("source", str(destination), "file"),
-                ),
+            items = (
+                runtime_theme.BuiltItem(source, str(destination)),
             )
 
             with self.assertRaisesRegex(runtime_theme.ThemeError, "not a symlink"):
-                runtime_theme.plan_links(
-                    manifest,
-                    dotfiles,
-                    "theme",
-                    "build",
-                    {"HOME": str(root)},
-                )
+                runtime_theme.changed_links(items, True, {"HOME": str(root)})
 
     def test_destinations_are_checked_after_environment_expansion(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -417,25 +522,14 @@ class LinkTests(unittest.TestCase):
             (files / "first").write_text("first")
             (files / "second").write_text("second")
             destination = root / "home/config"
-            manifest = runtime_theme.Manifest(
-                False,
-                (
-                    runtime_theme.ManifestItem(
-                        "first", "$HOME/config", "file"
-                    ),
-                    runtime_theme.ManifestItem(
-                        "second", str(destination), "file"
-                    ),
-                ),
+            items = (
+                runtime_theme.BuiltItem(files / "first", "$HOME/config"),
+                runtime_theme.BuiltItem(files / "second", str(destination)),
             )
 
             with self.assertRaisesRegex(runtime_theme.ThemeError, "expanded destination"):
-                runtime_theme.plan_links(
-                    manifest,
-                    dotfiles,
-                    "theme",
-                    "build",
-                    {"HOME": str(root / "home")},
+                runtime_theme.changed_links(
+                    items, False, {"HOME": str(root / "home")}
                 )
 
     def test_source_cannot_escape_files_directory(self) -> None:
@@ -456,6 +550,36 @@ class LinkTests(unittest.TestCase):
                     "build",
                     {"HOME": str(root / "home")},
                 )
+
+
+class BuildRetentionTests(unittest.TestCase):
+    def test_builds_over_keep_limit_are_deleted_oldest_first(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            builds = tuple(root / (str(index) * 16) for index in range(3))
+            for timestamp, build in enumerate(builds, start=1):
+                build.mkdir()
+                os.utime(build, (timestamp, timestamp))
+
+            runtime_theme.prune_builds(root, 2)
+
+            self.assertFalse(builds[0].exists())
+            self.assertTrue(builds[1].exists())
+            self.assertTrue(builds[2].exists())
+
+    def test_referenced_build_counts_toward_keep_limit(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            builds = tuple(root / (str(index) * 16) for index in range(3))
+            for timestamp, build in enumerate(builds, start=1):
+                build.mkdir()
+                os.utime(build, (timestamp, timestamp))
+
+            runtime_theme.prune_builds(root, 2, frozenset({builds[0]}))
+
+            self.assertTrue(builds[0].exists())
+            self.assertFalse(builds[1].exists())
+            self.assertTrue(builds[2].exists())
 
 
 class IntegrationTests(unittest.TestCase):

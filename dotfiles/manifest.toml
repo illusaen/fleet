@@ -1,5 +1,6 @@
 version = 1
 clobber = true
+keep = 3
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/alacritty/alacritty.toml"
