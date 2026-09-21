@@ -15,7 +15,6 @@
   opacityVariants ? [], # default: all
   themeVariants ? [], # default: default (BigSur-like theme)
   schemeVariants ? [], # default: standard # default: standard (Apple logo)
-  nautilusStyle ? "stable", # default: stable (BigSur-like style) # default: 15% # default: 32px
   roundedMaxWindow ? true, # default: false
   darkerColor ? false, # default = false
   highDefinition ? true, # default = false
@@ -28,7 +27,6 @@
     ++ lib.concatMap (x: ["--opacity" x]) opacityVariants
     ++ lib.concatMap (x: ["--theme" x]) themeVariants
     ++ lib.concatMap (x: ["--scheme" x]) schemeVariants
-    ++ lib.optionals (nautilusStyle != null) ["--nautilus" nautilusStyle]
     ++ lib.optional darkerColor "--darkercolor"
     ++ lib.optional highDefinition "--highdefinition"
     ++ lib.optional installLibadwaita "--libadwaita"
@@ -42,10 +40,8 @@ in
       owner = "vinceliuice";
       repo = "MacTahoe-gtk-theme";
       rev = "main";
-      hash = "sha256-tuon9XxMdrz9XNTp50sbss2gtx6H9hEZh8t2jSoqx28=";
+      hash = "sha256-uF8WDooeY3/ZFJlGQpumHtOuf+lLD/aknzaiF/yDRIM=";
     };
-
-    patches = [./nautilus-background.patch];
 
     nativeBuildInputs = [
       dialog
@@ -65,10 +61,10 @@ in
         patchShebangs "$file"
       done
 
-      # Do not provide `sudo`, as it is not needed in our use case of the install script
-      # Provides a dummy home directory
+      # Do not provide `sudo`; a failed probe would abort because upstream enables `set -e`.
+      # Avoid looking up the sandbox builder's nonexistent home directory.
       substituteInPlace libs/lib-core.sh \
-        --replace-fail '$(which sudo)' false \
+        --replace-fail 'SUDO_BIN="$(command -v sudo)"' 'SUDO_BIN=false' \
         --replace-fail 'MY_HOME=$(getent passwd "''${MY_USERNAME}" | cut -d: -f6)' 'MY_HOME=/tmp'
 
       substituteInPlace libs/lib-install.sh \
@@ -83,6 +79,7 @@ in
     installPhase = ''
       runHook preInstall
 
+      export HOME="$TMPDIR"
       mkdir -p $out/share/themes
       ./install.sh ${lib.escapeShellArgs installArgs} --dest $out/share/themes
       jdupes --quiet --link-soft --recurse $out/share
