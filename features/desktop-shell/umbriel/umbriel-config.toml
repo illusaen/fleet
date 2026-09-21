@@ -1,0 +1,264 @@
+[include.optional]
+files = ["@themeStateDir@"]
+
+[general]
+autostart = ["alacritty --class scratchpad-alacritty"]
+xwayland = false
+show_cheatsheet = false
+
+[output."@main@"]
+enabled = true               
+mode = "5120x2160@165.058"       
+workspaces = "dynamic"
+
+[output."@secondary@"]
+enabled = true               
+mode = "1920x1080@60"
+workspaces = "dynamic"
+transform = "270"
+
+[output."@secondary@".layout.scrolling]
+default_extent_fraction = 1
+
+[[workspace]]
+name = "GAME"
+output = "@main@"
+
+[[workspace]]
+name = "CODE"
+output = "@main@"
+
+[[workspace]]
+name = "MUSIC"
+output = "@secondary@"
+
+[appearance]
+border_width = 0
+corner_radius = 12
+
+[input]
+middle_click_paste = false
+
+[input.mouse]
+scroll_wheel_step = 100
+scroll_button = "MouseMiddle"
+
+[input.cursor]
+theme = "@cursorName@"
+size = @cursorSize@
+
+[[scratchpad]]
+name = "TERMINAL"
+
+[[scratchpad]]
+name = "CHAT"
+
+[layout]
+mode = "scrolling"
+extent_presets = [0.333, 0.667, 1]
+
+[layout.scrolling]
+default_extent_fraction = 0.333
+center_focused = "on_overflow"
+
+[animation.scratchpad]
+enabled = true
+blur = true
+
+[animation.dim_unfocused]
+enabled = true
+
+# Blur every window. Keep this selectorless rule first so later matching rules
+# can override individual blur settings.
+[[window_rule]]
+blur = true
+blur_optimized = false
+blur_popups = true
+opacity = 0.9
+
+[[window_rule]]
+match.is_focused = true
+opacity = 1
+
+[[window_rule]]
+match.at_startup = true
+default_focused = false
+
+[[window_rule]]
+match.app_id = "^scratchpad-alacritty$"
+default_scratchpad = "TERMINAL"
+default_output = "@main@"
+default_floating = true
+default_floating_size = { width = 0.4, height = 0.5 }
+default_position = { x = 0, y = 0, anchor = "top" }
+
+[[window_rule]]
+match.title = "^(.*)(o|O|s|S)(pen|ave) (f|F|a|a)(ile|s)(.*)"
+default_floating = true
+default_floating_size = { width = 0.3, height = 0.4 }
+
+[[window_rule]]
+match.app_id = "org.pulseaudio.pavucontrol"
+default_floating = true
+default_floating_size = { width = 0.3, height = 0.4 }
+
+[[window_rule]]
+match.app_id = "blueman-manager"
+default_floating = true
+default_floating_size = { width = 0.3, height = 0.4 }
+
+[[window_rule]]
+match.app_id = "xdg-desktop-portal-"
+default_floating = true
+default_floating_size = { width = 0.3, height = 0.4 }
+
+[[window_rule]]
+match.app_id = "org.gnome.Nautilus"
+default_floating = true
+default_floating_size = { width = 0.3, height = 0.4 }
+
+[[window_rule]]
+match.app_id = "dev.noctalia.Noctalia"
+default_floating = true
+default_floating_size = { width = 0.3, height = 0.4 }
+
+[[window_rule]]
+match.app_id = "^dev.noctalia.UmbrielSharePicker$"
+default_floating = true
+default_floating_size = { width = 0.3, height = 0.4 }
+
+[[window_rule]]
+match.title = "^(Picture-in-Picture|Picture in picture)$"
+default_floating = true
+default_maximize = false
+default_position = { x = 20, y = 20, anchor = "bottom_right" }
+
+[[window_rule]]
+match.app_id = "com.github.th-ch.youtube-music"
+default_floating = true
+default_floating_size = { width = 1, height = 0.75 }
+default_position = { x = 0, y = 0, anchor = "top" }
+
+[[window_rule]]
+match.app_id = "^alacritty$"
+default_scrolling_column = "alacritty"
+default_workspace = "CODE"
+
+[[window_rule]]
+match.app_id = "google-chrome"
+default_workspace = "CODE"
+
+[[window_rule]]
+match.app_id = "^code$"
+default_workspace = "CODE"
+default_scrolling_extent = 0.45
+
+[[window_rule]]
+match.app_id = "^1password$"
+match.at_startup = true
+default_workspace = "CODE"
+default_focused = true
+
+[[window_rule]]
+match.app_id = "^vesktop$"
+default_scratchpad = "CHAT"
+default_output = "@main@"
+default_floating = true
+default_floating_size = { width = 0.3, height = 1 }
+default_position = { x = 0, y = 0, anchor = "right" }
+
+[[window_rule]]
+match.app_id = "^steam.*$"
+default_workspace = "GAME"
+
+[[window_rule]]
+match.title = "^Viking Rise Steam$"
+default_floating = true
+default_floating_size_px = { width = 4192 }
+
+# Keep Steam notification toasts in the bottom-right corner without stealing
+# focus, and pin them so workspace switches do not hide them.
+[[window_rule]]
+match.title = "^notificationtoasts_.+_desktop"
+default_position = { x = 2, y = 2, anchor = "bottom_right" }
+default_focused = false
+
+[[window_rule]]
+match.app_id = "^BambuStudio$"
+default_workspace = "CODE"
+default_scrolling_extent = 0.6
+
+[[layer_rule]]
+match.namespace = "^noctalia-bar-"
+blur = false
+
+[keybinds]
+"Alt+Shift+T" = "scratchpad-toggle:TERMINAL"
+"Alt+Shift+Ctrl+T" = "scratchpad-toggle:CHAT"
+"Mod+Q" = "window-close"
+"Ctrl+Alt+Delete" = "session-quit"
+"Alt+Shift+4" = "spawn:noctalia msg screenshot-region"
+"Ctrl+Space" = "spawn:noctalia msg panel-toggle launcher"
+"Mod+Ctrl+Space" = "spawn:noctalia msg panel-toggle session"
+"Ctrl+Shift+Space" = "spawn:noctalia msg panel-toggle control-center"
+"Mod+T" = "spawn:alacritty"
+"Mod+Alt+T" = "spawn:theme-select"
+"Mod+O" = { action = "overview-toggle", repeat = false }
+"Mod+Ctrl+B" = { action = "spawn:monitor-brightness up", allow_when_locked = true }
+"Mod+Ctrl+Shift+B" = { action = "spawn:monitor-brightness down", allow_when_locked = true }
+"Mod+Shift+Escape" = { action = "shortcuts-inhibit-toggle", allow_when_inhibited = true, repeat = false }
+
+"Mod+Left" = "window-focus-left"
+"Mod+Down" = "window-focus-down"
+"Mod+Up" = "window-focus-up"
+"Mod+Right" = "window-focus-right"
+
+"Mod+Shift+Left" = "column-move-left"
+"Mod+Shift+Down" = "window-move-down"
+"Mod+Shift+Up" = "window-move-up"
+"Mod+Shift+Right" = "column-move-right"
+
+"Mod+Home" = "workspace-previous"
+"Mod+End" = "workspace-next"
+"Mod+Shift+Home" = "column-move-to-workspace-previous"
+"Mod+Shift+End" = "column-move-to-workspace-next"
+
+"Mod+Page_Up" = "column-focus-first"
+"Mod+Page_Down" = "column-focus-last"
+"Mod+Shift+Page_Up" = "column-move-to-first"
+"Mod+Shift+Page_Down" = "column-move-to-last"
+
+"Mod+V" = "window-toggle-floating"
+"Mod+Shift+V" = "window-focus-switch-floating"
+"Mod+M" = "window-toggle-maximize-to-edges"
+"Mod+R" = "window-cycle-primary-extent"
+"Mod+Shift+R" = "window-cycle-primary-extent-back"
+"Mod+Ctrl+R" = "window-cycle-secondary-extent"
+"Mod+Ctrl+Shift+R" = "window-cycle-secondary-extent-back"
+"Mod+C" = "column-center"
+"Mod+H" = "cheatsheet-toggle"
+"Mod+Shift+P" = "dpms-off"
+
+"Mod+Comma" = "window-consume-or-expel-left"
+"Mod+Period" = "window-consume-or-expel-right"
+
+"Mod+Tab" = "output-focus-next"
+"Mod+Shift+Tab" = "window-move-to-output-next"
+
+"Mod+S" = { action = "submap:resize", repeat = false }
+"submap[resize],Left" = "window-modify-primary-extent:-0.1"
+"submap[resize],Right" = "window-modify-primary-extent:0.1"
+"submap[resize],Up" = "window-modify-secondary-extent:-0.1"
+"submap[resize],Down" = "window-modify-secondary-extent:0.1"
+"submap[resize],Escape" = "submap:reset"
+"Escape" = "submap:reset"
+
+"XF86AudioRaiseVolume" = "spawn:noctalia msg volume-up"
+"XF86AudioLowerVolume" = "spawn:noctalia msg volume-down"
+"XF86AudioMute" = "spawn:wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+"XF86AudioMicMute" = "spawn:wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+"XF86AudioNext" = "spawn:playerctl next"
+"XF86AudioPrev" = "spawn:playerctl previous"
+"XF86AudioPlay" = { action = "spawn:playerctl play-pause", allow_when_locked = true }
+"XF86MonBrightnessDown" = { action = "spawn:monitor-brightness down", allow_when_locked = true }
+"XF86MonBrightnessUp" = { action = "spawn:monitor-brightness up", allow_when_locked = true }

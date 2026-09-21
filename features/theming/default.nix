@@ -122,10 +122,20 @@
         set recolor-darkcolor "${scheme.withHashtag.base06}"
       '';
 
-    mkNiriColors = scheme:
-      pkgs.replaceVars ../desktop-shell/niri/niri-colors.kdl {
-        inherit (scheme) base00 base02 base03 base08 base12 base15 base0C base0D;
-      };
+    mkUmbrielColors = scheme:
+      pkgs.writeText "umbriel-colors.toml" ''
+        [colors]
+        background = "#${scheme.withHashtag.base01}FF"
+        text_primary = "#${scheme.withHashtag.base05}FF"
+        text_muted = "#${scheme.withHashtag.base04}FF"
+        accent_primary = "#${scheme.withHashtag.base0C}FF"
+        accent_secondary = "#${scheme.withHashtag.base08}FF"
+        warning = "#${scheme.withHashtag.base09}FF"
+        error = "#${scheme.withHashtag.base0F}FF"
+        insert_hint = "#${scheme.withHashtag.base0D}80"
+        backdrop = "#${scheme.withHashtag.base00}FF"
+        shadow = "#${scheme.withHashtag.base00}7F"
+      '';
 
     mkProfileLinkCommands = files:
       lib.concatStringsSep "\n" (
@@ -178,14 +188,14 @@
           imageDirectory = wallpaper.directory;
           location = lib.last (lib.splitString "/" fleet.timeZone);
         };
-        "niri-colors.kdl" = mkNiriColors scheme;
+        "umbriel/umbriel-colors.toml" = mkUmbrielColors scheme;
         "qt5ct/qt5ct.conf" = mkQtctConf profile;
         "qt6ct/qt6ct.conf" = mkQtctConf profile;
         "zathura/zathurarc" = mkZathurarc scheme;
       };
     in
       pkgs.runCommand "nix-theme-profile-${name}" {} ''
-        mkdir -p "$out/alacritty" "$out/bat/themes" "$out/gtk-3.0" "$out/gtk-4.0" "$out/noctalia" "$out/qt5ct" "$out/qt6ct" "$out/zathura"
+        mkdir -p "$out/alacritty" "$out/bat/themes" "$out/gtk-3.0" "$out/gtk-4.0" "$out/noctalia" "$out/qt5ct" "$out/qt6ct" "$out/zathura" "$out/umbriel"
         cp -rs ${lib.escapeShellArg "${localThemePackage gtk}/share/libadwaita-themes"}/* "$out/gtk-4.0/" 2>/dev/null || true
         ${mkProfileLinkCommands profileFiles}
       '';
@@ -266,8 +276,8 @@
         mkdir -p "$state_dir"
         ln -sfn "$profile" "$state_dir/current.next"
         mv -Tf "$state_dir/current.next" "$state_dir/current"
-        ln -sfn "$state_dir/current/niri-colors.kdl" "$state_dir/niri-colors.kdl.next"
-        mv -Tf "$state_dir/niri-colors.kdl.next" "$state_dir/niri-colors.kdl"
+        ln -sfn "$state_dir/current/umbriel/umbriel-colors.toml" "$state_dir/umbriel/umbriel-colors.toml.next"
+        mv -Tf "$state_dir/umbriel/umbriel-colors.toml.next" "$state_dir/umbriel/umbriel-colors.toml"
         printf '%s\n' "$theme" > "$state_dir/selected"
 
         # shellcheck disable=SC1091

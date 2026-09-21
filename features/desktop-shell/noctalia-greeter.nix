@@ -16,7 +16,7 @@
           scheme_selector_position = "hidden";
           font_family = fleet.fonts.sans;
         };
-        "appearance.palette" = {
+        appearance.palette = {
           primary = "#fff59b";
           on_primary = "#0e0e43";
           secondary = "#a9aefe";

@@ -11,19 +11,14 @@
       package = pkgs.umbriel;
     };
 
-    hjem.users.${user.name}.xdg.config.files."umbriel/config.toml" = {
-      generator = (pkgs.formats.toml {}).generate "umbriel-config.toml";
-      value = let
-        main = fleet.monitors.main;
-        general = import ./general.nix {
-          inherit main;
-          secondary = fleet.monitors.secondary;
-          inherit (fleet.theming) cursor;
-        };
-        rules = import ./rules.nix {inherit main;};
-        binds = import ./binds.nix;
-      in
-        general // rules // binds;
+    hjem.users.${user.name}.xdg.config.files."umbriel/config.toml".source = pkgs.replaceVars ./umbriel-config.toml {
+      cursorName = fleet.theming.cursor.name;
+      cursorSize = fleet.theming.cursor.size;
+      main = fleet.monitors.main;
+      secondary = fleet.monitors.secondary;
+      themeStateDir = "\${NIX_THEME_STATE_DIR:-\${XDG_STATE_HOME:-$HOME/.local/state}/nix-theme/current/umbriel/umbriel-colors.toml}";
+      DEFAULT_AUDIO_SINK = null;
+      DEFAULT_AUDIO_SOURCE = null;
     };
   };
 }
