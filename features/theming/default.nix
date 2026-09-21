@@ -73,9 +73,6 @@ _: {
 
     themeApply = pkgs.writeShellApplication {
       name = "theme-apply";
-      runtimeInputs = [
-        pkgs.difftastic
-      ];
       text = ''
         export NIX_CONFIG_FOLDER="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
         export NIX_THEME_CONTEXT=${lib.escapeShellArg themeContext}

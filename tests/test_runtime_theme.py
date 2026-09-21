@@ -131,6 +131,48 @@ type = "tree"
             with self.assertRaisesRegex(runtime_theme.ThemeError, "type"):
                 runtime_theme.load_manifest(path)
 
+    def test_unknown_fields_are_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "manifest.toml"
+            path.write_text(
+                """\
+version = 1
+clobber = false
+
+[[items]]
+source = "example"
+destination = "$HOME/.example"
+optional = true
+"""
+            )
+
+            with self.assertRaisesRegex(runtime_theme.ThemeError, "unknown field"):
+                runtime_theme.load_manifest(path)
+
+    def test_boolean_manifest_version_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "manifest.toml"
+            path.write_text(
+                """\
+version = true
+clobber = false
+
+[[items]]
+source = "example"
+destination = "$HOME/.example"
+"""
+            )
+
+            with self.assertRaisesRegex(runtime_theme.ThemeError, "version"):
+                runtime_theme.load_manifest(path)
+
+    def test_theme_name_cannot_escape_theme_directories(self) -> None:
+        for theme in ("", ".", "..", "../example", "nested/example"):
+            with self.subTest(theme=theme), self.assertRaisesRegex(
+                runtime_theme.ThemeError, "invalid theme"
+            ):
+                runtime_theme.validate_theme_name(theme)
+
 
 class RenderTests(unittest.TestCase):
     def test_render_is_content_addressed(self) -> None:
@@ -153,14 +195,14 @@ class RenderTests(unittest.TestCase):
                 ),
             )
 
-            first, first_id = runtime_theme.render_templates(
+            first = runtime_theme.render_templates(
                 manifest,
                 dotfiles,
                 dotfiles / "built",
                 "example",
                 {"base00-hex": "112233"},
             )
-            second, second_id = runtime_theme.render_templates(
+            second = runtime_theme.render_templates(
                 manifest,
                 dotfiles,
                 dotfiles / "built",
@@ -168,9 +210,41 @@ class RenderTests(unittest.TestCase):
                 {"base00-hex": "445566"},
             )
 
-            self.assertNotEqual(first_id, second_id)
-            self.assertEqual((first / "example.conf").read_text(), "color=112233\n")
-            self.assertEqual((second / "example.conf").read_text(), "color=445566\n")
+            self.assertNotEqual(first.build_id, second.build_id)
+            self.assertEqual(
+                (first.path / "example.conf").read_text(), "color=112233\n"
+            )
+            self.assertEqual(
+                (second.path / "example.conf").read_text(), "color=445566\n"
+            )
+
+    def test_render_id_includes_file_mode(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            dotfiles = root / "dotfiles"
+            template = dotfiles / "files/example.mustache"
+            template.parent.mkdir(parents=True)
+            template.write_text("content")
+            manifest = runtime_theme.Manifest(
+                False,
+                (
+                    runtime_theme.ManifestItem(
+                        "example", "$HOME/.example", "file", "example", True
+                    ),
+                ),
+            )
+
+            template.chmod(0o644)
+            first = runtime_theme.render_templates(
+                manifest, dotfiles, dotfiles / "built", "example", {}
+            )
+            template.chmod(0o755)
+            second = runtime_theme.render_templates(
+                manifest, dotfiles, dotfiles / "built", "example", {}
+            )
+
+            self.assertNotEqual(first.build_id, second.build_id)
+            self.assertEqual((second.path / "example").stat().st_mode & 0o777, 0o755)
 
     def test_missing_mustache_value_aborts_render(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -226,7 +300,7 @@ class RenderTests(unittest.TestCase):
 
 
 class LinkTests(unittest.TestCase):
-    def test_difft_detects_unchanged_and_changed_files(self) -> None:
+    def test_source_comparison_detects_unchanged_and_changed_files(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             old = root / "old"
@@ -236,9 +310,37 @@ class LinkTests(unittest.TestCase):
             new.write_text("same\n")
             destination.symlink_to(old)
 
-            self.assertTrue(runtime_theme.compare_with_difft(destination, new))
+            self.assertTrue(runtime_theme.sources_match(destination, new))
             new.write_text("changed\n")
-            self.assertFalse(runtime_theme.compare_with_difft(destination, new))
+            self.assertFalse(runtime_theme.sources_match(destination, new))
+
+    def test_source_comparison_shortcuts_identical_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "source"
+            destination = Path(temporary) / "destination"
+            source.write_text("content")
+            destination.symlink_to(source)
+
+            with mock.patch.object(
+                runtime_theme,
+                "paths_equal",
+                side_effect=AssertionError("content comparison should be skipped"),
+            ):
+                self.assertTrue(runtime_theme.sources_match(destination, source))
+
+    def test_path_comparison_handles_directory_trees(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            left = root / "left"
+            right = root / "right"
+            (left / "nested").mkdir(parents=True)
+            (right / "nested").mkdir(parents=True)
+            (left / "nested/file").write_text("same")
+            (right / "nested/file").write_text("same")
+
+            self.assertTrue(runtime_theme.paths_equal(left, right))
+            (right / "nested/file").write_text("changed")
+            self.assertFalse(runtime_theme.paths_equal(left, right))
 
     def test_changed_link_honors_manifest_clobber(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -270,7 +372,7 @@ class LinkTests(unittest.TestCase):
                 ),
             )
 
-            with mock.patch.object(runtime_theme, "compare_with_difft", return_value=False):
+            with mock.patch.object(runtime_theme, "sources_match", return_value=False):
                 skipped = runtime_theme.plan_links(
                     clobber_disabled, dotfiles, "theme", "build", environment
                 )
@@ -304,6 +406,55 @@ class LinkTests(unittest.TestCase):
                     "theme",
                     "build",
                     {"HOME": str(root)},
+                )
+
+    def test_destinations_are_checked_after_environment_expansion(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            dotfiles = root / "dotfiles"
+            files = dotfiles / "files"
+            files.mkdir(parents=True)
+            (files / "first").write_text("first")
+            (files / "second").write_text("second")
+            destination = root / "home/config"
+            manifest = runtime_theme.Manifest(
+                False,
+                (
+                    runtime_theme.ManifestItem(
+                        "first", "$HOME/config", "file"
+                    ),
+                    runtime_theme.ManifestItem(
+                        "second", str(destination), "file"
+                    ),
+                ),
+            )
+
+            with self.assertRaisesRegex(runtime_theme.ThemeError, "expanded destination"):
+                runtime_theme.plan_links(
+                    manifest,
+                    dotfiles,
+                    "theme",
+                    "build",
+                    {"HOME": str(root / "home")},
+                )
+
+    def test_source_cannot_escape_files_directory(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            dotfiles = root / "dotfiles"
+            (dotfiles / "files").mkdir(parents=True)
+            (dotfiles / "outside").write_text("outside")
+            item = runtime_theme.ManifestItem(
+                "../outside", "$HOME/config", "file"
+            )
+
+            with self.assertRaisesRegex(runtime_theme.ThemeError, "escapes"):
+                runtime_theme.resolve_source(
+                    dotfiles,
+                    item,
+                    "theme",
+                    "build",
+                    {"HOME": str(root / "home")},
                 )
 
 

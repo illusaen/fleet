@@ -6,7 +6,6 @@
 pkgs.runCommandLocal "unit-tests" {
   nativeBuildInputs = [
     pkgs.nix-unit
-    pkgs.difftastic
     (pkgs.python3.withPackages (pythonPackages: [
       pythonPackages.pystache
       pythonPackages.pyyaml
