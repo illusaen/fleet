@@ -1,0 +1,25 @@
+[core]
+    sshCommand = {{ssh-command}}
+
+[credential]
+    accountName = "{{account-name}}"
+    helper = "!gh auth git-credential"
+
+[diff]
+    external = "difft --color auto --background dark --display side-by-side"
+
+[fetch]
+    prune = true
+
+[init]
+    defaultBranch = "main"
+
+[pull]
+    rebase = true
+
+[push]
+    autoSetupRemote = true
+
+[user]
+    email = "{{email}}"
+    name = "{{display-name}}"

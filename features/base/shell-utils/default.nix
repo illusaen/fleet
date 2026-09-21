@@ -3,20 +3,7 @@ let
 in {
   imports = [./git.nix ./starship.nix ./zsh.nix];
 
-  modules.generic = {
-    pkgs,
-    user,
-    ...
-  }: {
-    hjem.users.${user.name}.files.".hidden".text = ''
-      .vscode
-      .vscode-shared
-      .steam
-      .steampath
-      .steampid
-      .mozilla
-    '';
-
+  modules.generic = {pkgs, ...}: {
     programs.direnv = {
       enable = true;
       silent = true;

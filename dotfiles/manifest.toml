@@ -6,8 +6,12 @@ source = "built/{theme}/{build}/alacritty/alacritty.toml"
 destination = "$XDG_CONFIG_HOME/alacritty/alacritty.toml"
 
 [[items]]
-source = "plain/bat/config"
+source = "plain/bat-config"
 destination = "$XDG_CONFIG_HOME/bat/config"
+
+[[items]]
+source = "plain/hidden-files"
+destination = "$HOME/.hidden"
 
 [[items]]
 source = "built/{theme}/{build}/bat/themes/Base16.tmTheme"
