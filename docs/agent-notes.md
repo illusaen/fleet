@@ -24,7 +24,7 @@ Do not add a central feature or package registry. Directories below `features/` 
 - Consume `fleet`, `host`, `user`, and `helpers` from module arguments. They are supplied centrally; do not re-import the inventory from feature modules.
 - Keep pure inventory/topology logic in `lib/` and cover behavior changes with `nix-unit` tests.
 - Add persistent state to `persist` or `persistUser` in the feature that owns it. Do not write preservation mappings separately in multiple places.
-- Keep runtime theme files in `dotfiles/templates` or `dotfiles/plain` and declare every destination in `dotfiles/manifest.toml`. The generated `dotfiles/built` tree is not source-controlled.
+- Keep runtime theme source files flat in `dotfiles/files` and declare every rendered or linked file in `dotfiles/manifest.toml`. The generated `dotfiles/built` tree is not source-controlled.
 - Preserve existing user changes in a dirty worktree and avoid broad formatting or generated-file churn unrelated to the task.
 
 `nix.settings.abort-on-warn` is enabled on managed hosts, so warnings that might normally seem harmless can break a deployment.

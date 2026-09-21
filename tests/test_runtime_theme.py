@@ -18,6 +18,10 @@ SPEC.loader.exec_module(runtime_theme)
 
 
 class ManifestTests(unittest.TestCase):
+    def test_link_is_the_default_mode(self) -> None:
+        self.assertEqual(runtime_theme.parse_args(["example"]).mode, "link")
+        self.assertEqual(runtime_theme.parse_args(["build", "example"]).mode, "build")
+
     def test_type_defaults_to_file(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / "manifest.toml"
@@ -27,7 +31,7 @@ version = 1
 clobber = false
 
 [[items]]
-source = "plain/example"
+source = "example"
 destination = "$HOME/.example"
 """
             )
@@ -36,6 +40,26 @@ destination = "$HOME/.example"
 
             self.assertEqual(manifest.items[0].item_type, "file")
             self.assertIsNone(manifest.items[0].clobber)
+            self.assertIsNone(manifest.items[0].template)
+            self.assertFalse(manifest.items[0].themed)
+
+    def test_template_is_a_flat_file_name(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "manifest.toml"
+            path.write_text(
+                """\
+version = 1
+clobber = false
+
+[[items]]
+source = "example"
+destination = "$HOME/.example"
+template = "nested/example.mustache"
+"""
+            )
+
+            with self.assertRaisesRegex(runtime_theme.ThemeError, "file name"):
+                runtime_theme.load_manifest(path)
 
     def test_clobber_precedence(self) -> None:
         effective = runtime_theme.effective_clobber
@@ -55,7 +79,7 @@ version = 1
 clobber = false
 
 [[items]]
-source = "plain/example"
+source = "example"
 destination = "$HOME/.example"
 type = "tree"
 """
@@ -69,15 +93,37 @@ class RenderTests(unittest.TestCase):
     def test_render_is_content_addressed(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            templates = root / "templates"
-            templates.mkdir()
-            (templates / "example.conf.mustache").write_text("color={{base00-hex}}\n")
+            dotfiles = root / "dotfiles"
+            files = dotfiles / "files"
+            files.mkdir(parents=True)
+            (files / "example.conf.mustache").write_text("color={{base00-hex}}\n")
+            manifest = runtime_theme.Manifest(
+                False,
+                (
+                    runtime_theme.ManifestItem(
+                        "example.conf",
+                        "$HOME/.example",
+                        "file",
+                        None,
+                        "example.conf.mustache",
+                        True,
+                    ),
+                ),
+            )
 
             first, first_id = runtime_theme.render_templates(
-                templates, root / "built", "example", {"base00-hex": "112233"}
+                manifest,
+                dotfiles,
+                dotfiles / "built",
+                "example",
+                {"base00-hex": "112233"},
             )
             second, second_id = runtime_theme.render_templates(
-                templates, root / "built", "example", {"base00-hex": "445566"}
+                manifest,
+                dotfiles,
+                dotfiles / "built",
+                "example",
+                {"base00-hex": "445566"},
             )
 
             self.assertNotEqual(first_id, second_id)
@@ -87,14 +133,56 @@ class RenderTests(unittest.TestCase):
     def test_missing_mustache_value_aborts_render(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            templates = root / "templates"
-            templates.mkdir()
-            (templates / "example.mustache").write_text("{{missing}}")
+            dotfiles = root / "dotfiles"
+            files = dotfiles / "files"
+            files.mkdir(parents=True)
+            (files / "example.mustache").write_text("{{missing}}")
+            manifest = runtime_theme.Manifest(
+                False,
+                (
+                    runtime_theme.ManifestItem(
+                        "example",
+                        "$HOME/.example",
+                        "file",
+                        None,
+                        "example.mustache",
+                        True,
+                    ),
+                ),
+            )
 
             with self.assertRaisesRegex(runtime_theme.ThemeError, "cannot render"):
                 runtime_theme.render_templates(
-                    templates, root / "built", "example", {}
+                    manifest, dotfiles, dotfiles / "built", "example", {}
                 )
+
+    def test_only_manifest_templates_are_rendered(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            dotfiles = Path(temporary) / "dotfiles"
+            files = dotfiles / "files"
+            files.mkdir(parents=True)
+            (files / "included.mustache").write_text("included")
+            (files / "ignored.mustache").write_text("{{missing}}")
+            manifest = runtime_theme.Manifest(
+                False,
+                (
+                    runtime_theme.ManifestItem(
+                        "included",
+                        "$HOME/.included",
+                        "file",
+                        None,
+                        "included.mustache",
+                        False,
+                    ),
+                ),
+            )
+
+            runtime_theme.render_templates(
+                manifest, dotfiles, dotfiles / "built", "example", {}
+            )
+
+            self.assertEqual((dotfiles / "built/included").read_text(), "included")
+            self.assertFalse((dotfiles / "built/ignored").exists())
 
 
 class LinkTests(unittest.TestCase):
@@ -116,10 +204,10 @@ class LinkTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             dotfiles = root / "dotfiles"
-            source = dotfiles / "plain/new"
+            source = dotfiles / "files/new"
             source.parent.mkdir(parents=True)
             source.write_text("new")
-            old = dotfiles / "plain/old"
+            old = dotfiles / "files/old"
             old.write_text("old")
             destination = root / "home/config"
             destination.parent.mkdir()
@@ -133,7 +221,7 @@ class LinkTests(unittest.TestCase):
                 False,
                 (
                     runtime_theme.ManifestItem(
-                        "plain/new", "$XDG_CONFIG_HOME/config", "file", None
+                        "new", "$XDG_CONFIG_HOME/config", "file", None
                     ),
                 ),
             )
@@ -141,7 +229,7 @@ class LinkTests(unittest.TestCase):
                 True,
                 (
                     runtime_theme.ManifestItem(
-                        "plain/new", "$XDG_CONFIG_HOME/config", "file", False
+                        "new", "$XDG_CONFIG_HOME/config", "file", False
                     ),
                 ),
             )
@@ -161,7 +249,7 @@ class LinkTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             dotfiles = root / "dotfiles"
-            source = dotfiles / "plain/source"
+            source = dotfiles / "files/source"
             source.parent.mkdir(parents=True)
             source.write_text("source")
             destination = root / "destination"
@@ -170,7 +258,7 @@ class LinkTests(unittest.TestCase):
                 True,
                 (
                     runtime_theme.ManifestItem(
-                        "plain/source", str(destination), "file", None
+                        "source", str(destination), "file", None
                     ),
                 ),
             )
@@ -192,10 +280,9 @@ class IntegrationTests(unittest.TestCase):
             root = Path(temporary)
             repository = root / "fleet"
             dotfiles = repository / "dotfiles"
-            (dotfiles / "templates").mkdir(parents=True)
-            (dotfiles / "plain").mkdir()
+            (dotfiles / "files").mkdir(parents=True)
             (repository / "resources/themes").mkdir(parents=True)
-            (dotfiles / "templates/example.mustache").write_text(
+            (dotfiles / "files/example.mustache").write_text(
                 "name={{scheme-name}} color={{base00-hex}}\n"
             )
             (dotfiles / "manifest.toml").write_text(
@@ -204,8 +291,10 @@ version = 1
 clobber = true
 
 [[items]]
-source = "built/{theme}/{build}/example"
+source = "example"
 destination = "$XDG_CONFIG_HOME/example"
+template = "example.mustache"
+themed = true
 """
             )
             labels = [f"{index:02d}" for index in range(10)]
@@ -232,9 +321,16 @@ destination = "$XDG_CONFIG_HOME/example"
             }
 
             with mock.patch.dict(os.environ, environment, clear=True):
-                result = runtime_theme.run(["example"])
+                build_result = runtime_theme.run(["build", "example"])
 
             destination = home / ".config/example"
+            self.assertEqual(build_result, 0)
+            self.assertFalse(destination.exists())
+            self.assertFalse((dotfiles / "built/selected").exists())
+
+            with mock.patch.dict(os.environ, environment, clear=True):
+                result = runtime_theme.run(["example"])
+
             self.assertEqual(result, 0)
             self.assertTrue(destination.is_symlink())
             self.assertEqual(

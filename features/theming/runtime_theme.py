@@ -1,4 +1,4 @@
-"""Render and link the runtime theme managed by this repository."""
+"""Build and optionally link the runtime theme managed by this repository."""
 
 from __future__ import annotations
 
@@ -30,6 +30,8 @@ class ManifestItem:
     destination: str
     item_type: str
     clobber: bool | None
+    template: str | None = None
+    themed: bool = False
 
 
 @dataclass(frozen=True)
@@ -55,9 +57,13 @@ def parse_bool(value: str) -> bool:
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
+    modes = {"build", "link"}
+    if not argv or argv[0] not in modes:
+        argv = ["link", *argv]
     parser = argparse.ArgumentParser(
-        description="Render a theme and link its dotfiles into place."
+        description="Build a theme or build and link its dotfiles into place."
     )
+    parser.add_argument("mode", choices=sorted(modes))
     parser.add_argument("theme", help="theme name")
     parser.add_argument(
         "clobber",
@@ -109,8 +115,21 @@ def load_manifest(path: Path) -> Manifest:
         item_clobber = raw_item.get("clobber")
         if item_clobber is not None:
             item_clobber = _require_bool(item_clobber, f"{label} clobber")
+        template = raw_item.get("template")
+        if template is not None:
+            if not isinstance(template, str) or not template:
+                raise ThemeError(f"{label} template must be a non-empty string")
+            if Path(template).name != template:
+                raise ThemeError(f"{label} template must be a file name")
+        themed = _require_bool(raw_item.get("themed", False), f"{label} themed")
+        if themed and template is None:
+            raise ThemeError(f"{label} cannot be themed without being a template")
+        if template is not None and item_type != "file":
+            raise ThemeError(f"{label} template type must be 'file'")
         items.append(
-            ManifestItem(source, destination, item_type, item_clobber)
+            ManifestItem(
+                source, destination, item_type, item_clobber, template, themed
+            )
         )
 
     return Manifest(global_clobber, tuple(items))
@@ -178,32 +197,57 @@ def load_theme(path: Path) -> dict[str, Any]:
     return context
 
 
+def _contained_path(root: Path, value: str, field: str) -> Path:
+    source = root / value
+    normalized = source.resolve(strict=False)
+    try:
+        normalized.relative_to(root.resolve())
+    except ValueError as error:
+        raise ThemeError(f"{field} escapes {root}: {value}") from error
+    return normalized
+
+
 def render_templates(
-    templates_dir: Path,
+    manifest: Manifest,
+    dotfiles_dir: Path,
     built_dir: Path,
     theme: str,
     context: dict[str, Any],
 ) -> tuple[Path, str]:
-    if not templates_dir.is_dir():
-        raise ThemeError(f"templates directory does not exist: {templates_dir}")
-
     theme_dir = built_dir / theme
     theme_dir.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=".staging-", dir=theme_dir))
+    shared_staging = staging / "shared"
+    themed_staging = staging / "themed"
     renderer = pystache.Renderer(missing_tags="strict", escape=lambda value: value)
     digest = hashlib.sha256()
+    rendered_destinations: dict[tuple[bool, Path], str] = {}
 
     try:
-        for source in sorted(templates_dir.rglob("*")):
-            relative = source.relative_to(templates_dir)
-            if source.is_dir():
-                (staging / relative).mkdir(parents=True, exist_ok=True)
+        for item in manifest.items:
+            if item.template is None:
                 continue
+            source = _contained_path(
+                dotfiles_dir / "files", item.template, "manifest template"
+            )
             if not source.is_file():
-                raise ThemeError(f"unsupported template entry: {source}")
+                raise ThemeError(f"manifest template source does not exist: {source}")
 
-            rendered_relative = relative.with_suffix("") if relative.suffix == ".mustache" else relative
-            destination = staging / rendered_relative
+            rendered_relative = Path(item.source)
+            if rendered_relative.is_absolute():
+                raise ThemeError(f"template output must be relative: {item.source}")
+            destination_key = (item.themed, rendered_relative)
+            if destination_key in rendered_destinations:
+                if rendered_destinations[destination_key] != item.template:
+                    raise ThemeError(
+                        f"conflicting templates for rendered path: {rendered_relative}"
+                    )
+                continue
+            rendered_destinations[destination_key] = item.template
+            destination_root = themed_staging if item.themed else shared_staging
+            destination = _contained_path(
+                destination_root, item.source, "template output"
+            )
             destination.parent.mkdir(parents=True, exist_ok=True)
             try:
                 rendered = renderer.render(source.read_text(), context)
@@ -211,19 +255,31 @@ def render_templates(
                 destination.chmod(source.stat().st_mode & 0o777)
             except (OSError, pystache.context.KeyNotFoundError) as error:
                 raise ThemeError(f"cannot render {source}: {error}") from error
-            digest.update(rendered_relative.as_posix().encode())
-            digest.update(b"\0")
-            digest.update(rendered.encode())
-            digest.update(b"\0")
+            if item.themed:
+                digest.update(rendered_relative.as_posix().encode())
+                digest.update(b"\0")
+                digest.update(rendered.encode())
+                digest.update(b"\0")
 
         build_id = digest.hexdigest()[:16]
         final = theme_dir / build_id
         if final.exists():
             if not final.is_dir():
                 raise ThemeError(f"rendered build path is not a directory: {final}")
-            shutil.rmtree(staging)
+        elif themed_staging.exists():
+            os.replace(themed_staging, final)
         else:
-            os.replace(staging, final)
+            final.mkdir()
+
+        if shared_staging.exists():
+            for source in sorted(shared_staging.rglob("*")):
+                if source.is_dir():
+                    continue
+                relative = source.relative_to(shared_staging)
+                destination = built_dir / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                os.replace(source, destination)
+        shutil.rmtree(staging)
         return final, build_id
     except Exception:
         if staging.exists():
@@ -243,23 +299,30 @@ def expand_path(value: str, environment: dict[str, str]) -> Path:
 
 def resolve_source(
     dotfiles_dir: Path,
-    value: str,
+    item: ManifestItem,
     theme: str,
     build_id: str,
     environment: dict[str, str],
 ) -> Path:
+    if item.template is not None:
+        built_dir = dotfiles_dir / "built"
+        source_root = built_dir / theme / build_id if item.themed else built_dir
+        return _contained_path(source_root, item.source, "manifest source")
+
+    value = item.source
     try:
         formatted = value.format(theme=theme, build=build_id)
     except (KeyError, ValueError) as error:
         raise ThemeError(f"invalid source template {value!r}: {error}") from error
+    source_root = dotfiles_dir / "files"
     source = expand_path(formatted, environment)
     if not source.is_absolute():
-        source = dotfiles_dir / source
+        source = source_root / source
     normalized = source.resolve(strict=False)
     try:
-        normalized.relative_to(dotfiles_dir.resolve())
+        normalized.relative_to(source_root.resolve())
     except ValueError as error:
-        raise ThemeError(f"manifest source escapes the dotfiles directory: {value}") from error
+        raise ThemeError(f"manifest source escapes the files directory: {value}") from error
     return normalized
 
 
@@ -294,9 +357,7 @@ def plan_links(
 ) -> list[LinkAction]:
     actions: list[LinkAction] = []
     for item in manifest.items:
-        source = resolve_source(
-            dotfiles_dir, item.source, theme, build_id, environment
-        )
+        source = resolve_source(dotfiles_dir, item, theme, build_id, environment)
         if item.item_type == "file" and not source.is_file():
             raise ThemeError(f"manifest file source does not exist: {source}")
         if item.item_type == "directory" and not source.is_dir():
@@ -422,12 +483,17 @@ def run(argv: list[str]) -> int:
     )
     context.update(load_theme(repository / "resources/themes" / f"{args.theme}.yaml"))
 
-    _build, build_id = render_templates(
-        dotfiles_dir / "templates",
+    build_path, build_id = render_templates(
+        manifest,
+        dotfiles_dir,
         dotfiles_dir / "built",
         args.theme,
         context,
     )
+    if args.mode == "build":
+        print(f"built     {build_path}")
+        return 0
+
     actions = plan_links(
         manifest,
         dotfiles_dir,

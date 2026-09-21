@@ -85,7 +85,7 @@ Service implementations live in `services/<feature>/default.nix` and participate
 
 `flake/packages.nix` auto-discovers `packages/*/package.nix` and exposes each package under `pkgs.local`. The flake also exports those local packages, plus selected architecture-specific packages. `flake/overlays.nix` adds upstream inputs, local packages, and repository-specific package overrides.
 
-`resources/` contains source-controlled themes, shared templates, icons, and wallpapers consumed by feature modules. Runtime-themed configuration lives under `dotfiles/`: Mustache sources are rendered into content-addressed directories below `dotfiles/built/`, plain sources remain directly linked from `dotfiles/plain/`, and `dotfiles/manifest.toml` declares destinations and clobber policy. The generated `built/` contents are intentionally ignored by Git.
+`resources/` contains source-controlled themes, shared templates, icons, and wallpapers consumed by feature modules. Runtime-themed configuration lives under `dotfiles/`: source files are flattened under `dotfiles/files/`, and `dotfiles/manifest.toml` is the source of truth for templates, themed builds, destinations, and clobber policy. The generated `built/` contents are intentionally ignored by Git.
 
 Secrets use agenix. Host SSH keys are the default age identities, encrypted files live under `secrets/`, and recipient declarations live in `secrets/secrets.nix`. Some service modules deliberately guard optional encrypted files with `builtins.pathExists`, allowing evaluation before a local secret is present.
 
