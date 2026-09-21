@@ -1,14 +1,5 @@
 {
-  "appBadge": false,
-  "arRPC": false,
-  "checkUpdates": false,
-  "customTitleBar": false,
-  "discordBranch": "stable",
-  "hardwareAcceleration": true,
-  "minimizeToTray": true,
-  "splashBackground": "#000000",
-  "splashColor": "#ffffff",
-  "splashTheming": true,
-  "staticTitle": true,
-  "tray": true
+    "discordBranch": "stable",
+    "minimizeToTray": true,
+    "arRPC": true
 }

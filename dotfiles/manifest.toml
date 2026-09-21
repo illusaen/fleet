@@ -100,10 +100,6 @@ source = "vesktop-settings.json"
 destination = "$XDG_CONFIG_HOME/vesktop/settings.json"
 
 [[items]]
-source = "vscode-argv.json"
-destination = "$HOME/.vscode/argv.json"
-
-[[items]]
 source = "vscode-settings.json"
 destination = "$XDG_CONFIG_HOME/Code/User/settings.json"
 template = "vscode-settings.json.mustache"

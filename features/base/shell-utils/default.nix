@@ -63,7 +63,7 @@ in {
     };
 
     system.userActivationScripts.cacheBat = {
-      deps = ["initializeRuntimeTheme"];
+      deps = ["restoreRuntimeTheme"];
       text = ''
         echo "Building bat cache."
         ${pkgs.bat}/bin/bat cache --build

@@ -57,7 +57,7 @@
       tokyo-night-moon = {
         colorScheme = "dark";
         base16Theme = ../../resources/themes/tokyo-night-moon.yaml;
-        wallpaper = null;
+        wallpaper = ../../resources/wallpapers/dark/dark-silk.jpeg;
       };
       catppuccin-latte = {
         colorScheme = "light";

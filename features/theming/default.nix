@@ -161,12 +161,12 @@ _: {
     themeSelect = pkgs.writeShellApplication {
       name = "theme-select";
       runtimeInputs = [
-        pkgs.fuzzel
+        pkgs.noctalia
         themeApply
       ];
       text = ''
         set -euo pipefail
-        theme="$(fuzzel --dmenu --prompt 'Theme: ' < ${themeListFile})"
+        theme="$(noctalia dmenu --prompt 'Theme: ' < ${themeListFile})"
         [ -n "$theme" ] || exit 0
         exec theme-apply "$theme"
       '';
@@ -220,9 +220,13 @@ _: {
       ];
     };
 
-    system.userActivationScripts.initializeRuntimeTheme = ''
+    system.userActivationScripts.restoreRuntimeTheme = ''
       if [ "$USER" = ${lib.escapeShellArg user.name} ]; then
-        ${lib.getExe themeApply} ${lib.escapeShellArg themes.default}
+        selected="$(${lib.getExe themeCurrent} 2>/dev/null || true)"
+        if ! ${lib.getExe pkgs.gnugrep} -Fqx -- "$selected" ${themeListFile}; then
+          selected=${lib.escapeShellArg themes.default}
+        fi
+        ${lib.getExe themeApply} link "$selected"
       fi
     '';
   };
