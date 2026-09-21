@@ -33,7 +33,7 @@ in
       owner = "vinceliuice";
       repo = "MacTahoe-icon-theme";
       rev = "main";
-      hash = "sha256-YCtpagkXhRwD9NJRvgskq7yf4qr4XqUxQYUfyKD7mUt=";
+      hash = "sha256-NAahlBOYub0QlqkYStamoCbyWh+H5JG/iFm4Ws9EU3A=";
     };
 
     nativeBuildInputs = [
