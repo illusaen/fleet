@@ -76,6 +76,11 @@ in {
       EDITOR = "nvim";
     };
 
+    system.userActivationScripts.cacheBat = ''
+      echo "Building bat cache."
+      bat cache --build
+    '';
+
     persistUser.directories = [".local/share/zoxide"];
   };
 }

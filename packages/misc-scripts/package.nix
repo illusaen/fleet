@@ -4,7 +4,6 @@
   python3,
   ddcutil,
   dconf,
-  git,
   i2c-tools,
   ...
 }: let
@@ -26,10 +25,6 @@ in
       (pythonScript "monitor-brightness" ./scripts/monitor-brightness.py [
         python3
         ddcutil
-      ])
-      (pythonScript "noctalia-dev-config" ./scripts/noctalia-dev-config.py [
-        python3
-        git
       ])
       (pythonScript "switcher" ./scripts/switch-input.py [
         python3

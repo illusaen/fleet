@@ -19,6 +19,6 @@
       ];
     };
 
-    persistUser.files = [".local/state/noctalia/state.toml"];
+    persistUser.directories = [".local/state/noctalia"];
   };
 }

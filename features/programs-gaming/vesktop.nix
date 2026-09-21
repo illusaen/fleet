@@ -4,8 +4,13 @@
     fleet,
     user,
     ...
-  }: {
-    environment.systemPackages = with pkgs; [vesktop];
+  }: let
+    package = pkgs.vesktop;
+  in {
+    environment.systemPackages = [package];
+    systemdAutostart = [
+      {inherit package;}
+    ];
 
     hjem.users.${user.name}.xdg.config.files = let
       json = (pkgs.formats.json {}).generate;
