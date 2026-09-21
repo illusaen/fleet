@@ -5,6 +5,7 @@
       mkhl.direnv
       naumovs.color-highlight
       usernamehw.errorlens
+      ms-python.python
     ])
     ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
       {
