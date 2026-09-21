@@ -25,7 +25,7 @@
     services = {
       displayManager = {
         enable = true;
-        defaultSession = "niri";
+        defaultSession = "umbriel";
         sddm = {
           enable = true;
           enableHidpi = true;

@@ -73,4 +73,9 @@
     directory = ../../resources/wallpapers;
     image = ../../resources/wallpapers/dark/dark-silk.jpeg;
   };
+
+  monitors = {
+    main = "LG Electronics LG ULTRAGEAR+ 508RMWVJR505";
+    secondary = "BOE Display 000000001";
+  };
 }

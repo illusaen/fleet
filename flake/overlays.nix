@@ -5,6 +5,7 @@
   inputs.devshell.overlays.default
   inputs.agenix.overlays.default
   inputs.colmena.overlays.default
+  inputs.umbriel.overlays.default
 
   (import ./packages.nix {inherit lib;})
 

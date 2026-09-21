@@ -29,6 +29,10 @@ pkgs.devshell.mkShell (
         package = pkgs.nix-tree;
         help = "Interactively browse dependency graphs of Nix derivations";
       }
+      {
+        package = pkgs.nh;
+        help = "Build and deploy using nh";
+      }
     ];
 
     git.hooks = {

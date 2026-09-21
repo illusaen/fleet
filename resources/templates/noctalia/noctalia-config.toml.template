@@ -7,8 +7,7 @@ time_format            = "{:%I:%M %p}" # default shell UI time format
 polkit_agent           = true
 password_style         = "default"    # default | random
 settings_show_advanced = true         # show advanced settings by default in Settings
-app_icon_colorize      = true         # recolor application icons across the shell
-app_icon_color         = "surface"    # ColorSpec role or #hex when colorize is enabled
+app_icon_colorize      = false        # recolor application icons across the shell
 
 [shell.panel]
 transparency_mode      = "glass"      # solid | soft | glass; controls floating-panel opacity and card translucency

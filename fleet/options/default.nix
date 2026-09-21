@@ -72,5 +72,11 @@ in {
       default = {};
       description = "Default wallpaper settings.";
     };
+
+    monitors = mkOption {
+      type = attrsOf str;
+      default = {};
+      description = "Monitor name mappings.";
+    };
   };
 }

@@ -45,6 +45,7 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    umbriel.url = "github:noctalia-dev/umbriel";
   };
 
   outputs = {

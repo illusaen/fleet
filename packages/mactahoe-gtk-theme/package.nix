@@ -15,7 +15,7 @@
   opacityVariants ? [], # default: all
   themeVariants ? [], # default: default (BigSur-like theme)
   schemeVariants ? [], # default: standard # default: standard (Apple logo)
-  nautilusStyle ? null, # default: stable (BigSur-like style) # default: 15% # default: 32px
+  nautilusStyle ? "stable", # default: stable (BigSur-like style) # default: 15% # default: 32px
   roundedMaxWindow ? true, # default: false
   darkerColor ? false, # default = false
   highDefinition ? true, # default = false
