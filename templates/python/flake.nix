@@ -34,6 +34,28 @@
       programs.mypy.enable = true;
       settings.excludes = ["*.patch" "*.png" "*.jpeg"];
     };
+
+    initUvScript = ''
+      export UV_PYTHON_DOWNLOADS=never
+      export UV_PROJECT_ENVIRONMENT="$PWD/.venv"
+
+      if [ -f "pyproject.toml" ]
+      then
+        if ! ${pkgs.uv}/bin/uv sync --python ${pkgs.python315}/bin/python
+        then
+          echo "Sync failed. Run 'uv sync' manually." >&2
+        fi
+      fi
+
+      if [ ! -f "$UV_PROJECT_ENVIRONMENT/bin/activate" ]
+      then
+        ${pkgs.uv}/bin/uv venv \
+          --python ${pkgs.python315}/bin/python \
+          "$UV_PROJECT_ENVIRONMENT"
+      fi
+
+      source "$UV_PROJECT_ENVIRONMENT/bin/activate"
+    '';
   in {
     formatter = treefmtConfig.config.build.wrapper;
 
@@ -43,12 +65,15 @@
           "${extraModulesPath}/git/hooks.nix"
         ];
 
-        devshell.packages = with pkgs; [
-          nixd
-          treefmtConfig.config.build.wrapper
-          python315
-          uv
-        ];
+        devshell = {
+          packages = with pkgs; [
+            nixd
+            treefmtConfig.config.build.wrapper
+            python315
+            uv
+          ];
+          startup.initUv.text = initUvScript;
+        };
 
         commands = [
           {
