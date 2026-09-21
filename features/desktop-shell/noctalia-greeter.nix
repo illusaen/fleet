@@ -14,17 +14,17 @@
           hide_logo = true;
           power_buttons_position = "hidden";
           scheme_selector_position = "hidden";
-          font_family = fleet.fonts.sans;
+          font_family = fleet.fonts.sans.name;
         };
         appearance.palette = {
-          primary = "#7c80b4";
-          on_primary = "#0e0e43";
-          secondary = "#a9aefe";
-          on_secondary = "#0e0e43";
-          tertiary = "#9BFECE";
-          on_tertiary = "#0e0e43";
-          error = "#FD4663";
-          on_error = "#0e0e43";
+          primary = "#0e0e43";
+          on_primary = "#7c80b4";
+          secondary = "#0e0e43";
+          on_secondary = "#7c80b4";
+          tertiary = "#0e0e43";
+          on_tertiary = "#7c80b4";
+          error = "#0e0e43";
+          on_error = "#FD4663";
           surface = "#0e0e43";
           on_surface = "#f3edf7";
           surface_variant = "#0e0e43";

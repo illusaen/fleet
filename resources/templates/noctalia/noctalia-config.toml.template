@@ -18,6 +18,14 @@ categories             = false        # show category filters in the launcher
 show_app_origin_indicator = false     # show package origin indicators on application results
 app_grid               = true         # show app icon grid view when results are apps only
 
+[[shell.session.actions]]
+action = "lock"
+enabled = false
+
+[[shell.session.actions]]
+action = "lock_and_suspend"
+enabled = false
+
 [wallpaper]
 fill_mode           = "center"                  # center | crop | fit | stretch | repeat | span
 transition          = ["fade", "wipe", "disc", "stripes", "zoom", "honeycomb"]

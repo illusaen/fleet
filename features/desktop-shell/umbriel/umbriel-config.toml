@@ -8,7 +8,7 @@ show_cheatsheet = false
 
 [output."@main@"]
 enabled = true
-mode = "5120x2160@165.058"
+mode = "5120x2160@100.035"
 position = [0, 0]
 workspaces = "dynamic"
 
@@ -36,13 +36,13 @@ output = "@secondary@"
 
 [appearance]
 border_width = 0
-corner_radius = 12
+corner_radius = 8
 
 [input]
 middle_click_paste = false
 
 [input.mouse]
-scroll_wheel_step = 100
+scroll_wheel_step = 120
 scroll_button = "MouseMiddle"
 
 [input.cursor]
@@ -69,6 +69,9 @@ blur = true
 
 [animation.dim_unfocused]
 enabled = true
+
+[colors.overview]
+background_tint = "#00000000"                 # Tint over the desktop background
 
 # Blur every window. Keep this selectorless rule first so later matching rules
 # can override individual blur settings.
@@ -118,6 +121,7 @@ default_floating_size = { width = 0.3, height = 0.4 }
 match.app_id = "org.gnome.Nautilus"
 default_floating = true
 default_floating_size = { width = 0.3, height = 0.4 }
+opacity = 0.85
 
 [[window_rule]]
 match.app_id = "dev.noctalia.Noctalia"
@@ -128,6 +132,7 @@ default_floating_size = { width = 0.3, height = 0.4 }
 match.app_id = "^dev.noctalia.UmbrielSharePicker$"
 default_floating = true
 default_floating_size = { width = 0.3, height = 0.4 }
+opacity = 0.85
 
 [[window_rule]]
 match.title = "^(Picture-in-Picture|Picture in picture)$"
@@ -138,8 +143,8 @@ default_position = { x = 20, y = 20, anchor = "bottom_right" }
 [[window_rule]]
 match.app_id = "com.github.th-ch.youtube-music"
 default_floating = true
-default_floating_size = { width = 0.95, height = 0.75 }
-default_position = { x = 0, y = 0, anchor = "top" }
+default_floating_size_px = { width = 1064, height = 1432 }
+default_position = { x = 0, y = 8, anchor = "top" }
 
 [[window_rule]]
 match.app_id = "^Alacritty$"

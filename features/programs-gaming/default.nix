@@ -1,4 +1,6 @@
 {
+  imports = [./vesktop.nix];
+
   modules.nixos = {
     config,
     fleet,

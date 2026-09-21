@@ -42,7 +42,7 @@
       size = 32;
     };
     gtk = {
-      name = "MacTahoe";
+      name = "WhiteSur";
       packageName = "mactahoe-gtk-theme";
     };
   };
