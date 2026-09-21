@@ -3,7 +3,7 @@ let
     path = ./${name};
     description = "nix flake new my-project -t github:illusaen/fleet#${name}";
   };
-  languages = ["node" "rust"];
+  languages = ["node" "rust" "python"];
 in
   builtins.listToAttrs (map (l: {
       name = l;

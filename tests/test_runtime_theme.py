@@ -39,7 +39,6 @@ destination = "$HOME/.example"
             manifest = runtime_theme.load_manifest(path)
 
             self.assertEqual(manifest.items[0].item_type, "file")
-            self.assertIsNone(manifest.items[0].clobber)
             self.assertIsNone(manifest.items[0].template)
             self.assertFalse(manifest.items[0].themed)
 
@@ -52,23 +51,67 @@ version = 1
 clobber = false
 
 [[items]]
-source = "example"
 destination = "$HOME/.example"
-template = "nested/example.mustache"
+template = "nested/example"
 """
             )
 
             with self.assertRaisesRegex(runtime_theme.ThemeError, "file name"):
                 runtime_theme.load_manifest(path)
 
-    def test_clobber_precedence(self) -> None:
-        effective = runtime_theme.effective_clobber
-        self.assertTrue(effective(True, False, False))
-        self.assertFalse(effective(False, True, True))
-        self.assertTrue(effective(None, True, False))
-        self.assertFalse(effective(None, False, True))
-        self.assertTrue(effective(None, None, True))
-        self.assertFalse(effective(None, None, False))
+    def test_template_supplies_source_and_omits_mustache_extension(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "manifest.toml"
+            path.write_text(
+                """\
+version = 1
+clobber = false
+
+[[items]]
+destination = "$HOME/.example"
+template = "example"
+"""
+            )
+
+            item = runtime_theme.load_manifest(path).items[0]
+
+            self.assertEqual(item.source, "example")
+            self.assertEqual(item.template, "example")
+
+    def test_template_rejects_mustache_extension(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "manifest.toml"
+            path.write_text(
+                """\
+version = 1
+clobber = false
+
+[[items]]
+destination = "$HOME/.example"
+template = "example.mustache"
+"""
+            )
+
+            with self.assertRaisesRegex(runtime_theme.ThemeError, "must omit"):
+                runtime_theme.load_manifest(path)
+
+    def test_item_clobber_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "manifest.toml"
+            path.write_text(
+                """\
+version = 1
+clobber = false
+
+[[items]]
+source = "example"
+destination = "$HOME/.example"
+clobber = true
+"""
+            )
+
+            with self.assertRaisesRegex(runtime_theme.ThemeError, "manifest level"):
+                runtime_theme.load_manifest(path)
 
     def test_invalid_type_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -104,8 +147,7 @@ class RenderTests(unittest.TestCase):
                         "example.conf",
                         "$HOME/.example",
                         "file",
-                        None,
-                        "example.conf.mustache",
+                        "example.conf",
                         True,
                     ),
                 ),
@@ -144,8 +186,7 @@ class RenderTests(unittest.TestCase):
                         "example",
                         "$HOME/.example",
                         "file",
-                        None,
-                        "example.mustache",
+                        "example",
                         True,
                     ),
                 ),
@@ -170,8 +211,7 @@ class RenderTests(unittest.TestCase):
                         "included",
                         "$HOME/.included",
                         "file",
-                        None,
-                        "included.mustache",
+                        "included",
                         False,
                     ),
                 ),
@@ -200,7 +240,7 @@ class LinkTests(unittest.TestCase):
             new.write_text("changed\n")
             self.assertFalse(runtime_theme.compare_with_difft(destination, new))
 
-    def test_changed_link_honors_argument_and_item_clobber(self) -> None:
+    def test_changed_link_honors_manifest_clobber(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             dotfiles = root / "dotfiles"
@@ -217,29 +257,25 @@ class LinkTests(unittest.TestCase):
                 "XDG_CONFIG_HOME": str(root / "home"),
             }
 
-            inherited = runtime_theme.Manifest(
+            clobber_disabled = runtime_theme.Manifest(
                 False,
                 (
-                    runtime_theme.ManifestItem(
-                        "new", "$XDG_CONFIG_HOME/config", "file", None
-                    ),
+                    runtime_theme.ManifestItem("new", "$XDG_CONFIG_HOME/config", "file"),
                 ),
             )
-            forced_off = runtime_theme.Manifest(
+            clobber_enabled = runtime_theme.Manifest(
                 True,
                 (
-                    runtime_theme.ManifestItem(
-                        "new", "$XDG_CONFIG_HOME/config", "file", False
-                    ),
+                    runtime_theme.ManifestItem("new", "$XDG_CONFIG_HOME/config", "file"),
                 ),
             )
 
             with mock.patch.object(runtime_theme, "compare_with_difft", return_value=False):
-                replaced = runtime_theme.plan_links(
-                    inherited, dotfiles, "theme", "build", True, environment
-                )
                 skipped = runtime_theme.plan_links(
-                    forced_off, dotfiles, "theme", "build", True, environment
+                    clobber_disabled, dotfiles, "theme", "build", environment
+                )
+                replaced = runtime_theme.plan_links(
+                    clobber_enabled, dotfiles, "theme", "build", environment
                 )
 
             self.assertEqual(replaced[0].status, "replaced")
@@ -257,9 +293,7 @@ class LinkTests(unittest.TestCase):
             manifest = runtime_theme.Manifest(
                 True,
                 (
-                    runtime_theme.ManifestItem(
-                        "source", str(destination), "file", None
-                    ),
+                    runtime_theme.ManifestItem("source", str(destination), "file"),
                 ),
             )
 
@@ -269,7 +303,6 @@ class LinkTests(unittest.TestCase):
                     dotfiles,
                     "theme",
                     "build",
-                    None,
                     {"HOME": str(root)},
                 )
 
@@ -291,9 +324,8 @@ version = 1
 clobber = true
 
 [[items]]
-source = "example"
 destination = "$XDG_CONFIG_HOME/example"
-template = "example.mustache"
+template = "example"
 themed = true
 """
             )

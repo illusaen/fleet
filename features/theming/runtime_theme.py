@@ -29,7 +29,6 @@ class ManifestItem:
     source: str
     destination: str
     item_type: str
-    clobber: bool | None
     template: str | None = None
     themed: bool = False
 
@@ -47,15 +46,6 @@ class LinkAction:
     status: str
 
 
-def parse_bool(value: str) -> bool:
-    normalized = value.casefold()
-    if normalized == "true":
-        return True
-    if normalized == "false":
-        return False
-    raise argparse.ArgumentTypeError("clobber must be either 'true' or 'false'")
-
-
 def parse_args(argv: list[str]) -> argparse.Namespace:
     modes = {"build", "link"}
     if not argv or argv[0] not in modes:
@@ -65,12 +55,6 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     )
     parser.add_argument("mode", choices=sorted(modes))
     parser.add_argument("theme", help="theme name")
-    parser.add_argument(
-        "clobber",
-        nargs="?",
-        type=parse_bool,
-        help="override the manifest's global clobber value (true or false)",
-    )
     return parser.parse_args(argv)
 
 
@@ -99,7 +83,18 @@ def load_manifest(path: Path) -> Manifest:
         label = f"manifest item {index + 1}"
         if not isinstance(raw_item, dict):
             raise ThemeError(f"{label} must be a table")
-        source = raw_item.get("source")
+        if "clobber" in raw_item:
+            raise ThemeError("clobber is only allowed at the manifest level")
+        template = raw_item.get("template")
+        if template is not None:
+            if not isinstance(template, str) or not template:
+                raise ThemeError(f"{label} template must be a non-empty string")
+            if Path(template).name != template:
+                raise ThemeError(f"{label} template must be a file name")
+            if template.endswith(".mustache"):
+                raise ThemeError(f"{label} template must omit the .mustache extension")
+
+        source = raw_item.get("source", template)
         destination = raw_item.get("destination")
         if not isinstance(source, str) or not source:
             raise ThemeError(f"{label} source must be a non-empty string")
@@ -112,39 +107,14 @@ def load_manifest(path: Path) -> Manifest:
         item_type = raw_item.get("type", "file")
         if item_type not in {"file", "directory"}:
             raise ThemeError(f"{label} type must be 'file' or 'directory'")
-        item_clobber = raw_item.get("clobber")
-        if item_clobber is not None:
-            item_clobber = _require_bool(item_clobber, f"{label} clobber")
-        template = raw_item.get("template")
-        if template is not None:
-            if not isinstance(template, str) or not template:
-                raise ThemeError(f"{label} template must be a non-empty string")
-            if Path(template).name != template:
-                raise ThemeError(f"{label} template must be a file name")
         themed = _require_bool(raw_item.get("themed", False), f"{label} themed")
         if themed and template is None:
             raise ThemeError(f"{label} cannot be themed without being a template")
         if template is not None and item_type != "file":
             raise ThemeError(f"{label} template type must be 'file'")
-        items.append(
-            ManifestItem(
-                source, destination, item_type, item_clobber, template, themed
-            )
-        )
+        items.append(ManifestItem(source, destination, item_type, template, themed))
 
     return Manifest(global_clobber, tuple(items))
-
-
-def effective_clobber(
-    item_clobber: bool | None,
-    argument_clobber: bool | None,
-    global_clobber: bool,
-) -> bool:
-    if item_clobber is not None:
-        return item_clobber
-    if argument_clobber is not None:
-        return argument_clobber
-    return global_clobber
 
 
 def load_context(path: Path | None, theme: str) -> dict[str, Any]:
@@ -227,8 +197,9 @@ def render_templates(
         for item in manifest.items:
             if item.template is None:
                 continue
+            template_source = f"{item.template}.mustache"
             source = _contained_path(
-                dotfiles_dir / "files", item.template, "manifest template"
+                dotfiles_dir / "files", template_source, "manifest template"
             )
             if not source.is_file():
                 raise ThemeError(f"manifest template source does not exist: {source}")
@@ -238,12 +209,12 @@ def render_templates(
                 raise ThemeError(f"template output must be relative: {item.source}")
             destination_key = (item.themed, rendered_relative)
             if destination_key in rendered_destinations:
-                if rendered_destinations[destination_key] != item.template:
+                if rendered_destinations[destination_key] != template_source:
                     raise ThemeError(
                         f"conflicting templates for rendered path: {rendered_relative}"
                     )
                 continue
-            rendered_destinations[destination_key] = item.template
+            rendered_destinations[destination_key] = template_source
             destination_root = themed_staging if item.themed else shared_staging
             destination = _contained_path(
                 destination_root, item.source, "template output"
@@ -352,7 +323,6 @@ def plan_links(
     dotfiles_dir: Path,
     theme: str,
     build_id: str,
-    argument_clobber: bool | None,
     environment: dict[str, str],
 ) -> list[LinkAction]:
     actions: list[LinkAction] = []
@@ -374,7 +344,7 @@ def plan_links(
         if compare_with_difft(destination, source):
             actions.append(LinkAction(destination, source, "unchanged"))
             continue
-        if effective_clobber(item.clobber, argument_clobber, manifest.clobber):
+        if manifest.clobber:
             actions.append(LinkAction(destination, source, "replaced"))
         else:
             actions.append(LinkAction(destination, source, "skipped"))
@@ -458,7 +428,6 @@ def run(argv: list[str]) -> int:
         dotfiles_dir,
         args.theme,
         build_id,
-        args.clobber,
         environment,
     )
     apply_links(actions)
