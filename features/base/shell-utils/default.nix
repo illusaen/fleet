@@ -58,7 +58,8 @@ in {
       NIXOS_OZONE_WL = 1;
 
       PROJECTS_FOLDER = projectsFolder;
-      NIX_CONFIG_FOLDER = "$PROJECTS_FOLDER/fleet";
+      # PAM expands $HOME, but not references to other session variables.
+      NIX_CONFIG_FOLDER = "${projectsFolder}/fleet";
       EDITOR = "nvim";
     };
 

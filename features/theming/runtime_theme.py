@@ -423,47 +423,6 @@ def write_selected(path: Path, theme: str) -> None:
         raise ThemeError(f"cannot record selected theme: {error}") from error
 
 
-def refresh_desktop(context: dict[str, Any]) -> None:
-    if os.environ.get("NIX_THEME_SKIP_REFRESH") == "1":
-        return
-    gsettings = shutil.which("gsettings")
-    if gsettings is not None:
-        schema_result = subprocess.run(
-            [gsettings, "list-schemas"], check=False, capture_output=True, text=True
-        )
-        if "org.gnome.desktop.interface" in schema_result.stdout.splitlines():
-            settings = {
-                "color-scheme": context.get("color-scheme"),
-                "gtk-theme": context.get("gtk-theme"),
-                "icon-theme": context.get("icon-theme"),
-                "cursor-theme": context.get("cursor-theme"),
-                "cursor-size": (
-                    f"uint32 {context['cursor-size']}" if "cursor-size" in context else None
-                ),
-            }
-            for key, value in settings.items():
-                if value is not None:
-                    subprocess.run(
-                        [gsettings, "set", "org.gnome.desktop.interface", key, str(value)],
-                        check=False,
-                    )
-
-    systemctl = shutil.which("systemctl")
-    if systemctl is not None:
-        subprocess.run(
-            [
-                systemctl,
-                "--user",
-                "try-restart",
-                "noctalia.service",
-                "waybar.service",
-            ],
-            check=False,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-
-
 def run(argv: list[str]) -> int:
     args = parse_args(argv)
     environment = dict(os.environ)
@@ -471,8 +430,8 @@ def run(argv: list[str]) -> int:
         raise ThemeError("HOME is not set")
     environment.setdefault("XDG_CONFIG_HOME", f"{environment['HOME']}/.config")
 
-    repository = Path(
-        environment.get("NIX_CONFIG_FOLDER", f"{environment['HOME']}/Projects/fleet")
+    repository = expand_path(
+        environment.get("NIX_CONFIG_FOLDER", "$HOME/Projects/fleet"), environment
     ).resolve()
     dotfiles_dir = repository / "dotfiles"
     manifest = load_manifest(dotfiles_dir / "manifest.toml")
@@ -505,7 +464,6 @@ def run(argv: list[str]) -> int:
     apply_links(actions)
     selected = dotfiles_dir / "built/selected"
     write_selected(selected, args.theme)
-    refresh_desktop(context)
 
     for action in actions:
         print(f"{action.status:9} {action.destination} -> {action.source}")

@@ -75,8 +75,6 @@ _: {
       name = "theme-apply";
       runtimeInputs = [
         pkgs.difftastic
-        pkgs.glib
-        pkgs.systemd
       ];
       text = ''
         export NIX_CONFIG_FOLDER="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"

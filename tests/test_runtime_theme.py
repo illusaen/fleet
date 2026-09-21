@@ -315,9 +315,9 @@ themed = true
             environment = {
                 "HOME": str(home),
                 "XDG_CONFIG_HOME": str(home / ".config"),
-                "NIX_CONFIG_FOLDER": str(repository),
+                "PROJECTS_FOLDER": str(root),
+                "NIX_CONFIG_FOLDER": "$PROJECTS_FOLDER/fleet",
                 "NIX_THEME_CONTEXT": str(context),
-                "NIX_THEME_SKIP_REFRESH": "1",
             }
 
             with mock.patch.dict(os.environ, environment, clear=True):
