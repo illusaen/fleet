@@ -1,6 +1,12 @@
 [accessibility]
 ui_scale               = 1.1
 
+[brightness]
+enable_ddcutil         = true
+
+[brightness.monitor.@main@]
+backend = "ddcutil"
+
 [shell]
 font_family            = "@sans@"
 time_format            = "{:%I:%M %p}" # default shell UI time format
@@ -19,12 +25,39 @@ show_app_origin_indicator = false     # show package origin indicators on applic
 app_grid               = true         # show app icon grid view when results are apps only
 
 [[shell.session.actions]]
+action = "logout"
+countdown_seconds = 0.0
+enabled = true
+shortcut = "1"
+variant = "default"
+
+[[shell.session.actions]]
+action = "reboot"
+countdown_seconds = 0.0
+enabled = true
+shortcut = "2"
+variant = "default"
+
+[[shell.session.actions]]
+action = "shutdown"
+countdown_seconds = 0.0
+enabled = true
+shortcut = "3"
+variant = "destructive"
+
+[[shell.session.actions]]
 action = "lock"
 enabled = false
+shortcut = "4"
+countdown_seconds = 0.0
+variant = "default"
 
 [[shell.session.actions]]
 action = "lock_and_suspend"
 enabled = false
+shortcut = "5"
+countdown_seconds = 0.0
+variant = "default"
 
 [wallpaper]
 fill_mode           = "center"                  # center | crop | fit | stretch | repeat | span
@@ -74,7 +107,7 @@ enabled = true
 
 [weather]
 enabled = true
-unit    = "fahrenheit"
+unit    = "imperial"
 
 [audio]
 enable_sounds = true                # master toggle for UI feedback sounds
@@ -82,6 +115,9 @@ sound_volume = 0.25                 # 0.0 - 1.0
 
 [location]
 address = "@location@"
+
+[idle]
+behavior_order = ["screen-off"]
 
 [idle.behavior.screen-off]
 action = "screen_off"

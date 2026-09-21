@@ -1,6 +1,7 @@
 {
   modules.generic = {
     fleet,
+    host,
     lib,
     pkgs,
     user,
@@ -109,20 +110,20 @@
           }
       )
       vscodeProfilesExceptDefault;
-  in {
-    environment.systemPackages = [pkgs.vscode syncVscodeProfiles];
+  in
+    {
+      environment.systemPackages = [pkgs.vscode syncVscodeProfiles];
 
-    hjem.users.${user.name}.files = vscodeGeneratedFiles;
-  };
+      hjem.users.${user.name}.files = vscodeGeneratedFiles;
+    }
+    // lib.optionalAttrs (host.platform == "nixos") {
+      system.userActivationScripts.syncVscodeProfiles = ''
+        echo "Syncing vscode profiles."
+        ${lib.getExe syncVscodeProfiles}
+      '';
+    };
 
-  modules.nixos = {
-    system.userActivationScripts.syncVscodeProfiles = ''
-      echo "Syncing vscode profiles."
-      syncVscodeProfiles
-    '';
-
-    persistUser.directories = [
-      ".config/Code/User"
-    ];
-  };
+  modules.nixos.persistUser.directories = [
+    ".config/Code/User"
+  ];
 }

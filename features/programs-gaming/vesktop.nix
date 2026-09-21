@@ -11,6 +11,7 @@
     systemdAutostart = [
       {inherit package;}
     ];
+    persistUser.directories = [".config/vesktop/sessionData"];
 
     hjem.users.${user.name}.xdg.config.files = let
       json = (pkgs.formats.json {}).generate;

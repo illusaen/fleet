@@ -273,8 +273,18 @@
           exit 0
         fi
 
-        mkdir -p "$state_dir"
-        ln -sfn "$profile" "$state_dir/current.next"
+        mkdir -p "$state_dir/umbriel"
+
+        # Noctalia appends /noctalia to NOCTALIA_CONFIG_HOME and may create
+        # current as a directory before the initial theme activation. Replace
+        # that generated directory so current can consistently be the active
+        # profile symlink.
+        if [ -d "$state_dir/current" ] && [ ! -L "$state_dir/current" ]; then
+          rm -rf -- "$state_dir/current"
+        fi
+
+        rm -rf -- "$state_dir/current.next"
+        ln -s "$profile" "$state_dir/current.next"
         mv -Tf "$state_dir/current.next" "$state_dir/current"
         ln -sfn "$state_dir/current/umbriel/umbriel-colors.toml" "$state_dir/umbriel/umbriel-colors.toml.next"
         mv -Tf "$state_dir/umbriel/umbriel-colors.toml.next" "$state_dir/umbriel/umbriel-colors.toml"

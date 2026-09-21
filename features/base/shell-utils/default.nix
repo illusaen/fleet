@@ -57,7 +57,7 @@ in {
     ];
   };
 
-  modules.nixos = {
+  modules.nixos = {pkgs, ...}: {
     programs.nix-ld.enable = true;
 
     environment.sessionVariables = {
@@ -76,10 +76,13 @@ in {
       EDITOR = "nvim";
     };
 
-    system.userActivationScripts.cacheBat = ''
-      echo "Building bat cache."
-      bat cache --build
-    '';
+    system.userActivationScripts.cacheBat = {
+      deps = ["initializeRuntimeTheme"];
+      text = ''
+        echo "Building bat cache."
+        ${pkgs.bat}/bin/bat cache --build
+      '';
+    };
 
     persistUser.directories = [".local/share/zoxide"];
   };

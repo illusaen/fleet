@@ -65,7 +65,7 @@ center_focused = "on_overflow"
 
 [animation.scratchpad]
 enabled = true
-blur = true
+blur = false
 
 [animation.dim_unfocused]
 enabled = true
@@ -209,10 +209,11 @@ blur = false
 "Mod+Ctrl+Space" = "spawn:noctalia msg panel-toggle session"
 "Ctrl+Shift+Space" = "spawn:noctalia msg panel-toggle control-center"
 "Mod+T" = "spawn:alacritty"
-"Mod+Alt+T" = "spawn:theme-select"
+"Mod+Alt+T" = "spawn:alacritty --class scratchpad-alacritty"
+"Mod+Ctrl+T" = "spawn:theme-select"
 "Mod+O" = { action = "overview-toggle", repeat = false }
-"Mod+Ctrl+B" = { action = "spawn:monitor-brightness up", allow_when_locked = true }
-"Mod+Ctrl+Shift+B" = { action = "spawn:monitor-brightness down", allow_when_locked = true }
+"Mod+Ctrl+B" = { action = "spawn:noctalia msg brightness-up @mainConnector@ 5", allow_when_locked = true }
+"Mod+Ctrl+Shift+B" = { action = "spawn:noctalia msg brightness-down @mainConnector@ 5", allow_when_locked = true }
 "Mod+Shift+Escape" = { action = "shortcuts-inhibit-toggle", allow_when_inhibited = true, repeat = false }
 
 "Mod+Left" = "window-focus-left"
@@ -267,5 +268,5 @@ blur = false
 "XF86AudioNext" = "spawn:playerctl next"
 "XF86AudioPrev" = "spawn:playerctl previous"
 "XF86AudioPlay" = { action = "spawn:playerctl play-pause", allow_when_locked = true }
-"XF86MonBrightnessDown" = { action = "spawn:monitor-brightness down", allow_when_locked = true }
-"XF86MonBrightnessUp" = { action = "spawn:monitor-brightness up", allow_when_locked = true }
+"XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down @main@ 5", allow_when_locked = true }
+"XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up @main@ 5", allow_when_locked = true }
