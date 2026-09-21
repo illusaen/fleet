@@ -1,0 +1,11 @@
+{
+  "autoUpdate": false,
+  "autoUpdateNotification": false,
+  "notifyAboutUpdates": false,
+  "plugins": {
+    "FakeNitro": {
+      "enabled": true
+    }
+  },
+  "useQuickCss": true
+}

@@ -1,1 +1,398 @@
-{{{noctalia-config}}}
+[accessibility]
+ui_scale               = 1.1
+
+[brightness]
+enable_ddcutil         = true
+
+[brightness.monitor.{{main-connector}}]
+backend = "ddcutil"
+
+[shell]
+font_family            = "{{sans-font}}"
+time_format            = "{:%I:%M %p}" # default shell UI time format
+polkit_agent           = true
+password_style         = "default"    # default | random
+settings_show_advanced = true         # show advanced settings by default in Settings
+app_icon_colorize      = false        # recolor application icons across the shell
+
+[shell.panel]
+transparency_mode      = "glass"      # solid | soft | glass; controls floating-panel opacity and card translucency
+clipboard_placement    = "attached"   # attached | floating
+
+[shell.launcher]
+categories             = false        # show category filters in the launcher
+show_app_origin_indicator = false     # show package origin indicators on application results
+app_grid               = true         # show app icon grid view when results are apps only
+
+[[shell.session.actions]]
+action = "logout"
+countdown_seconds = 0.0
+enabled = true
+shortcut = "1"
+variant = "default"
+
+[[shell.session.actions]]
+action = "reboot"
+countdown_seconds = 0.0
+enabled = true
+shortcut = "2"
+variant = "default"
+
+[[shell.session.actions]]
+action = "shutdown"
+countdown_seconds = 0.0
+enabled = true
+shortcut = "3"
+variant = "destructive"
+
+[[shell.session.actions]]
+action = "lock"
+enabled = false
+shortcut = "4"
+countdown_seconds = 0.0
+variant = "default"
+
+[[shell.session.actions]]
+action = "lock_and_suspend"
+enabled = false
+shortcut = "5"
+countdown_seconds = 0.0
+variant = "default"
+
+[wallpaper]
+fill_mode           = "center"                  # center | crop | fit | stretch | repeat | span
+transition          = ["fade", "wipe", "disc", "stripes", "zoom", "honeycomb"]
+directory           = "{{image-directory}}"        # empty = XDG Pictures directory
+directory_light     = "{{image-directory}}/light"  # optional day-mode directory
+directory_dark      = "{{image-directory}}/dark"   # optional night-mode directory
+
+[wallpaper.default]
+path = "{{image}}"                      # optional initial/default wallpaper path
+
+[wallpaper.automation]
+enabled                    = true
+interval_seconds           = 1000     # seconds between changes
+recursive                  = false    # include subdirectories when picking random wallpapers
+
+[theme]
+mode   = "dark"                     # dark | light | auto
+builtin = "Rosé Pine"               # Ayu | Catppuccin | Dracula | Eldritch | Gruvbox |
+                                    # Kanagawa | Noctalia | Nord | Rosé Pine | Tokyo-Night
+pure_black_dark = true              # anchor dark surfaces to true black (OLED); applies to
+                                    # every palette source, not just wallpaper-generated ones
+
+[backdrop]
+blur_intensity = 0.4
+enabled = true
+
+[notification]
+background_opacity = 0.8
+offset_x = 0
+offset_y = 64
+scale    = 1.1
+position = "bottom_center"
+
+[osd]
+offset_x = 0
+offset_y = 64
+scale    = 1.1
+background_opacity = 0.8
+position = "bottom_center"
+
+[lockscreen]
+monitors = ["{{main-connector}}"]
+
+[calendar]
+enabled = true
+
+[weather]
+enabled = true
+unit    = "imperial"
+
+[audio]
+enable_sounds = true                # master toggle for UI feedback sounds
+sound_volume = 0.25                 # 0.0 - 1.0
+
+[location]
+address = "{{location}}"
+
+[idle]
+behavior_order = ["screen-off"]
+
+[idle.behavior.screen-off]
+action = "screen_off"
+enabled = true
+timeout = 600
+
+[bar.default]
+position = "left"
+thickness = 48
+background_opacity = 0.9
+margin_ends = 720
+margin_edge = 8
+padding = 16
+widget_spacing = 16
+start = ["session", "workspaces"]
+center = [ "date", "clock", "weather" ]
+end = ["tray", "clipboard", "control-center"]
+
+[bar.default.monitor.{{secondary-connector}}]
+enabled = false
+
+[desktop_widgets]
+schema_version = 2
+widget_order = [
+    "clock_main",
+    "cpu_temp",
+    "switcher_hdmi",
+    "switcher_dp",
+    "gpu_usage",
+    "cpu_usage",
+    "gpu_temp",
+    "ram_usage",
+    "cpu_label",
+    "gpu_label",
+    "ram_label"
+]
+
+[desktop_widgets.grid]
+cell_size = 8
+major_interval = 4
+visible = true
+
+[desktop_widgets.widget.clock_main]
+box_height = 160.0
+box_width = 288.0
+cx = 620.0
+cy = 1680.0
+output = "{{secondary-connector}}"
+placement_height = 1920.0
+placement_width = 1080.0
+type = "clock"
+
+[desktop_widgets.widget.clock_main.settings]
+background = false
+color = "on_surface"
+font_family = "{{mono-font}}"
+format = "{:%H:%M}"
+
+[desktop_widgets.widget.cpu_temp]
+box_height = 32.0
+box_width = 72.0
+cx = 420.0
+cy = 1656.0
+output = "{{secondary-connector}}"
+placement_height = 1920.0
+placement_width = 1080.0
+type = "sysmon"
+
+[desktop_widgets.widget.cpu_temp.settings]
+background = false
+display = "gauge"
+gauge_layout = "horizontal"
+stat = "cpu_temp"
+
+[desktop_widgets.widget.switcher_hdmi]
+box_height = 40.0
+box_width = 64.0
+cx = 812.0
+cy = 1704.0
+output = "{{secondary-connector}}"
+placement_height = 1920.0
+placement_width = 1080.0
+type = "button"
+
+[desktop_widgets.widget.switcher_hdmi.settings]
+background = true
+command = "switcher hdmi1"
+glyph = "device-desktop"
+label = "HD"
+variant = "secondary"
+
+[desktop_widgets.widget.switcher_dp]
+box_height = 40.0
+box_width = 64.0
+cx = 812.0
+cy = 1664.0
+output = "{{secondary-connector}}"
+placement_height = 1920.0
+placement_width = 1080.0
+type = "button"
+
+[desktop_widgets.widget.switcher_dp.settings]
+background = true
+command = "switcher dp"
+glyph = "device-desktop"
+label = "DP"
+variant = "primary"
+
+[desktop_widgets.widget.gpu_usage]
+box_height = 32.0
+box_width = 72.0
+cx = 332.0
+cy = 1692.0
+output = "{{secondary-connector}}"
+placement_height = 1920.0
+placement_width = 1080.0
+type = "sysmon"
+
+[desktop_widgets.widget.gpu_usage.settings]
+background = false
+display = "gauge"
+gauge_layout = "horizontal"
+stat = "gpu_usage"
+
+[desktop_widgets.widget.cpu_usage]
+box_height = 32.0
+box_width = 72.0
+cx = 332.0
+cy = 1656.0
+output = "{{secondary-connector}}"
+placement_height = 1920.0
+placement_width = 1080.0
+type = "sysmon"
+
+[desktop_widgets.widget.cpu_usage.settings]
+background = false
+display = "gauge"
+gauge_layout = "horizontal"
+stat = "cpu_usage"
+
+[desktop_widgets.widget.gpu_temp]
+box_height = 32.0
+box_width = 72.0
+cx = 420.0
+cy = 1692.0
+output = "{{secondary-connector}}"
+placement_height = 1920.0
+placement_width = 1080.0
+type = "sysmon"
+
+[desktop_widgets.widget.gpu_temp.settings]
+background = false
+display = "gauge"
+gauge_layout = "horizontal"
+stat = "gpu_temp"
+
+[desktop_widgets.widget.ram_usage]
+box_height = 32.0
+box_width = 72.0
+cx = 332.0
+cy = 1728.0
+output = "{{secondary-connector}}"
+placement_height = 1920.0
+placement_width = 1080.0
+type = "sysmon"
+
+[desktop_widgets.widget.ram_usage.settings]
+background = false
+color = "primary"
+color2 = "secondary"
+display = "gauge"
+gauge_layout = "horizontal"
+highlight_color = "error"
+interface = ""
+label_min_width = 0
+shadow = true
+show_label = true
+stat = "ram_pct"
+stat2 = ""
+
+[desktop_widgets.widget.cpu_label]
+box_height = 24.0
+box_width = 40.0
+cx = 260.0
+cy = 1657.0
+output = "{{secondary-connector}}"
+placement_height = 1920.0
+placement_width = 1080.0
+type = "label"
+
+[desktop_widgets.widget.cpu_label.settings]
+background = false
+color = "secondary"
+display = "gauge"
+gauge_layout = "horizontal"
+opacity = 1.0
+title = "CPU"
+
+[desktop_widgets.widget.gpu_label]
+box_height = 24.0
+box_width = 40.0
+cx = 260.0
+cy = 1692.0
+output = "{{secondary-connector}}"
+placement_height = 1920.0
+placement_width = 1080.0
+type = "label"
+
+[desktop_widgets.widget.gpu_label.settings]
+background = false
+color = "secondary"
+title = "GPU"
+
+[desktop_widgets.widget.ram_label]
+box_height = 40.0
+box_width = 40.0
+cx = 260.0
+cy = 1728.0
+output = "{{secondary-connector}}"
+placement_height = 1920.0
+placement_width = 1080.0
+type = "label"
+
+[desktop_widgets.widget.ram_label.settings]
+background = false
+color = "secondary"
+title = "RAM"
+
+[[control_center.shortcuts]]
+type = "wifi"
+
+[[control_center.shortcuts]]
+type = "bluetooth"
+
+[[control_center.shortcuts]]
+type = "notification"
+
+[[control_center.shortcuts]]
+type = "dark_mode"
+
+[[control_center.shortcuts]]
+type = "audio"
+
+[[control_center.shortcuts]]
+type = "mic_mute"
+
+[widget.control-center]
+glyph = "settings-2"
+
+[widget.clock]
+anchor = true
+color = "primary"
+font_family = "{{mono-font}}"
+font_weight = 800
+format = "{:%I:%M %p}"
+scale = 1.4
+vertical_format = "{:%I\\n%M %p}"
+
+[widget.date]
+color = "secondary"
+format = "{:%a %b %d }"
+scale = 1.1
+
+[widget.tray]
+drawer = true
+drawer_columns = 5
+pinned = ["1password"]
+
+[widget.workspaces]
+empty_color = "primary"
+focused_color = "secondary"
+occupied_color = "primary"
+pill_scale = 0.85
+show_labels = false
+
+[widget.weather]
+color = "secondary"
+scale = 1.1

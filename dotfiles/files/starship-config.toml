@@ -1,0 +1,60 @@
+add_newline = true
+format = "$directory$hostname$fill$git_branch $git_status$direnv$nodejs$python$c$cmd_duration$time$line_break$character"
+
+[c]
+format = "[ $version  ](fg:foreground)"
+
+[character]
+error_symbol = "[×](fg:bold red)"
+success_symbol = "[λ](fg:primary)"
+
+[cmd_duration]
+format = "[$duration  ](fg:yellow)"
+min_time = 500
+
+[directory]
+format = "[$path$read_only$truncation_symbol  ](fg:bright-blue)"
+home_symbol = "~"
+read_only = " 󰌾"
+read_only_style = "bright-red"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[direnv]
+allowed_msg = "󰍁"
+disabled = false
+format = "[$allowed  ](fg:foreground)"
+not_allowed_msg = "󱙲"
+
+[fill]
+symbol = " "
+
+[git_branch]
+format = "[$branch](fg:foreground)"
+
+[git_status]
+ahead = ""
+behind = ""
+conflicted = ""
+deleted = ""
+diverged = "󰹹"
+format = "[$all_status$ahead_behind  ](fg:bright-red)"
+ignore_submodules = true
+staged = ""
+
+[hostname]
+disabled = false
+format = "[$hostname](fg:foreground bg:bright-red)"
+ssh_only = true
+
+[nodejs]
+disabled = false
+format = "[󰎙 $version  ](fg:bright-green)"
+
+[python]
+format = "[ $version (($virtualenv))  ](fg:foreground)"
+
+[time]
+disabled = false
+format = "[$time](fg:foreground)"
+time_format = "%H:%M"

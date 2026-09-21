@@ -29,46 +29,29 @@ _: {
       then profile.wallpaper
       else wallpaper.image;
 
-    secondaryMonitor =
-      if (host.monitors.secondary or null) != null
-      then host.monitors.secondary
-      else host.monitors.main;
-
-    mkNoctaliaConfig = profile:
-      builtins.replaceStrings
-      [
-        "@mono@"
-        "@sans@"
-        "@main@"
-        "@secondary@"
-        "@image@"
-        "@imageDirectory@"
-        "@location@"
-        ''mode   = "dark"''
-      ]
-      [
-        fonts.mono.name
-        fonts.sans.name
-        host.monitors.main
-        secondaryMonitor
-        (toString (selectedWallpaper profile))
-        (toString wallpaper.directory)
-        (lib.last (lib.splitString "/" fleet.timeZone))
-        ''mode   = "${profile.colorScheme}"''
-      ]
-      (builtins.readFile ../../resources/templates/noctalia/noctalia-config.toml.template);
-
     themeContext = pkgs.writeText "nix-theme-context.json" (builtins.toJSON {
       static = {
-        "application-font-size" = sizes.applications;
-        "cursor-size" = cursor.size;
-        "cursor-theme" = cursor.name;
-        "gtk-theme" = gtk.name;
-        "gtk4-theme-directory" = "${localThemePackage gtk}/share/libadwaita-themes";
-        "icon-theme" = icon.name;
-        "mono-font" = fonts.mono.name;
-        "sans-font" = fonts.sans.name;
-        "terminal-font-size" = sizes.terminal;
+        application-font-size = sizes.applications;
+        cursor-size = cursor.size;
+        cursor-theme = cursor.name;
+        gtk-theme = gtk.name;
+        gtk4-theme-directory = "${localThemePackage gtk}/share/libadwaita-themes";
+        icon-theme = icon.name;
+        mono-font = fonts.mono.name;
+        sans-font = fonts.sans.name;
+        serif-font = fonts.serif.name;
+        terminal-font-size = sizes.terminal;
+        larger-font-size = builtins.floor (sizes.terminal * 1.1);
+        inherit (user.identity) email;
+        account-name = user.identity.accountName;
+        display-name = user.identity.displayName;
+        ssh-private-key = host.privateKey;
+        inherit (fleet.monitors) main secondary;
+        main-connector = host.monitors.main;
+        secondary-connector = host.monitors.secondary;
+        image-directory = toString wallpaper.directory;
+        image = fleet.wallpaper.image;
+        location = lib.last (lib.splitString "/" fleet.timeZone);
       };
       themes =
         lib.mapAttrs (_name: profile: {
@@ -76,7 +59,6 @@ _: {
             if profile.colorScheme == "dark"
             then "prefer-dark"
             else "default";
-          "noctalia-config" = mkNoctaliaConfig profile;
           "prefer-dark" = lib.boolToString (profile.colorScheme == "dark");
           "qt-color-scheme" = profile.colorScheme;
           wallpaper = toString (selectedWallpaper profile);

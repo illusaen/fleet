@@ -1,38 +1,35 @@
-[include.optional]
-files = ["@themeStateDir@"]
-
 [general]
 autostart = ["alacritty --class scratchpad-alacritty"]
 xwayland = false
 show_cheatsheet = false
 
-[output."@main@"]
+[output."{{main}}"]
 enabled = true
 mode = "5120x2160@100.035"
 position = [0, 0]
 workspaces = "dynamic"
 
-[output."@secondary@"]
+[output."{{secondary}}"]
 enabled = true
 mode = "1920x1080@60"
 position = [5120, 0]
 workspaces = "dynamic"
 transform = "270"
 
-[output."@secondary@".layout.scrolling]
+[output."{{secondary}}".layout.scrolling]
 default_extent_fraction = 1
 
 [[workspace]]
 name = "GAME"
-output = "@main@"
+output = "{{main}}"
 
 [[workspace]]
 name = "CODE"
-output = "@main@"
+output = "{{main}}"
 
 [[workspace]]
 name = "MUSIC"
-output = "@secondary@"
+output = "{{secondary}}"
 
 [appearance]
 border_width = 0
@@ -46,8 +43,8 @@ scroll_wheel_step = 120
 scroll_button = "MouseMiddle"
 
 [input.cursor]
-theme = "@cursorName@"
-size = @cursorSize@
+theme = "{{cursor-theme}}"
+size = {{cursor-size}}
 
 [[scratchpad]]
 name = "TERMINAL"
@@ -92,7 +89,7 @@ default_focused = false
 [[window_rule]]
 match.app_id = "^scratchpad-alacritty$"
 default_scratchpad = "TERMINAL"
-default_output = "@main@"
+default_output = "{{main}}"
 default_floating = true
 default_floating_size = { width = 0.4, height = 0.5 }
 default_position = { x = 0, y = 0, anchor = "top" }
@@ -169,7 +166,7 @@ default_focused = true
 [[window_rule]]
 match.app_id = "^vesktop$"
 default_scratchpad = "CHAT"
-default_output = "@main@"
+default_output = "{{main}}"
 default_floating = true
 default_floating_size = { width = 0.3, height = 1 }
 default_position = { x = 0, y = 0, anchor = "right" }
@@ -212,8 +209,8 @@ blur = false
 "Mod+Alt+T" = "spawn:alacritty --class scratchpad-alacritty"
 "Mod+Ctrl+T" = "spawn:theme-select"
 "Mod+O" = { action = "overview-toggle", repeat = false }
-"Mod+Ctrl+B" = { action = "spawn:noctalia msg brightness-up @mainConnector@ 5", allow_when_locked = true }
-"Mod+Ctrl+Shift+B" = { action = "spawn:noctalia msg brightness-down @mainConnector@ 5", allow_when_locked = true }
+"Mod+Ctrl+B" = { action = "spawn:noctalia msg brightness-up {{main-connector}} 5", allow_when_locked = true }
+"Mod+Ctrl+Shift+B" = { action = "spawn:noctalia msg brightness-down {{main-connector}} 5", allow_when_locked = true }
 "Mod+Shift+Escape" = { action = "shortcuts-inhibit-toggle", allow_when_inhibited = true, repeat = false }
 
 "Mod+Left" = "window-focus-left"
@@ -268,5 +265,17 @@ blur = false
 "XF86AudioNext" = "spawn:playerctl next"
 "XF86AudioPrev" = "spawn:playerctl previous"
 "XF86AudioPlay" = { action = "spawn:playerctl play-pause", allow_when_locked = true }
-"XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down @main@ 5", allow_when_locked = true }
-"XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up @main@ 5", allow_when_locked = true }
+"XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down {{main-connector}} 5", allow_when_locked = true }
+"XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up {{main-connector}} 5", allow_when_locked = true }
+
+[colors]
+background = "#{{base01-hex}}FF"
+text_primary = "#{{base05-hex}}FF"
+text_muted = "#{{base04-hex}}FF"
+accent_primary = "#{{base0C-hex}}FF"
+accent_secondary = "#{{base08-hex}}FF"
+warning = "#{{base09-hex}}FF"
+error = "#{{base0F-hex}}FF"
+insert_hint = "#{{base0D-hex}}80"
+backdrop = "#{{base00-hex}}FF"
+shadow = "#{{base00-hex}}7F"

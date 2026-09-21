@@ -16,6 +16,10 @@
       name = "Monaspace Neon NF";
       packageName = "monaspace";
     };
+    serif = {
+      name = "Monaspace Xenon Frozen";
+      packageName = "monaspace";
+    };
     emoji = {
       name = "Noto Color Emoji";
       packageName = "noto-fonts-color-emoji";

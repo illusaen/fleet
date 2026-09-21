@@ -7,7 +7,6 @@
     };
 
     services.power-profiles-daemon.enable = false;
-
     systemd.user.services.noctalia.environment.NOCTALIA_CONFIG_HOME = "%h/.config";
 
     nix.settings = {

@@ -1,6 +1,5 @@
 {
   modules.generic = {
-    fleet,
     host,
     lib,
     pkgs,
@@ -82,21 +81,6 @@
     };
     vscodeGeneratedFiles =
       {
-        ".vscode/argv.json" = {
-          generator = lib.generators.toJSON {};
-          value = {
-            enable-crash-reporter = true;
-            crash-reporter-id = "d17b2c57-3182-4ec0-a09f-c8abd1812a80";
-            password-store = "gnome-libsecret";
-          };
-        };
-        "${vscodeUserDir}/settings.json".source = pkgs.replaceVars ./settings.json.template {
-          fontSize = builtins.floor (fleet.fonts.sizes.terminal * 1.1);
-          monoFontName = "${fleet.fonts.mono.name},Maple Mono NF CN";
-          serifFontName = "Monaspace Xenon Frozen";
-          sansFontName = fleet.fonts.sans.name;
-          zoomLevel = 1;
-        };
         ".vscode/extensions".source = "${vscodeExtensions}/share/vscode/extensions";
       }
       // lib.mapAttrs' (
@@ -125,5 +109,6 @@
 
   modules.nixos.persistUser.directories = [
     ".config/Code/User"
+    ".vscode-shared"
   ];
 }

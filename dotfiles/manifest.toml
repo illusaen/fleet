@@ -2,9 +2,15 @@ version = 1
 clobber = true
 
 [[items]]
-source = "alacritty-alacritty.toml"
+source = "alacritty.toml"
 destination = "$XDG_CONFIG_HOME/alacritty/alacritty.toml"
-template = "alacritty-alacritty.toml.mustache"
+template = "alacritty.toml.mustache"
+themed = true
+
+[[items]]
+source = "bat-base16.tmTheme"
+destination = "$XDG_CONFIG_HOME/bat/themes/Base16.tmTheme"
+template = "bat-base16.tmTheme.mustache"
 themed = true
 
 [[items]]
@@ -12,36 +18,44 @@ source = "bat-config"
 destination = "$XDG_CONFIG_HOME/bat/config"
 
 [[items]]
+source = "gh-config.yaml"
+destination = "$XDG_CONFIG_HOME/gh/config.yaml"
+
+[[items]]
+source = "gh-hosts.yaml"
+destination = "$XDG_CONFIG_HOME/gh/hosts.yaml"
+template = "gh-hosts.yaml.mustache"
+
+[[items]]
+source = "gitconfig"
+destination = "$XDG_CONFIG_HOME/git/config"
+template = "gitconfig.mustache"
+
+[[items]]
+source = "gtk3-settings.ini"
+destination = "$XDG_CONFIG_HOME/gtk-3.0/settings.ini"
+template = "gtk3-settings.ini.mustache"
+themed = true
+
+[[items]]
+source = "gtk4-dark.css"
+destination = "$XDG_CONFIG_HOME/gtk-4.0/gtk-dark.css"
+template = "gtk4-dark.css.mustache"
+
+[[items]]
+source = "gtk4.css"
+destination = "$XDG_CONFIG_HOME/gtk-4.0/gtk.css"
+template = "gtk4.css.mustache"
+
+[[items]]
+source = "gtk4-settings.ini"
+destination = "$XDG_CONFIG_HOME/gtk-4.0/settings.ini"
+template = "gtk4-settings.ini.mustache"
+themed = true
+
+[[items]]
 source = "hidden-files"
 destination = "$HOME/.hidden"
-
-[[items]]
-source = "bat-themes-Base16.tmTheme"
-destination = "$XDG_CONFIG_HOME/bat/themes/Base16.tmTheme"
-template = "bat-themes-Base16.tmTheme.mustache"
-themed = true
-
-[[items]]
-source = "gtk-3.0-settings.ini"
-destination = "$XDG_CONFIG_HOME/gtk-3.0/settings.ini"
-template = "gtk-3.0-settings.ini.mustache"
-themed = true
-
-[[items]]
-source = "gtk-4.0-gtk-dark.css"
-destination = "$XDG_CONFIG_HOME/gtk-4.0/gtk-dark.css"
-template = "gtk-4.0-gtk-dark.css.mustache"
-
-[[items]]
-source = "gtk-4.0-gtk.css"
-destination = "$XDG_CONFIG_HOME/gtk-4.0/gtk.css"
-template = "gtk-4.0-gtk.css.mustache"
-
-[[items]]
-source = "gtk-4.0-settings.ini"
-destination = "$XDG_CONFIG_HOME/gtk-4.0/settings.ini"
-template = "gtk-4.0-settings.ini.mustache"
-themed = true
 
 [[items]]
 source = "noctalia-config.toml"
@@ -50,25 +64,52 @@ template = "noctalia-config.toml.mustache"
 themed = true
 
 [[items]]
-source = "umbriel-umbriel-colors.toml"
-destination = "$XDG_CONFIG_HOME/umbriel/umbriel-colors.toml"
-template = "umbriel-umbriel-colors.toml.mustache"
-themed = true
-
-[[items]]
-source = "qt5ct-qt5ct.conf"
+source = "qt5ct.conf"
 destination = "$XDG_CONFIG_HOME/qt5ct/qt5ct.conf"
-template = "qt5ct-qt5ct.conf.mustache"
+template = "qt5ct.conf.mustache"
 themed = true
 
 [[items]]
-source = "qt6ct-qt6ct.conf"
+source = "qt6ct.conf"
 destination = "$XDG_CONFIG_HOME/qt6ct/qt6ct.conf"
-template = "qt6ct-qt6ct.conf.mustache"
+template = "qt6ct.conf.mustache"
 themed = true
 
 [[items]]
-source = "zathura-zathurarc"
+source = "starship-config.toml"
+destination = "$XDG_CONFIG_HOME/starship.toml"
+
+[[items]]
+source = "umbriel-config.toml"
+destination = "$XDG_CONFIG_HOME/umbriel/config.toml"
+template = "umbriel-config.toml.mustache"
+themed = true
+
+[[items]]
+source = "vencord.css"
+destination = "$XDG_CONFIG_HOME/vesktop/settings/quickCss.css"
+template = "vencord.css.mustache"
+themed = true
+
+[[items]]
+source = "vencord-settings.json"
+destination = "$XDG_CONFIG_HOME/vesktop/settings/settings.json"
+
+[[items]]
+source = "vesktop-settings.json"
+destination = "$XDG_CONFIG_HOME/vesktop/settings.json"
+
+[[items]]
+source = "vscode-argv.json"
+destination = "$HOME/.vscode/argv.json"
+
+[[items]]
+source = "vscode-settings.json"
+destination = "$XDG_CONFIG_HOME/Code/User/settings.json"
+template = "vscode-settings.json.mustache"
+
+[[items]]
+source = "zathurarc"
 destination = "$XDG_CONFIG_HOME/zathura/zathurarc"
-template = "zathura-zathurarc.mustache"
+template = "zathurarc.mustache"
 themed = true
