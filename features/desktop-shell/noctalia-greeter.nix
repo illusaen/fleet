@@ -5,6 +5,11 @@
     fleet,
     ...
   }: {
+    # Enables gnome keyring and allows Noctalia/Noctalia greeter to unlock keyring
+    services.gnome.gnome-keyring.enable = true;
+    security.pam.services.login.enableGnomeKeyring = true;
+    security.pam.services.greetd.enableGnomeKeyring = true;
+
     services.displayManager.noctalia-greeter = {
       enable = true;
       settings = {
@@ -17,25 +22,25 @@
           font_family = fleet.fonts.sans.name;
         };
         appearance.palette = {
-          primary = "#0e0e43";
+          primary = "#000000";
           on_primary = "#7c80b4";
-          secondary = "#0e0e43";
-          on_secondary = "#0e0e43";
-          tertiary = "#0e0e43";
-          on_tertiary = "#0e0e43";
-          error = "#0e0e43";
+          secondary = "#000000";
+          on_secondary = "#000000";
+          tertiary = "#000000";
+          on_tertiary = "#000000";
+          error = "#000000";
           on_error = "#FD4663";
-          surface = "#0e0e43";
+          surface = "#000000";
           on_surface = "#f3edf7";
-          surface_variant = "#0e0e43";
-          on_surface_variant = "#0e0e43";
-          outline = "#0e0e43";
-          shadow = "#0e0e43";
+          surface_variant = "#000000";
+          on_surface_variant = "#000000";
+          outline = "#000000";
+          shadow = "#000000";
           hover = "#9BFECE";
-          on_hover = "#0e0e43";
+          on_hover = "#000000";
         };
         appearance.wallpaper = {
-          fill_color = "#0e0e43";
+          fill_color = "#000000";
           fill_mode = "fit";
         };
         output.name = fleet.monitors.main;

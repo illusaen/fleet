@@ -145,10 +145,6 @@ nix_store_for_command() {
 open_editor() {
   for editor in code nvim vim; do
     if command -v "$editor" >/dev/null 2>&1; then
-      if "$editor" == "code"; then
-        "$editor" --password-store="gnome-libsecret" .
-        return
-      fi
       "$editor" .
       return
     fi
