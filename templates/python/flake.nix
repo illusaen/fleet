@@ -19,8 +19,9 @@
     treefmt-nix,
     ...
   }: let
+    system = "x86_64-linux";
     pkgs = import nixpkgs {
-      system = "x86_64-linux";
+      inherit system;
       overlays = [devshell.overlays.default];
     };
 
@@ -59,7 +60,7 @@
   in {
     formatter = treefmtConfig.config.build.wrapper;
 
-    devShell = pkgs.devshell.mkShell (
+    devShell.${system} = pkgs.devshell.mkShell (
       {extraModulesPath, ...}: {
         imports = [
           "${extraModulesPath}/git/hooks.nix"

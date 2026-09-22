@@ -106,12 +106,16 @@ dev() {
   mkdir -- "$project_name" || return
   cd -- "$project_dir" || return
 
-  nix flake init --template "path:$templates_dir#$template_name" || return
-  cp -a -- "$shared_dir"/. . || return
+  nix flake init --template "github:illusaen/fleet#$template_name" || return
+  cp "$shared_dir/envrc" .envrc
+  cp "$shared_dir/gitignore" .gitignore
   git init
+  git add -A
 
   if [[ "$template_name" == "node" ]]; then
     pnpm init
+  elif [[ "$template_name" == "python" ]]; then
+    uv init
   fi
 }
 
