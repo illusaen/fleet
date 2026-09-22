@@ -10,19 +10,10 @@ _: {
     inherit (fleet) fonts themes wallpaper;
     inherit (fleet.fonts) sans sizes;
     inherit (fleet.theming) cursor gtk icon;
-    localThemePackage = theme: pkgs.local.${theme.packageName};
     themeNames = builtins.attrNames themes.profiles;
     themeListFile = pkgs.writeText "nix-theme-list" (lib.concatStringsSep "\n" themeNames);
-    themeListJson = builtins.toJSON themeNames;
 
-    gtkSettings = {
-      gtk-font-name = "${sans.name} ${toString sizes.applications}";
-      gtk-theme-name = gtk.name;
-      gtk-icon-theme-name = icon.name;
-      gtk-cursor-theme-name = cursor.name;
-      gtk-cursor-theme-size = cursor.size;
-    };
-    gtkIni = lib.generators.toINI {} {Settings = gtkSettings;};
+    localThemePackage = theme: pkgs.local.${theme.packageName};
 
     selectedWallpaper = profile:
       if profile.wallpaper != null
@@ -31,27 +22,31 @@ _: {
 
     themeContext = pkgs.writeText "nix-theme-context.json" (builtins.toJSON {
       static = {
-        application-font-size = sizes.applications;
         cursor-size = cursor.size;
         cursor-theme = cursor.name;
+        icon-theme = icon.name;
         gtk-theme = gtk.name;
         gtk4-theme-directory = "${localThemePackage gtk}/share/libadwaita-themes";
-        icon-theme = icon.name;
+
+        application-font-size = sizes.applications;
+        terminal-font-size = sizes.terminal;
+        larger-font-size = builtins.floor (sizes.terminal * 1.1);
         mono-font = fonts.mono.name;
         sans-font = fonts.sans.name;
         serif-font = fonts.serif.name;
-        terminal-font-size = sizes.terminal;
-        larger-font-size = builtins.floor (sizes.terminal * 1.1);
+
         inherit (user.identity) email;
         account-name = user.identity.accountName;
         display-name = user.identity.displayName;
         ssh-private-key = host.privateKey;
+        location = lib.last (lib.splitString "/" fleet.timeZone);
+
         inherit (fleet.monitors) main secondary;
         main-connector = host.monitors.main;
         secondary-connector = host.monitors.secondary;
+
         image-directory = toString wallpaper.directory;
         image = fleet.wallpaper.image;
-        location = lib.last (lib.splitString "/" fleet.timeZone);
       };
       themes =
         lib.mapAttrs (_name: profile: {
@@ -68,6 +63,7 @@ _: {
 
     python = pkgs.python3.withPackages (pythonPackages: [
       pythonPackages.pystache
+      pythonPackages.pydantic
       pythonPackages.pyyaml
     ]);
 
@@ -77,79 +73,6 @@ _: {
         export NIX_CONFIG_FOLDER="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
         export NIX_THEME_CONTEXT=${lib.escapeShellArg themeContext}
         exec ${python}/bin/python ${./runtime_theme.py} "$@"
-      '';
-    };
-
-    themeList = pkgs.writeShellApplication {
-      name = "theme-list";
-      runtimeInputs = [pkgs.coreutils];
-      text = ''
-        set -euo pipefail
-        if [ "''${1:-}" = "--json" ]; then
-          printf '%s\n' ${lib.escapeShellArg themeListJson}
-          exit 0
-        fi
-        cat ${themeListFile}
-      '';
-    };
-
-    themeCurrent = pkgs.writeShellApplication {
-      name = "theme-current";
-      runtimeInputs = [pkgs.coreutils];
-      text = ''
-        set -euo pipefail
-        repository="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
-        selected="$repository/dotfiles/built/selected"
-        if [ -s "$selected" ]; then
-          cat "$selected"
-          exit 0
-        fi
-        exit 1
-      '';
-    };
-
-    themeCycle = pkgs.writeShellApplication {
-      name = "theme-cycle";
-      runtimeInputs = [
-        pkgs.coreutils
-        themeApply
-        themeCurrent
-      ];
-      text = ''
-        set -euo pipefail
-        direction="''${1:-next}"
-        current="$(theme-current 2>/dev/null || true)"
-        first=""
-        previous=""
-        selected=""
-
-        while IFS= read -r theme; do
-          [ -n "$theme" ] || continue
-          [ -n "$first" ] || first="$theme"
-          if [ "$direction" = "previous" ] || [ "$direction" = "prev" ]; then
-            if [ "$theme" = "$current" ]; then
-              selected="$previous"
-              break
-            fi
-            previous="$theme"
-          else
-            if [ "$previous" = "$current" ]; then
-              selected="$theme"
-              break
-            fi
-            previous="$theme"
-          fi
-        done < ${themeListFile}
-
-        if [ -z "$selected" ]; then
-          if [ "$direction" = "previous" ] || [ "$direction" = "prev" ]; then
-            selected="$previous"
-          else
-            selected="$first"
-          fi
-        fi
-
-        exec theme-apply "$selected"
       '';
     };
 
@@ -173,21 +96,30 @@ _: {
         (localThemePackage gtk)
         (localThemePackage icon)
         themeApply
-        themeCurrent
-        themeCycle
-        themeList
         themeSelect
       ];
 
       sessionVariables = {
-        BAT_CONFIG_DIR = "$HOME/.config/bat";
         GTK_THEME = gtk.name;
         QT_QPA_PLATFORMTHEME = "qt6ct";
         XCURSOR_SIZE = toString cursor.size;
         XCURSOR_THEME = cursor.name;
       };
 
-      etc = {
+      # This is needed even after having ~/.config/gtk-3.0/settings.ini and gtk-4.0
+      # because GUI programs running as root and the login screen (which runs under
+      # a different user such as greetd) cannot read the user settings.
+      etc = let
+        gtkIni = lib.generators.toINI {} {
+          Settings = {
+            gtk-font-name = "${sans.name} ${toString sizes.applications}";
+            gtk-theme-name = gtk.name;
+            gtk-icon-theme-name = icon.name;
+            gtk-cursor-theme-name = cursor.name;
+            gtk-cursor-theme-size = cursor.size;
+          };
+        };
+      in {
         "xdg/gtk-3.0/settings.ini".text = gtkIni;
         "xdg/gtk-4.0/settings.ini".text = gtkIni;
       };
@@ -217,11 +149,12 @@ _: {
 
     system.userActivationScripts.restoreRuntimeTheme = ''
       if [ "$USER" = ${lib.escapeShellArg user.name} ]; then
-        selected="$(${lib.getExe themeCurrent} 2>/dev/null || true)"
+        repository="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
+        IFS= read -r selected || [[ -n "$selected" ]] < "$repository/dotfiles/built/selected"
         if ! ${lib.getExe pkgs.gnugrep} -Fqx -- "$selected" ${themeListFile}; then
           selected=${lib.escapeShellArg themes.default}
         fi
-        ${lib.getExe themeApply} link "$selected"
+        ${lib.getExe themeApply} "$selected"
       fi
     '';
   };
