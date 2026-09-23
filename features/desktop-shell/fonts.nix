@@ -29,13 +29,7 @@
           map (font: font.name)
           (builtins.attrValues (removeAttrs fleet.fonts ["sizes"]));
       in
-        builtins.listToAttrs (
-          map (name:
-            lib.nameValuePair name {
-              default = ["Font Awesome 7 Free"];
-            })
-          fontNames
-        );
+        lib.genAttrs fontNames (_name: {default = ["Font Awesome 7 Free"];});
     };
   };
 }

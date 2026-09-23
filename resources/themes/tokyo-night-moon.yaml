@@ -1,6 +1,6 @@
 system: "base24"
 name: "Tokyo Night Moon"
-author: "Michael Ball (https://github.com/enkia/tokyo-night-vscode-theme)"
+author: "Michaël Ball, based on Tokyo Night by enkia (https://github.com/enkia/tokyo-night-vscode-theme)"
 variant: "dark"
 palette:
   base00: "#222436"

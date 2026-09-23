@@ -1,5 +1,6 @@
-_: {
+{
   modules.nixos = {
+    config,
     fleet,
     host,
     lib,
@@ -76,6 +77,25 @@ _: {
       '';
     };
 
+    restoreRuntimeTheme = pkgs.writeShellApplication {
+      name = "restore-runtime-theme";
+      text = ''
+        repository="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
+        selected_file="$repository/dotfiles/built/selected"
+        selected=""
+
+        if [[ -r "$selected_file" ]]; then
+          IFS= read -r selected < "$selected_file" || true
+        fi
+
+        if ! ${lib.getExe pkgs.gnugrep} -Fqx -- "$selected" ${themeListFile}; then
+          selected=${lib.escapeShellArg themes.default}
+        fi
+
+        exec ${lib.getExe themeApply} "$selected"
+      '';
+    };
+
     themeSelect = pkgs.writeShellApplication {
       name = "theme-select";
       runtimeInputs = [
@@ -149,13 +169,21 @@ _: {
 
     system.userActivationScripts.restoreRuntimeTheme = ''
       if [ "$USER" = ${lib.escapeShellArg user.name} ]; then
-        repository="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
-        IFS= read -r selected || [[ -n "$selected" ]] < "$repository/dotfiles/built/selected"
-        if ! ${lib.getExe pkgs.gnugrep} -Fqx -- "$selected" ${themeListFile}; then
-          selected=${lib.escapeShellArg themes.default}
-        fi
-        ${lib.getExe themeApply} "$selected"
+        ${lib.getExe restoreRuntimeTheme}
       fi
     '';
+
+    systemd.services.restore-runtime-theme = {
+      description = "Restore runtime theme and dotfile links";
+      wantedBy = ["multi-user.target"];
+      after = ["local-fs.target"];
+      before = ["display-manager.service"];
+      serviceConfig = {
+        Type = "oneshot";
+        User = user.name;
+        Environment = "HOME=${config.users.users.${user.name}.home}";
+        ExecStart = lib.getExe restoreRuntimeTheme;
+      };
+    };
   };
 }

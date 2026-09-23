@@ -2,7 +2,7 @@
   inputs,
   lib,
 }: let
-  inherit (builtins) attrNames concatLists concatMap filter listToAttrs readDir elem;
+  inherit (builtins) attrNames concatLists concatMap filter readDir elem;
   inherit (lib) concatStringsSep optionals pipe unique filterAttrs;
 
   mergeFeatures = fragments: let
@@ -12,21 +12,13 @@
       (platform: elem "generic" declaredModulePlatforms || elem platform declaredModulePlatforms)
       ["nixos" "darwin"];
   in {
-    modules = listToAttrs (
-      map (platform: {
-        name = platform;
-        value =
-          concatMap (
-            fragment: let
-              modules = fragment.modules or {};
-              moduleList = platform: lib.optionals ((modules.${platform} or null) != null) (lib.toList modules.${platform});
-            in
-              moduleList "generic" ++ moduleList platform
-          )
-          fragments;
-      })
-      platformNames
-    );
+    modules = lib.genAttrs platformNames (platform:
+      concatMap (fragment: let
+        modules = fragment.modules or {};
+        moduleList = platform: lib.optionals ((modules.${platform} or null) != null) (lib.toList modules.${platform});
+      in
+        moduleList "generic" ++ moduleList platform)
+      fragments);
   };
 
   loadFeaturePath = path: let

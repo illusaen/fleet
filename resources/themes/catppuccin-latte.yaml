@@ -1,6 +1,6 @@
 system: "base24"
 name: "Catppuccin Latte"
-author: "catppuccin (https://github.com/catppuccin/catppuccin)"
+author: "https://github.com/catppuccin/catppuccin"
 variant: "light"
 palette:
   base00: "#eff1f5" # base
