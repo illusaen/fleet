@@ -43,8 +43,57 @@ in {
     ];
   };
 
-  modules.nixos = {pkgs, ...}: {
+  modules.nixos = {
+    pkgs,
+    lib,
+    ...
+  }: {
     programs.nix-ld.enable = true;
+
+    environment.systemPackages = [
+      (
+        pkgs.makeDesktopItem {
+          name = "alacritty";
+          desktopName = "Alacritty";
+          comment = "Open alacritty terminal";
+          exec = "${lib.getExe pkgs.alacritty}";
+          categories = ["Development"];
+        }
+      )
+      (
+        pkgs.writeShellApplication {
+          name = "scratchpad-alacritty";
+          runtimeInputs = [pkgs.coreutils pkgs.jq];
+          text = ''
+            get_window_id() {
+              ${lib.getExe pkgs.umbriel} windows --json |
+                jq -r 'first(.[] | select(.app_id == "scratchpad-alacritty") | .id) // empty'
+            }
+
+            window_id="$(get_window_id)"
+            if [[ -z "$window_id" ]]; then
+              ${lib.getExe pkgs.alacritty} --class scratchpad-alacritty &
+
+              for _ in {1..100}; do
+                window_id="$(get_window_id)"
+                [[ -n "$window_id" ]] && break
+                sleep 0.05
+              done
+
+              if [[ -z "$window_id" ]]; then
+                echo "scratchpad-alacritty: Alacritty window did not appear" >&2
+                exit 1
+              fi
+            fi
+
+            # The main output is left of the secondary output. This focuses it
+            # when necessary and is a harmless no-op when it is already focused.
+            ${lib.getExe pkgs.umbriel} msg output-focus-left 2>/dev/null || true
+            ${lib.getExe pkgs.umbriel} msg scratchpad-toggle:TERMINAL
+          '';
+        }
+      )
+    ];
 
     environment.sessionVariables = {
       # Pki files for certificate files for electron apps
