@@ -20,3 +20,11 @@ palette:
   base0D: "#AE95C7" # purple
   base0E: "#C795AE" # pink
   base0F: "#C79595" # light red
+  base10: "#C7AE95" # orange
+  base11: "#C7C795" # yellow
+  base12: "#AEC795" # poison green
+  base13: "#95C7AE" # turquois
+  base14: "#95AEC7" # aqua
+  base15: "#AE95C7" # purple
+  base16: "#C795AE" # pink
+  base17: "#C79595" # light red
