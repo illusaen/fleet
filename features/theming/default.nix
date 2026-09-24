@@ -151,6 +151,14 @@
       fi
     '';
 
+    system.userActivationScripts.cacheBat = {
+      deps = ["restoreRuntimeTheme"];
+      text = ''
+        echo "Building bat cache."
+        ${pkgs.bat}/bin/bat cache --build
+      '';
+    };
+
     systemd.services.restore-runtime-theme = {
       description = "Restore runtime theme and dotfile links";
       wantedBy = ["multi-user.target"];

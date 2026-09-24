@@ -6,6 +6,7 @@
   inputs.agenix.overlays.default
   inputs.colmena.overlays.default
   inputs.umbriel.overlays.default
+  inputs.umbriel.inputs.xdg-desktop-portal-umbriel.overlays.default
 
   (import ./packages.nix {inherit lib;})
 

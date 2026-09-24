@@ -4,6 +4,7 @@
     programs.umbriel = {
       enable = true;
       package = pkgs.umbriel;
+      portalPackage = pkgs.xdg-desktop-portal-umbriel;
     };
   };
 }

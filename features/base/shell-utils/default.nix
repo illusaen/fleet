@@ -112,14 +112,6 @@ in {
       EDITOR = "nvim";
     };
 
-    system.userActivationScripts.cacheBat = {
-      deps = ["restoreRuntimeTheme"];
-      text = ''
-        echo "Building bat cache."
-        ${pkgs.bat}/bin/bat cache --build
-      '';
-    };
-
     persistUser.directories = [".local/share/zoxide"];
   };
 }
