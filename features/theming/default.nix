@@ -12,7 +12,6 @@
     inherit (fleet.fonts) sans sizes;
     inherit (fleet.theming) cursor gtk icon;
     themeNames = builtins.attrNames themes.profiles;
-    themeListFile = pkgs.writeText "nix-theme-list" (lib.concatStringsSep "\n" themeNames);
 
     localThemePackage = theme: pkgs.local.${theme.packageName};
 
@@ -61,7 +60,7 @@
       ];
       text = ''
         set -euo pipefail
-        theme="$(noctalia dmenu --prompt 'Theme: ' < ${themeListFile})"
+        theme="$(printf '%s\n' ${lib.escapeShellArgs themeNames} | noctalia dmenu --prompt 'Theme: ')"
         [ -n "$theme" ] || exit 0
         exec theme-apply -t "$theme"
       '';
