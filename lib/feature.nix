@@ -10,7 +10,7 @@
     platformNames =
       filter
       (platform: elem "generic" declaredModulePlatforms || elem platform declaredModulePlatforms)
-      ["nixos" "darwin"];
+      ["nixos"];
   in {
     modules = lib.genAttrs platformNames (platform:
       concatMap (fragment: let

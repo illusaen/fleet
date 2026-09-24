@@ -110,27 +110,6 @@
         "type": "github"
       }
     },
-    "devshell_2": {
-      "inputs": {
-        "nixpkgs": [
-          "pydot",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1788342953,
-        "narHash": "sha256-EWkNM4JzBhZ/Yn1PG6lP4/QJuFAFeHYlY5gVxXu940Y=",
-        "owner": "numtide",
-        "repo": "devshell",
-        "rev": "a67c0f87b63bcbdbdcb56785bec0205a2e3d6026",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "devshell",
-        "type": "github"
-      }
-    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -289,7 +268,9 @@
     },
     "pydot": {
       "inputs": {
-        "devshell": "devshell_2",
+        "devshell": [
+          "devshell"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -299,8 +280,8 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1790230299,
-        "narHash": "sha256-/eP4rPbbOPXgr8uk1F857XPzy9G+mAY9svxuGnpFiB4=",
+        "lastModified": 1790251948,
+        "narHash": "sha256-+auimd5Hxm6+A0f/0tjIPlxG7pZ9KSrGDhT63GQuPvk=",
         "path": "/home/wendy/Projects/pydot",
         "type": "path"
       },

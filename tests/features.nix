@@ -49,14 +49,6 @@
           "pihole"
         ];
       };
-
-      "test Linux-only features are omitted from Darwin hosts" = {
-        expr = featureLib.featuresForHost (mkHost {
-          platform = "darwin";
-          tags = ["desktop"];
-        });
-        expected = ["base" "programs-core" "theming"];
-      };
     };
 
     modulesForHost."test an unknown feature fails with a useful evaluation error" = {

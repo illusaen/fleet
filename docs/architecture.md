@@ -42,7 +42,7 @@ The inventory lives in `fleet/config/`; its schema and defaults live in `fleet/o
 | Group | `isPosix`, logical member groups | Maps logical membership to host POSIX groups |
 | Service | `primary`, `backups`, `port`, `proxyPort`, `feature` | Places a service and selects its implementation feature |
 
-Names are generally derived from attribute keys and exposed as read-only `name` fields. A host's `platform` is derived from its `system`. The schema recognizes NixOS and Darwin platforms, but `flake/systems.nix` currently contains Linux systems only and configuration generation currently filters to NixOS.
+Names are generally derived from attribute keys and exposed as read-only `name` fields. A host's `platform` is derived from its `system`. The schema recognizes NixOS platforms but has the pipeline ready to add other platforms such as Darwin or WSL.
 
 ## Feature composition
 

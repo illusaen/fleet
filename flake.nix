@@ -38,6 +38,7 @@
     pydot = {
       url = "path:/home/wendy/Projects/pydot";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.devshell.follows = "devshell";
     };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";

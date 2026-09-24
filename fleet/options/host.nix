@@ -53,11 +53,7 @@
     };
   };
 in
-  submodule ({
-    name,
-    config,
-    ...
-  }: {
+  submodule ({name, ...}: {
     options = {
       name = mkOption {
         type = str;
@@ -72,11 +68,8 @@ in
       };
 
       platform = mkOption {
-        type = enum ["nixos" "darwin"];
-        default =
-          if lib.hasSuffix "-darwin" config.system
-          then "darwin"
-          else "nixos";
+        type = enum ["nixos"];
+        default = "nixos";
         readOnly = true;
         description = "Host configuration platform derived from system.";
       };
