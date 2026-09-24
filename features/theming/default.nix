@@ -1,4 +1,4 @@
-{inputs}: {
+{
   modules.nixos = {
     config,
     fleet,
@@ -46,31 +46,10 @@
 
     themeApply = pkgs.writeShellApplication {
       name = "theme-apply";
-      text = let
-        pydot = inputs.pydot.packages.${pkgs.stdenv.hostPlatform.system}.default;
-      in ''
+      text = ''
         export NIX_CONFIG_FOLDER="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
         export NIX_THEME_CONTEXT=${lib.escapeShellArg themeContext}
-        exec ${pydot}/bin/pydot --root "$NIX_CONFIG_FOLDER/dotfiles" "$@"
-      '';
-    };
-
-    restoreRuntimeTheme = pkgs.writeShellApplication {
-      name = "restore-runtime-theme";
-      text = ''
-        repository="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
-        selected_file="$repository/dotfiles/built/selected"
-        selected=""
-
-        if [[ -r "$selected_file" ]]; then
-          IFS= read -r selected < "$selected_file" || true
-        fi
-
-        if ! ${lib.getExe pkgs.gnugrep} -Fqx -- "$selected" ${themeListFile}; then
-          selected=${lib.escapeShellArg themes.default}
-        fi
-
-        exec ${lib.getExe themeApply} -t "$selected"
+        exec ${pkgs.pydot}/bin/pydot --root "$NIX_CONFIG_FOLDER/dotfiles" "$@"
       '';
     };
 
@@ -145,14 +124,7 @@
       ];
     };
 
-    system.userActivationScripts.restoreRuntimeTheme = ''
-      if [ "$USER" = ${lib.escapeShellArg user.name} ]; then
-        ${lib.getExe restoreRuntimeTheme}
-      fi
-    '';
-
     system.userActivationScripts.cacheBat = {
-      deps = ["restoreRuntimeTheme"];
       text = ''
         echo "Building bat cache."
         ${pkgs.bat}/bin/bat cache --build
@@ -168,7 +140,7 @@
         Type = "oneshot";
         User = user.name;
         Environment = "HOME=${config.users.users.${user.name}.home}";
-        ExecStart = lib.getExe restoreRuntimeTheme;
+        ExecStart = lib.getExe themeApply;
       };
     };
   };
