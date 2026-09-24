@@ -5,12 +5,10 @@ keep = 3
 [[items]]
 destination = "$XDG_CONFIG_HOME/alacritty/alacritty.toml"
 template = "alacritty.toml"
-themed = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/bat/themes/Base16.tmTheme"
 template = "bat-base16.tmTheme"
-themed = true
 
 [[items]]
 source = "bat-config"
@@ -29,9 +27,12 @@ destination = "$XDG_CONFIG_HOME/git/config"
 template = "gitconfig"
 
 [[items]]
+destination = "$XDG_CONFIG_HOME/gtk-3.0/bookmarks"
+template = "gtk3-bookmarks"
+
+[[items]]
 destination = "$XDG_CONFIG_HOME/gtk-3.0/settings.ini"
 template = "gtk3-settings.ini"
-themed = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/gtk-4.0/gtk-dark.css"
@@ -44,7 +45,6 @@ template = "gtk4.css"
 [[items]]
 destination = "$XDG_CONFIG_HOME/gtk-4.0/settings.ini"
 template = "gtk4-settings.ini"
-themed = true
 
 [[items]]
 source = "hidden-files"
@@ -53,17 +53,6 @@ destination = "$HOME/.hidden"
 [[items]]
 destination = "$XDG_CONFIG_HOME/noctalia/config.toml"
 template = "noctalia-config.toml"
-themed = true
-
-[[items]]
-destination = "$XDG_CONFIG_HOME/qt5ct/qt5ct.conf"
-template = "qt5ct.conf"
-themed = true
-
-[[items]]
-destination = "$XDG_CONFIG_HOME/qt6ct/qt6ct.conf"
-template = "qt6ct.conf"
-themed = true
 
 [[items]]
 source = "starship-config.toml"
@@ -72,12 +61,10 @@ destination = "$XDG_CONFIG_HOME/starship.toml"
 [[items]]
 destination = "$XDG_CONFIG_HOME/umbriel/config.toml"
 template = "umbriel-config.toml"
-themed = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/vesktop/settings/quickCss.css"
 template = "vencord.css"
-themed = true
 
 [[items]]
 source = "vencord-settings.json"
@@ -94,4 +81,3 @@ template = "vscode-settings.json"
 [[items]]
 destination = "$XDG_CONFIG_HOME/zathura/zathurarc"
 template = "zathurarc"
-themed = true

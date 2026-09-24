@@ -1,8 +1,8 @@
 [core]
-    sshCommand = "ssh -i {{ssh-private-key}}"
+    sshCommand = "ssh -i {{ssh_private_key}}"
 
 [credential]
-    accountName = "{{account-name}}"
+    accountName = "{{account_name}}"
     helper = "!gh auth git-credential"
 
 [diff]
@@ -22,4 +22,4 @@
 
 [user]
     email = "{{email}}"
-    name = "{{display-name}}"
+    name = "{{display_name}}"

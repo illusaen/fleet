@@ -4,11 +4,11 @@ ui_scale               = 1.1
 [brightness]
 enable_ddcutil         = true
 
-[brightness.monitor.{{main-connector}}]
+[brightness.monitor.{{main_connector}}]
 backend = "ddcutil"
 
 [shell]
-font_family            = "{{sans-font}}"
+font_family            = "{{sans_font}}"
 time_format            = "{:%I:%M %p}" # default shell UI time format
 polkit_agent           = true
 password_style         = "default"    # default | random
@@ -62,12 +62,12 @@ variant = "default"
 [wallpaper]
 fill_mode           = "center"                  # center | crop | fit | stretch | repeat | span
 transition          = ["fade", "wipe", "disc", "stripes", "zoom", "honeycomb"]
-directory           = "{{image-directory}}"        # empty = XDG Pictures directory
-directory_light     = "{{image-directory}}/light"  # optional day-mode directory
-directory_dark      = "{{image-directory}}/dark"   # optional night-mode directory
+directory           = "{{image_directory}}"        # empty = XDG Pictures directory
+directory_light     = "{{image_directory}}/light"  # optional day-mode directory
+directory_dark      = "{{image_directory}}/dark"   # optional night-mode directory
 
 [wallpaper.default]
-path = "{{image}}"                      # optional initial/default wallpaper path
+path = "{{default_image}}"                      # optional initial/default wallpaper path
 
 [wallpaper.automation]
 enabled                    = true
@@ -100,7 +100,7 @@ background_opacity = 0.8
 position = "bottom_center"
 
 [lockscreen]
-monitors = ["{{main-connector}}"]
+monitors = ["{{main_connector}}"]
 
 [calendar]
 enabled = true
@@ -136,7 +136,7 @@ start = ["session", "workspaces"]
 center = [ "date", "clock", "weather" ]
 end = ["tray", "clipboard", "control-center"]
 
-[bar.default.monitor.{{secondary-connector}}]
+[bar.default.monitor.{{secondary_connector}}]
 enabled = false
 
 [desktop_widgets]
@@ -165,7 +165,7 @@ box_height = 160.0
 box_width = 288.0
 cx = 620.0
 cy = 1680.0
-output = "{{secondary-connector}}"
+output = "{{secondary_connector}}"
 placement_height = 1920.0
 placement_width = 1080.0
 type = "clock"
@@ -173,7 +173,7 @@ type = "clock"
 [desktop_widgets.widget.clock_main.settings]
 background = false
 color = "on_surface"
-font_family = "{{mono-font}}"
+font_family = "{{mono_font}}"
 format = "{:%H:%M}"
 
 [desktop_widgets.widget.cpu_temp]
@@ -181,7 +181,7 @@ box_height = 32.0
 box_width = 72.0
 cx = 420.0
 cy = 1656.0
-output = "{{secondary-connector}}"
+output = "{{secondary_connector}}"
 placement_height = 1920.0
 placement_width = 1080.0
 type = "sysmon"
@@ -197,7 +197,7 @@ box_height = 40.0
 box_width = 64.0
 cx = 812.0
 cy = 1704.0
-output = "{{secondary-connector}}"
+output = "{{secondary_connector}}"
 placement_height = 1920.0
 placement_width = 1080.0
 type = "button"
@@ -214,7 +214,7 @@ box_height = 40.0
 box_width = 64.0
 cx = 812.0
 cy = 1664.0
-output = "{{secondary-connector}}"
+output = "{{secondary_connector}}"
 placement_height = 1920.0
 placement_width = 1080.0
 type = "button"
@@ -231,7 +231,7 @@ box_height = 32.0
 box_width = 72.0
 cx = 332.0
 cy = 1692.0
-output = "{{secondary-connector}}"
+output = "{{secondary_connector}}"
 placement_height = 1920.0
 placement_width = 1080.0
 type = "sysmon"
@@ -247,7 +247,7 @@ box_height = 32.0
 box_width = 72.0
 cx = 332.0
 cy = 1656.0
-output = "{{secondary-connector}}"
+output = "{{secondary_connector}}"
 placement_height = 1920.0
 placement_width = 1080.0
 type = "sysmon"
@@ -263,7 +263,7 @@ box_height = 32.0
 box_width = 72.0
 cx = 420.0
 cy = 1692.0
-output = "{{secondary-connector}}"
+output = "{{secondary_connector}}"
 placement_height = 1920.0
 placement_width = 1080.0
 type = "sysmon"
@@ -279,7 +279,7 @@ box_height = 32.0
 box_width = 72.0
 cx = 332.0
 cy = 1728.0
-output = "{{secondary-connector}}"
+output = "{{secondary_connector}}"
 placement_height = 1920.0
 placement_width = 1080.0
 type = "sysmon"
@@ -303,7 +303,7 @@ box_height = 24.0
 box_width = 40.0
 cx = 260.0
 cy = 1657.0
-output = "{{secondary-connector}}"
+output = "{{secondary_connector}}"
 placement_height = 1920.0
 placement_width = 1080.0
 type = "label"
@@ -321,7 +321,7 @@ box_height = 24.0
 box_width = 40.0
 cx = 260.0
 cy = 1692.0
-output = "{{secondary-connector}}"
+output = "{{secondary_connector}}"
 placement_height = 1920.0
 placement_width = 1080.0
 type = "label"
@@ -336,7 +336,7 @@ box_height = 40.0
 box_width = 40.0
 cx = 260.0
 cy = 1728.0
-output = "{{secondary-connector}}"
+output = "{{secondary_connector}}"
 placement_height = 1920.0
 placement_width = 1080.0
 type = "label"
@@ -370,7 +370,7 @@ glyph = "settings-2"
 [widget.clock]
 anchor = true
 color = "primary"
-font_family = "{{mono-font}}"
+font_family = "{{mono_font}}"
 font_weight = 800
 format = "{:%I:%M %p}"
 scale = 1.4

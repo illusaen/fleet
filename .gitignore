@@ -6,3 +6,5 @@ __pycache__
 .pre-commit-config.yaml
 .env
 .venv
+dotfiles/built/*
+!dotfiles/built/.gitkeep

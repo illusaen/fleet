@@ -43,8 +43,8 @@ scroll_wheel_step = 120
 scroll_button = "MouseMiddle"
 
 [input.cursor]
-theme = "{{cursor-theme}}"
-size = {{cursor-size}}
+theme = "{{cursor_theme}}"
+size = {{cursor_size}}
 
 [[scratchpad]]
 name = "TERMINAL"
@@ -198,7 +198,7 @@ match.namespace = "^noctalia-bar-"
 blur = false
 
 [keybinds]
-"Alt+Shift+T" = "spawn:scratchpad-alacritty"
+"Alt+Shift+T" = "scratchpad-toggle:TERMINAL"
 "Alt+Shift+Ctrl+T" = "scratchpad-toggle:CHAT"
 "Mod+Q" = "window-close"
 "Ctrl+Alt+Delete" = "session-quit"
@@ -210,8 +210,8 @@ blur = false
 "Mod+Alt+T" = "spawn:alacritty --class scratchpad-alacritty"
 "Mod+Ctrl+T" = "spawn:theme-select"
 "Mod+O" = { action = "overview-toggle", repeat = false }
-"Mod+Ctrl+B" = { action = "spawn:noctalia msg brightness-up {{main-connector}} 5", allow_when_locked = true }
-"Mod+Ctrl+Shift+B" = { action = "spawn:noctalia msg brightness-down {{main-connector}} 5", allow_when_locked = true }
+"Mod+Ctrl+B" = { action = "spawn:noctalia msg brightness-up {{main_connector}} 5", allow_when_locked = true }
+"Mod+Ctrl+Shift+B" = { action = "spawn:noctalia msg brightness-down {{main_connector}} 5", allow_when_locked = true }
 "Mod+Shift+Escape" = { action = "shortcuts-inhibit-toggle", allow_when_inhibited = true, repeat = false }
 
 "Mod+Left" = "window-focus-left"
@@ -266,17 +266,17 @@ blur = false
 "XF86AudioNext" = "spawn:playerctl next"
 "XF86AudioPrev" = "spawn:playerctl previous"
 "XF86AudioPlay" = { action = "spawn:playerctl play-pause", allow_when_locked = true }
-"XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down {{main-connector}} 5", allow_when_locked = true }
-"XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up {{main-connector}} 5", allow_when_locked = true }
+"XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down {{main_connector}} 5", allow_when_locked = true }
+"XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up {{main_connector}} 5", allow_when_locked = true }
 
 [colors]
-background = "#{{base01-hex}}FF"
-text_primary = "#{{base05-hex}}FF"
-text_muted = "#{{base04-hex}}FF"
-accent_primary = "#{{base0C-hex}}FF"
-accent_secondary = "#{{base08-hex}}FF"
-warning = "#{{base09-hex}}FF"
-error = "#{{base0F-hex}}FF"
-insert_hint = "#{{base0D-hex}}80"
-backdrop = "#{{base00-hex}}FF"
-shadow = "#{{base00-hex}}7F"
+background = "#{{base01}}FF"
+text_primary = "#{{base05}}FF"
+text_muted = "#{{base04}}FF"
+accent_primary = "#{{base0C}}FF"
+accent_secondary = "#{{base08}}FF"
+warning = "#{{base09}}FF"
+error = "#{{base0F}}FF"
+insert_hint = "#{{base0D}}80"
+backdrop = "#{{base00}}FF"
+shadow = "#{{base00}}7F"

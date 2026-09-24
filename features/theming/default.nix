@@ -1,4 +1,4 @@
-{
+{inputs}: {
   modules.nixos = {
     config,
     fleet,
@@ -16,64 +16,42 @@
 
     localThemePackage = theme: pkgs.local.${theme.packageName};
 
-    selectedWallpaper = profile:
-      if profile.wallpaper != null
-      then profile.wallpaper
-      else wallpaper.image;
-
     themeContext = pkgs.writeText "nix-theme-context.json" (builtins.toJSON {
-      static = {
-        cursor-size = cursor.size;
-        cursor-theme = cursor.name;
-        icon-theme = icon.name;
-        gtk-theme = gtk.name;
-        gtk4-theme-directory = "${localThemePackage gtk}/share/libadwaita-themes";
+      cursor_size = cursor.size;
+      cursor_theme = cursor.name;
+      icon_theme = icon.name;
+      gtk_theme = gtk.name;
+      gtk4_theme_directory = "${localThemePackage gtk}/share/libadwaita-themes";
 
-        application-font-size = sizes.applications;
-        terminal-font-size = sizes.terminal;
-        larger-font-size = builtins.floor (sizes.terminal * 1.1);
-        mono-font = fonts.mono.name;
-        sans-font = fonts.sans.name;
-        serif-font = fonts.serif.name;
+      application_font_size = sizes.applications;
+      terminal_font_size = sizes.terminal;
+      larger_font_size = builtins.floor (sizes.terminal * 1.1);
+      mono_font = fonts.mono.name;
+      sans_font = fonts.sans.name;
+      serif_font = fonts.serif.name;
 
-        inherit (user.identity) email;
-        account-name = user.identity.accountName;
-        display-name = user.identity.displayName;
-        ssh-private-key = host.privateKey;
-        location = lib.last (lib.splitString "/" fleet.timeZone);
+      inherit (user.identity) email;
+      account_name = user.identity.accountName;
+      display_name = user.identity.displayName;
+      ssh_private_key = host.privateKey;
+      location = lib.last (lib.splitString "/" fleet.timeZone);
 
-        inherit (fleet.monitors) main secondary;
-        main-connector = host.monitors.main;
-        secondary-connector = host.monitors.secondary;
+      inherit (fleet.monitors) main secondary;
+      main_connector = host.monitors.main;
+      secondary_connector = host.monitors.secondary;
 
-        image-directory = toString wallpaper.directory;
-        image = fleet.wallpaper.image;
-      };
-      themes =
-        lib.mapAttrs (_name: profile: {
-          "color-scheme" =
-            if profile.colorScheme == "dark"
-            then "prefer-dark"
-            else "default";
-          "prefer-dark" = lib.boolToString (profile.colorScheme == "dark");
-          "qt-color-scheme" = profile.colorScheme;
-          wallpaper = toString (selectedWallpaper profile);
-        })
-        themes.profiles;
+      image_directory = toString wallpaper.directory;
+      default_image = fleet.wallpaper.image;
     });
-
-    python = pkgs.python3.withPackages (pythonPackages: [
-      pythonPackages.pystache
-      pythonPackages.pydantic
-      pythonPackages.pyyaml
-    ]);
 
     themeApply = pkgs.writeShellApplication {
       name = "theme-apply";
-      text = ''
+      text = let
+        pydot = inputs.pydot.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      in ''
         export NIX_CONFIG_FOLDER="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
         export NIX_THEME_CONTEXT=${lib.escapeShellArg themeContext}
-        exec ${python}/bin/python ${./runtime_theme.py} "$@"
+        exec ${pydot}/bin/pydot --root "$NIX_CONFIG_FOLDER/dotfiles" "$@"
       '';
     };
 
@@ -92,7 +70,7 @@
           selected=${lib.escapeShellArg themes.default}
         fi
 
-        exec ${lib.getExe themeApply} "$selected"
+        exec ${lib.getExe themeApply} -t "$selected"
       '';
     };
 
@@ -106,7 +84,7 @@
         set -euo pipefail
         theme="$(noctalia dmenu --prompt 'Theme: ' < ${themeListFile})"
         [ -n "$theme" ] || exit 0
-        exec theme-apply "$theme"
+        exec theme-apply -t "$theme"
       '';
     };
   in {
