@@ -280,8 +280,8 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1790254737,
-        "narHash": "sha256-2WNi7HPHtazruXaMYHrOgJk8UJTundr5wiD832LtlFY=",
+        "lastModified": 1790264651,
+        "narHash": "sha256-+VQXtTUCbEsXLTD1kiGmIKmKlZa/M7ZB/CJiun0seTo=",
         "path": "/home/wendy/Projects/pydot",
         "type": "path"
       },

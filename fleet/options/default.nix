@@ -55,12 +55,6 @@ in {
       description = "Fleet theming settings.";
     };
 
-    themes = mkOption {
-      type = attrs;
-      default = {};
-      description = "Runtime theme profiles.";
-    };
-
     base16 = mkOption {
       type = attrs;
       default = {};

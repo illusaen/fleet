@@ -8,10 +8,16 @@
     user,
     ...
   }: let
-    inherit (fleet) fonts themes wallpaper;
+    inherit (fleet) fonts wallpaper;
     inherit (fleet.fonts) sans sizes;
     inherit (fleet.theming) cursor gtk icon;
-    themeNames = builtins.attrNames themes.profiles;
+
+    themeNames = lib.pipe ../../dotfiles/themes [
+      builtins.readDir
+      (lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".yaml" name))
+      builtins.attrNames
+      (map (lib.removeSuffix ".yaml"))
+    ];
 
     localThemePackage = theme: pkgs.local.${theme.packageName};
 

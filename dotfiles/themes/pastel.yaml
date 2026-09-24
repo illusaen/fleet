@@ -1,0 +1,29 @@
+system: "base24"
+name: "Bright Pastel"
+author: "illusaen"
+variant: "dark"
+palette:
+  base00: "#2C1D11" # ----
+  base01: "#393F45" # ---
+  base02: "#565E65" # --
+  base03: "#747C84" # -
+  base04: "#ADB3BA" # +
+  base05: "#C7CCD1" # ++
+  base06: "#DFE2E5" # +++
+  base07: "#F3F4F5" # ++++
+  base08: "#EF8181"
+  base09: "#FFEF9F"
+  base0A: "#C1FFA3"
+  base0B: "#82eaf4"
+  base0C: "#AAFFFD"
+  base0D: "#A6A4DF"
+  base0E: "#FF36B4"
+  base0F: "#ff686b"
+  base10: "#EF8181"
+  base11: "#FFEF9F"
+  base12: "#C1FFA3"
+  base13: "#82eaf4"
+  base14: "#AAFFFD"
+  base15: "#A6A4DF"
+  base16: "#FF36B4"
+  base17: "#ff686b"

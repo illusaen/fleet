@@ -46,28 +46,7 @@
     };
   };
 
-  themes = let
-    dark = map (t: profile t "dark") ["ashes" "ayu-mirage" "chalk" "laser" "tokyo-night-moon"];
-    light = map (t: profile t "dark") ["catppuccin-latte"];
-    profile = name: colorScheme: {
-      inherit name;
-      value = {
-        inherit colorScheme;
-        base16Theme = ../../resources/themes/${name}.yaml;
-        wallpaper =
-          if (colorScheme == "light")
-          then ../../resources/wallpapers/light/light-silk.jpeg
-          else ../../resources/wallpapers/dark/dark-silk.jpeg;
-      };
-    };
-  in {
-    default = "tokyo-night-moon";
-    profiles = (builtins.listToAttrs dark) // (builtins.listToAttrs light);
-  };
-
   base16 = {
-    theme = ../../resources/themes/tokyo-night-moon.yaml;
-    colorScheme = "dark";
     isDark = true;
   };
 
