@@ -1,4 +1,4 @@
-{inputs}: {
+{
   imports = [
     ./shell-utils
     ./networking.nix
@@ -8,10 +8,6 @@
     ./ssh.nix
     ./tailscale.nix
   ];
-
-  modules.generic = {user, ...}: {
-    hjem.users.${user.name}.enable = true;
-  };
 
   modules.nixos = {
     fleet,
@@ -32,10 +28,6 @@
 
     extraGroups = lib.unique (posixGroups ++ lib.optional (user.system.isAdmin or false) "wheel");
   in {
-    imports = [
-      inputs.hjem.nixosModules.default
-    ];
-
     system.stateVersion = "26.11";
 
     users.users.${user.name} = {

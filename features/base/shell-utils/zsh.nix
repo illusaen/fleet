@@ -51,7 +51,7 @@ in {
     programs.zsh.shellAliases = shellAliases;
 
     environment.sessionVariables = {
-      ZSH_COMPDUMP = "$HOME/.cache/zsh/zcompdump-$ZSH_VERSION";
+      ZSH_COMPDUMP = "$HOME/.cache/zsh/zcompdump";
       FZF_DEFAULT_OPTS = "--no-height --style=full";
     };
 

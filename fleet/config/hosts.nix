@@ -9,7 +9,7 @@
     localDeploymentOnly = true;
     hostId = "abf835ae";
 
-    tags = ["desktop" "gpu:nvidia" "feature:creative" "feature:dev" "feature:gaming"];
+    tags = ["desktop" "gpu:nvidia" "feature:dev" "feature:gaming"];
 
     networkInterfaces.eno1.ipv4 = "192.168.1.162/24";
 
