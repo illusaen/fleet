@@ -46,10 +46,6 @@
     };
   };
 
-  base16 = {
-    isDark = true;
-  };
-
   wallpaper = {
     directory = ../../resources/wallpapers;
     image = ../../resources/wallpapers/dark/dark-silk.jpeg;

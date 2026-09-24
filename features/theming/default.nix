@@ -110,22 +110,7 @@
     programs.dconf = {
       enable = true;
       profiles.user.databases = [
-        {
-          settings = {
-            "org/gnome/desktop/interface" = {
-              color-scheme =
-                if fleet.base16.isDark
-                then "prefer-dark"
-                else "default";
-              font-name = "${sans.name} ${toString sizes.applications}";
-              gtk-theme = gtk.name;
-              icon-theme = icon.name;
-              cursor-theme = cursor.name;
-              cursor-size = lib.gvariant.mkUint32 cursor.size;
-            };
-            "org/gnome/desktop/wm/preferences"."button-layout" = "close:";
-          };
-        }
+        {settings."org/gnome/desktop/wm/preferences"."button-layout" = "close:";}
       ];
     };
 

@@ -55,12 +55,6 @@ in {
       description = "Fleet theming settings.";
     };
 
-    base16 = mkOption {
-      type = attrs;
-      default = {};
-      description = "Default base16 theme settings.";
-    };
-
     wallpaper = mkOption {
       type = attrs;
       default = {};

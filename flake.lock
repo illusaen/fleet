@@ -23,25 +23,6 @@
         "type": "github"
       }
     },
-    "base16": {
-      "inputs": {
-        "fromYaml": "fromYaml"
-      },
-      "locked": {
-        "lastModified": 1755819240,
-        "narHash": "sha256-qcMhnL7aGAuFuutH4rq9fvAhCpJWVHLcHVZLtPctPlo=",
-        "owner": "SenchoPens",
-        "repo": "base16.nix",
-        "rev": "75ed5e5e3fce37df22e49125181fa37899c3ccd6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "SenchoPens",
-        "ref": "main",
-        "repo": "base16.nix",
-        "type": "github"
-      }
-    },
     "colmena": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -164,22 +145,6 @@
         "type": "github"
       }
     },
-    "fromYaml": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1731966426,
-        "narHash": "sha256-lq95WydhbUTWig/JpqiB7oViTcHFP8Lv41IGtayokA8=",
-        "owner": "SenchoPens",
-        "repo": "fromYaml",
-        "rev": "106af9e2f715e2d828df706c386a685698f3223b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "SenchoPens",
-        "repo": "fromYaml",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -280,8 +245,8 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1790264651,
-        "narHash": "sha256-+VQXtTUCbEsXLTD1kiGmIKmKlZa/M7ZB/CJiun0seTo=",
+        "lastModified": 1790267396,
+        "narHash": "sha256-qKo8p/5n5cQEejL7RKezjHX91TQR4C0lRHrt75JEFUs=",
         "path": "/home/wendy/Projects/pydot",
         "type": "path"
       },
@@ -343,7 +308,6 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
-        "base16": "base16",
         "colmena": "colmena",
         "devshell": "devshell",
         "disko": "disko",
