@@ -13,6 +13,7 @@ template = "bat-base16.tmTheme"
 [[items]]
 source = "bat-config"
 destination = "$XDG_CONFIG_HOME/bat/config"
+hook = "bat cache --build"
 
 [[items]]
 destination = "$XDG_STATE_HOME/nix-theme/interface.dconf"

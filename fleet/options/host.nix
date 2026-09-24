@@ -19,6 +19,20 @@
     };
   };
 
+  monitorType = submodule {
+    options = {
+      name = mkOption {
+        type = str;
+        description = "Monitor name from compositor's output list.";
+      };
+
+      connector = mkOption {
+        type = enum ["DP-1" "DP-2" "HDMI-A-1" "HDMI-A-2"];
+        description = "Connector used for monitor.";
+      };
+    };
+  };
+
   preservationType = submodule {
     options = {
       enable = mkOption {
@@ -139,7 +153,7 @@ in
       };
 
       monitors = mkOption {
-        type = attrsOf str;
+        type = attrsOf monitorType;
         default = {};
         description = "Named monitor connector mappings.";
       };

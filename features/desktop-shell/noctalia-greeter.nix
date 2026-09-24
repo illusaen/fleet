@@ -3,6 +3,7 @@
     pkgs,
     user,
     fleet,
+    host,
     ...
   }: {
     # Enables gnome keyring and allows Noctalia/Noctalia greeter to unlock keyring
@@ -43,7 +44,7 @@
           fill_color = "#000000";
           fill_mode = "fit";
         };
-        output.name = fleet.monitors.main;
+        output.name = host.monitors.main.name;
         cursor.size = fleet.theming.cursor.size;
       };
       cursorTheme = {

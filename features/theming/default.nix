@@ -8,8 +8,7 @@
     user,
     ...
   }: let
-    inherit (fleet) fonts wallpaper;
-    inherit (fleet.fonts) sans sizes;
+    inherit (fleet) fonts;
     inherit (fleet.theming) cursor gtk icon;
 
     themeNames = lib.pipe ../../dotfiles/themes [
@@ -21,33 +20,39 @@
 
     localThemePackage = theme: pkgs.local.${theme.packageName};
 
-    themeContext = pkgs.writeText "nix-theme-context.json" (builtins.toJSON {
+    themeContext = pkgs.writeText "nix-theme-context.json" (builtins.toJSON (let
+      inherit (fleet) wallpaper;
+      inherit (host.monitors) main secondary;
+      inherit (fonts) mono sans serif;
+      inherit (user.identity) email accountName displayName;
+    in {
       cursor_size = cursor.size;
       cursor_theme = cursor.name;
       icon_theme = icon.name;
       gtk_theme = gtk.name;
       gtk4_theme_directory = "${localThemePackage gtk}/share/libadwaita-themes";
 
-      application_font_size = sizes.applications;
-      terminal_font_size = sizes.terminal;
-      larger_font_size = builtins.floor (sizes.terminal * 1.1);
-      mono_font = fonts.mono.name;
-      sans_font = fonts.sans.name;
-      serif_font = fonts.serif.name;
+      application_font_size = fonts.sizes.applications;
+      terminal_font_size = fonts.sizes.terminal;
+      larger_font_size = builtins.floor (fonts.sizes.terminal * 1.1);
+      mono_font = mono.name;
+      sans_font = sans.name;
+      serif_font = serif.name;
 
-      inherit (user.identity) email;
-      account_name = user.identity.accountName;
-      display_name = user.identity.displayName;
+      inherit email;
+      account_name = accountName;
+      display_name = displayName;
       ssh_private_key = host.privateKey;
       location = lib.last (lib.splitString "/" fleet.timeZone);
 
-      inherit (fleet.monitors) main secondary;
-      main_connector = host.monitors.main;
-      secondary_connector = host.monitors.secondary;
+      main = main.name;
+      secondary = secondary.name;
+      main_connector = main.connector;
+      secondary_connector = secondary.connector;
 
       image_directory = toString wallpaper.directory;
       default_image = fleet.wallpaper.image;
-    });
+    }));
 
     themeApply = pkgs.writeShellApplication {
       name = "theme-apply";
@@ -94,7 +99,7 @@
       etc = let
         gtkIni = lib.generators.toINI {} {
           Settings = {
-            gtk-font-name = "${sans.name} ${toString sizes.applications}";
+            gtk-font-name = "${fonts.sans.name} ${toString fonts.sizes.applications}";
             gtk-theme-name = gtk.name;
             gtk-icon-theme-name = icon.name;
             gtk-cursor-theme-name = cursor.name;
@@ -112,13 +117,6 @@
       profiles.user.databases = [
         {settings."org/gnome/desktop/wm/preferences"."button-layout" = "close:";}
       ];
-    };
-
-    system.userActivationScripts.cacheBat = {
-      text = ''
-        echo "Building bat cache."
-        ${pkgs.bat}/bin/bat cache --build
-      '';
     };
 
     systemd.services.restore-runtime-theme = {

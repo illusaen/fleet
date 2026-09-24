@@ -1,4 +1,7 @@
-{
+let
+  lg = "LG Electronics LG ULTRAGEAR+ 508RMWVJR505";
+  portable = "BOE Display 000000001";
+in {
   odin = {
     system = "x86_64-linux";
     owner = "wendy";
@@ -14,8 +17,14 @@
     networkInterfaces.eno1.ipv4 = "192.168.1.162/24";
 
     monitors = {
-      main = "DP-2";
-      secondary = "HDMI-A-2";
+      main = {
+        connector = "DP-2";
+        name = lg;
+      };
+      secondary = {
+        connector = "HDMI-A-2";
+        name = portable;
+      };
     };
 
     preservation = {
@@ -37,6 +46,11 @@
     preservation = {
       enable = false;
       disk = "sda";
+    };
+
+    monitors.main = {
+      connector = "HDMI-A-2";
+      name = portable;
     };
   };
 
