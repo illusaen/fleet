@@ -32,7 +32,7 @@ name = "MUSIC"
 output = "{{secondary}}"
 
 [appearance]
-border_width = 0
+border_width = 4
 corner_radius = 8
 
 [input]
@@ -55,7 +55,7 @@ name = "CHAT"
 [layout]
 mode = "scrolling"
 extent_presets = [0.333, 0.6, 1]
-gap = 4
+gap = 16
 
 [layout.scrolling]
 default_extent_fraction = 0.333
@@ -68,6 +68,24 @@ blur = false
 [animation.dim_unfocused]
 enabled = true
 
+[colors]
+background = "#{{base01}}FF"
+text_primary = "#{{base05}}FF"
+text_muted = "#{{base04}}FF"
+accent_primary = "#{{base0C}}FF"
+accent_secondary = "#{{base08}}FF"
+warning = "#{{base09}}FF"
+error = "#{{base0F}}FF"
+insert_hint = "#{{base0D}}80"
+backdrop = "#{{base00}}FF"
+shadow = "#{{base00}}7F"
+
+[colors.border]
+focused = "#{{base09}}55"
+unfocused = "#{{base03}}55"
+scratchpad_focused = "#00000000"
+scratchpad_unfocused = "#00000000"
+
 [colors.overview]
 background_tint = "#00000000"                 # Tint over the desktop background
 
@@ -77,11 +95,6 @@ background_tint = "#00000000"                 # Tint over the desktop background
 blur = true
 blur_optimized = false
 blur_popups = true
-opacity = 0.9
-
-[[window_rule]]
-match.is_focused = false
-opacity = 0.6
 
 [[window_rule]]
 match.is_focused = true
@@ -273,15 +286,3 @@ blur = false
 "XF86AudioPlay" = { action = "spawn:playerctl play-pause", allow_when_locked = true }
 "XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down {{main_connector}} 5", allow_when_locked = true }
 "XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up {{main_connector}} 5", allow_when_locked = true }
-
-[colors]
-background = "#{{base01}}FF"
-text_primary = "#{{base05}}FF"
-text_muted = "#{{base04}}FF"
-accent_primary = "#{{base0C}}FF"
-accent_secondary = "#{{base08}}FF"
-warning = "#{{base09}}FF"
-error = "#{{base0F}}FF"
-insert_hint = "#{{base0D}}80"
-backdrop = "#{{base00}}FF"
-shadow = "#{{base00}}7F"
