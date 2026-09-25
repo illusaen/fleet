@@ -144,6 +144,12 @@ default_floating = true
 default_floating_size = { width = 0.3, height = 0.4 }
 
 [[window_rule]]
+match.app_id = "google-chrome"
+match.title = "^(.*)(s|S)(ign) (I|i)(n)(.*)"
+default_floating = true
+default_floating_size = { width = 0.3, height = 0.4 }
+
+[[window_rule]]
 match.app_id = "^dev.noctalia.UmbrielSharePicker$"
 default_floating = true
 default_floating_size = { width = 0.3, height = 0.4 }
