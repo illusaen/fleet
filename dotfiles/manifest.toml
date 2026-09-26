@@ -61,6 +61,14 @@ source = "neovim.lua"
 destination = "$XDG_CONFIG_HOME/nvim/init.lua"
 
 [[items]]
+source = "neovim-options.lua"
+destination = "$XDG_CONFIG_HOME/nvim/lua/config/options.lua"
+
+[[items]]
+source = "neovim-plugin.lua"
+destination = "$XDG_CONFIG_HOME/nvim/lua/plugins/init.lua"
+
+[[items]]
 destination = "$XDG_CONFIG_HOME/noctalia/config.toml"
 template = "noctalia-config.toml"
 

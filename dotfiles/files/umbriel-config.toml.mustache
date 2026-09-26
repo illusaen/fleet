@@ -116,33 +116,13 @@ default_floating = true
 default_floating_size = { width = 0.3, height = 0.4 }
 
 [[window_rule]]
-match.app_id = "org.pulseaudio.pavucontrol"
-default_floating = true
-default_floating_size = { width = 0.3, height = 0.4 }
-
-[[window_rule]]
-match.app_id = "blueman-manager"
-default_floating = true
-default_floating_size = { width = 0.3, height = 0.4 }
-
-[[window_rule]]
-match.app_id = "xdg-desktop-portal-"
-default_floating = true
-default_floating_size = { width = 0.3, height = 0.4 }
-
-[[window_rule]]
-match.app_id = "org.gnome.Nautilus"
+match.app_id = "(blueman-manager|org.pulseaudio.pavucontrol|xdg-desktop-portal-|org.gnome.Nautilus|dev.noctalia.Noctalia)"
 default_floating = true
 default_floating_size = { width = 0.3, height = 0.4 }
 
 [[window_rule]]
 match.app_id = "org.inkscape.Inkscape"
 match.title = "^.*image import.*"
-default_floating = true
-default_floating_size = { width = 0.3, height = 0.4 }
-
-[[window_rule]]
-match.app_id = "dev.noctalia.Noctalia"
 default_floating = true
 default_floating_size = { width = 0.3, height = 0.4 }
 
@@ -243,7 +223,7 @@ blur = false
 "Alt+Shift+4" = "spawn:noctalia msg screenshot-region"
 "Ctrl+Space" = "spawn:noctalia msg panel-toggle launcher"
 "Mod+Ctrl+Space" = "spawn:noctalia msg panel-toggle session"
-"Ctrl+Shift+Space" = "spawn:noctalia msg panel-toggle control-center"
+"Ctrl+Shift+Space" = "spawn:noctalia msg panel-toggle wallpaper"
 "Mod+T" = "spawn:alacritty"
 "Mod+Alt+T" = "spawn:alacritty --class scratchpad-alacritty"
 "Mod+Ctrl+T" = "spawn:theme-select"
