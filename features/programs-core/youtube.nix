@@ -6,10 +6,9 @@
         exec ${pkgs.yt-dlp}/bin/yt-dlp -f bestaudio --cookies-from-browser chrome+gnomekeyring --no-playlist "$@"
       '';
     };
-    music = pkgs.pear-desktop;
+    music = pkgs.mpv.override {scripts = with pkgs.mpvScripts; [mpris uosc];};
   in {
-    environment.systemPackages = [music wrappedYtDlp (pkgs.mpv.override {scripts = with pkgs.mpvScripts; [mpris uosc];})];
+    environment.systemPackages = [music wrappedYtDlp];
     systemdAutostart = [{package = music;}];
-    persistUser.directories = [".config/YouTube Music"];
   };
 }
