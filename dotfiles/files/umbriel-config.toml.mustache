@@ -83,7 +83,6 @@ insert_hint = "#{{base0D}}80"
 backdrop = "#{{base00}}FF"
 shadow = "#{{base00}}7F"
 
-
 [colors.overview]
 background_tint = "#00000000"                 # Tint over the desktop background
 
@@ -308,9 +307,10 @@ blur = false
 "XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down {{main_connector}} 5", allow_when_locked = true }
 "XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up {{main_connector}} 5", allow_when_locked = true }
 
-[include]
+[include.optional]
 files = ["noctalia.toml"]
 
-[colors.border]
-scratchpad_focused = "#00000000"
-scratchpad_unfocused = "#00000000"
+[[window_rule]]
+match.is_scratchpad = true
+border_color_focused = "#00000000"
+border_color_unfocused = "#00000000"
