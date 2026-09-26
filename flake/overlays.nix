@@ -5,6 +5,7 @@
   inputs.devshell.overlays.default
   inputs.agenix.overlays.default
   inputs.colmena.overlays.default
+  inputs.millennium.overlays.default
   inputs.pydot.overlays.default
   inputs.noctalia.overlays.default
   inputs.noctalia-greeter.overlays.default

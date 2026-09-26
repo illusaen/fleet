@@ -1,0 +1,37 @@
+approvals_reviewer = "auto_review"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
+service_tier = "default"
+[projects."/home/wendy/Projects/nix"]
+trust_level = "trusted"
+
+[projects."/home/wendy/Projects/aiexe-svelte"]
+trust_level = "trusted"
+
+[projects."/home/wendy/Projects/stories"]
+trust_level = "trusted"
+
+[projects."/home/wendy/Projects/work"]
+trust_level = "trusted"
+
+[projects."/home/wendy/Projects/pymud"]
+trust_level = "trusted"
+
+[projects."/home/wendy/Projects/flakey"]
+trust_level = "trusted"
+
+[projects."/home/wendy/Projects/fleet"]
+trust_level = "trusted"
+
+[projects."/home/wendy/Projects/pydot"]
+trust_level = "trusted"
+
+[tui]
+status_line = ["model-with-reasoning", "current-dir", "permissions", "approval-mode", "five-hour-limit", "weekly-limit"]
+status_line_use_colors = true
+screen_reader_detection_done = true
+theme = "noctalia"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+gpt-6-astra = 4

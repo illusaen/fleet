@@ -12,6 +12,10 @@ destination = "$XDG_CONFIG_HOME/bat/config"
 hook = "bat cache --build"
 
 [[items]]
+source = "codex.toml"
+destination = "$HOME/.codex/config.toml"
+
+[[items]]
 destination = "$XDG_STATE_HOME/nix-theme/interface.dconf"
 template = "dconf"
 hook = "dconf load /org/gnome/desktop/interface/ < $XDG_STATE_HOME/nix-theme/interface.dconf"

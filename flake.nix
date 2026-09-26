@@ -32,6 +32,8 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Intentionally not following nixpkgs since millennium repo states bun sensitive to versions
+    millennium.url = "github:illusaen/Millennium?dir=packages/nix";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     noctalia = {
       url = "github:noctalia-dev/noctalia";
