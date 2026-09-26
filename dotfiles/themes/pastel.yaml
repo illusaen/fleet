@@ -3,27 +3,27 @@ name: "Bright Pastel"
 author: "illusaen"
 variant: "dark"
 palette:
-  base00: "#1D1E19" # ----
-  base01: "#393F45" # ---
-  base02: "#565E65" # --
-  base03: "#747C84" # -
-  base04: "#ADB3BA" # +
-  base05: "#C7CCD1" # ++
-  base06: "#DFE2E5" # +++
-  base07: "#F3F4F5" # ++++
-  base08: "#FF36B4"
-  base09: "#FFEF9F"
-  base0A: "#C1FFA3"
-  base0B: "#AAFFFD"
-  base0C: "#C480DC"
+  base00: "#1f2430" # ----
+  base01: "#242936" # ---
+  base02: "#323844" # --
+  base03: "#4A5059" # -
+  base04: "#707a8c" # +
+  base05: "#cccac2" # ++
+  base06: "#d9d7ce" # +++
+  base07: "#f3f4f5" # ++++
+  base08: "#EF8181"
+  base09: "#ffb58e"
+  base0A: "#FFEF9F"
+  base0B: "#C1FFA3"
+  base0C: "#AAFFFD"
   base0D: "#82eaf4"
-  base0E: "#EF8181"
+  base0E: "#ffafff"
   base0F: "#ff686b"
-  base10: "#EF8181"
-  base11: "#FFEF9F"
-  base12: "#C1FFA3"
-  base13: "#82eaf4"
-  base14: "#AAFFFD"
-  base15: "#A6A4DF"
-  base16: "#EF8181"
-  base17: "#ff686b"
+  base10: "#171b24"
+  base11: "#1a1f29"
+  base12: "#f87984"
+  base13: "#fff263"
+  base14: "#9be9ba"
+  base15: "#b9f6ee"
+  base16: "#94e8ff"
+  base17: "#C480DC"
