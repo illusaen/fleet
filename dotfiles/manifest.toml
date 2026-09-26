@@ -57,6 +57,10 @@ source = "hidden-files"
 destination = "$HOME/.hidden"
 
 [[items]]
+source = "neovim.lua"
+destination = "$XDG_CONFIG_HOME/nvim/init.lua"
+
+[[items]]
 destination = "$XDG_CONFIG_HOME/noctalia/config.toml"
 template = "noctalia-config.toml"
 

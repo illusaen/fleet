@@ -50,6 +50,6 @@
     directory = "~/Projects/fleet/resources/wallpapers";
   in {
     inherit directory;
-    image = "${directory}/dark/dark-silk.jpeg";
+    image = "${directory}/dark/neon-ink.png";
   };
 }
