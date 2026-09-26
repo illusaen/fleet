@@ -7,6 +7,7 @@
   inputs.colmena.overlays.default
   inputs.pydot.overlays.default
   inputs.noctalia.overlays.default
+  inputs.noctalia-greeter.overlays.default
   inputs.umbriel.overlays.default
   inputs.umbriel.inputs.xdg-desktop-portal-umbriel.overlays.default
 

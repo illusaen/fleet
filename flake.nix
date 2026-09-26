@@ -37,6 +37,10 @@
       url = "github:noctalia-dev/noctalia";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     preservation.url = "github:nix-community/preservation";
     pydot = {
       url = "path:/home/wendy/Projects/pydot";

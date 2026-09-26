@@ -294,6 +294,9 @@ password_style         = "default"    # default | random
 settings_show_advanced = true         # show advanced settings by default in Settings
 app_icon_colorize      = false        # recolor application icons across the shell
 
+[shell.greeter_sync]
+auto_sync = true
+
 [shell.panel]
 transparency_mode      = "glass"      # solid | soft | glass; controls floating-panel opacity and card translucency
 clipboard_placement    = "attached"   # attached | floating
@@ -346,7 +349,11 @@ pure_black_dark = true
 
 [theme.templates]
 builtin_ids = [ "alacritty", "gtk3", "gtk4", "starship", "umbriel" ]
-community_ids = [ "discord", "inkscape", "neovim", "obsidian", "vscode", "steam", "zathura", "bat", "fzf" ]
+community_ids = [ "discord", "inkscape", "neovim", "obsidian", "steam", "zathura", "bat", "fzf" ]
+
+[theme.templates.user.vscode]
+input_path = "{{home}}/Projects/fleet/dotfiles/noctalia-templates/vscode.json"
+output_path = "$XDG_STATE_HOME/nix-theme/vscode.json"
 
 [wallpaper]
 fill_mode           = "center"                  # center | crop | fit | stretch | repeat | span

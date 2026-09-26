@@ -1,13 +1,11 @@
 {
   modules.generic = {
-    config,
-    lib,
     pkgs,
+    config,
     user,
     ...
   }: let
     version = "0.0.5";
-    runtimeTheme = "${config.users.users.${user.name}.home}/.vscode/extensions/noctalia.noctaliatheme-${version}/themes/NoctaliaTheme-color-theme.json";
     packageJson = pkgs.writeText "noctalia-theme-package.json" (builtins.toJSON {
       name = "noctaliatheme";
       displayName = "NoctaliaTheme";
@@ -20,7 +18,7 @@
         {
           label = "NoctaliaTheme";
           uiTheme = "vs";
-          path = "./themes/NoctaliaTheme-color-theme.json";
+          path = "./themes/vscode-noctalia-theme.json";
         }
       ];
     });
@@ -34,7 +32,7 @@
         extension="$out/share/vscode/extensions/$vscodeExtUniqueId"
         mkdir -p "$extension/themes"
         cp ${packageJson} "$extension/package.json"
-        ln -s ${lib.escapeShellArg runtimeTheme} "$extension/themes/NoctaliaTheme-color-theme.json"
+        ln -s "${config.users.users.${user.name}.home}/.local/state/nix-theme/vscode.json" "$extension/themes/vscode-noctalia-theme.json"
       '';
   in {
     programs.vscode = {
@@ -59,16 +57,16 @@
             hash = "sha256-6srW1fCbXLZwQunNuUYh2pS9D2XBunt1IrCIMB7MaYA=";
           }
           {
-            publisher = "vira";
-            name = "vsc-vira-theme";
-            version = "2026.6.6";
-            hash = "sha256-Fn/LasrjFwHXp894z44JYVDtCIqwlXS90VjC5KXU/Jg=";
-          }
-          {
             publisher = "inlang";
             name = "vs-code-extension";
             version = "2.3.2";
             hash = "sha256-ArTuBB+0fIYIH3myCLolVbuD46oTlLaOWb5TOZNwLPo=";
+          }
+          {
+            publisher = "dawhite";
+            name = "mustache";
+            version = "1.1.1";
+            hash = "sha256-PkymMex1icvDN2Df38EIuV1O9TkMNWP2sGOjl1+xGMk=";
           }
         ]
         ++ [noctaliaTheme];
