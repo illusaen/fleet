@@ -84,6 +84,7 @@
         (localThemePackage icon)
         themeApply
         themeSelect
+        pkgs.tinty
       ];
 
       sessionVariables = {

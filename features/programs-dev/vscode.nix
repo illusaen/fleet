@@ -1,6 +1,5 @@
 {
   modules.generic = {pkgs, ...}: {
-    environment.systemPackages = [pkgs.vscode];
     programs.vscode = {
       enable = true;
       extensions =
