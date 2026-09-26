@@ -83,11 +83,6 @@ insert_hint = "#{{base0D}}80"
 backdrop = "#{{base00}}FF"
 shadow = "#{{base00}}7F"
 
-[colors.border]
-focused = "#{{base09}}55"
-unfocused = "#{{base03}}55"
-scratchpad_focused = "#00000000"
-scratchpad_unfocused = "#00000000"
 
 [colors.overview]
 background_tint = "#00000000"                 # Tint over the desktop background
@@ -196,7 +191,7 @@ match.app_id = "^mpv$"
 default_scratchpad = "CHAT"
 default_output = "{{main}}"
 default_floating = true
-default_floating_size = { width = 0.4, height = 0.5 }
+default_floating_size_px = { width = 960, height = 540 }
 default_position = { x = 0, y = 0, anchor = "top" }
 
 [[window_rule]]
@@ -312,3 +307,10 @@ blur = false
 "XF86AudioPlay" = { action = "spawn:playerctl play-pause", allow_when_locked = true }
 "XF86MonBrightnessDown" = { action = "spawn:noctalia msg brightness-down {{main_connector}} 5", allow_when_locked = true }
 "XF86MonBrightnessUp" = { action = "spawn:noctalia msg brightness-up {{main_connector}} 5", allow_when_locked = true }
+
+[include]
+files = ["noctalia.toml"]
+
+[colors.border]
+scratchpad_focused = "#00000000"
+scratchpad_unfocused = "#00000000"

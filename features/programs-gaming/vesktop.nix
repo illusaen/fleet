@@ -6,6 +6,6 @@
     systemdAutostart = [
       {inherit package;}
     ];
-    persistUser.directories = [".config/vesktop/sessionData"];
+    persistUser.directories = [".config/vesktop"];
   };
 }

@@ -1,128 +1,13 @@
 [accessibility]
 ui_scale               = 1.1
 
-[brightness]
-enable_ddcutil         = true
-
-[brightness.monitor.{{main_connector}}]
-backend = "ddcutil"
-
-[shell]
-font_family            = "{{sans_font}}"
-time_format            = "{:%I:%M %p}" # default shell UI time format
-polkit_agent           = true
-password_style         = "default"    # default | random
-settings_show_advanced = true         # show advanced settings by default in Settings
-app_icon_colorize      = false        # recolor application icons across the shell
-
-[shell.panel]
-transparency_mode      = "glass"      # solid | soft | glass; controls floating-panel opacity and card translucency
-clipboard_placement    = "attached"   # attached | floating
-
-[shell.launcher]
-categories             = false        # show category filters in the launcher
-show_app_origin_indicator = false     # show package origin indicators on application results
-app_grid               = true         # show app icon grid view when results are apps only
-
-[[shell.session.actions]]
-action = "logout"
-countdown_seconds = 0.0
-enabled = true
-shortcut = "1"
-variant = "default"
-
-[[shell.session.actions]]
-action = "reboot"
-countdown_seconds = 0.0
-enabled = true
-shortcut = "2"
-variant = "default"
-
-[[shell.session.actions]]
-action = "shutdown"
-countdown_seconds = 0.0
-enabled = true
-shortcut = "3"
-variant = "destructive"
-
-[[shell.session.actions]]
-action = "lock"
-enabled = false
-shortcut = "4"
-countdown_seconds = 0.0
-variant = "default"
-
-[[shell.session.actions]]
-action = "lock_and_suspend"
-enabled = false
-shortcut = "5"
-countdown_seconds = 0.0
-variant = "default"
-
-[wallpaper]
-fill_mode           = "center"                  # center | crop | fit | stretch | repeat | span
-transition          = ["fade", "wipe", "disc", "stripes", "zoom", "honeycomb"]
-directory           = "{{image_directory}}"        # empty = XDG Pictures directory
-directory_light     = "{{image_directory}}/light"  # optional day-mode directory
-directory_dark      = "{{image_directory}}/dark"   # optional night-mode directory
-
-[wallpaper.default]
-path = "{{default_image}}"                      # optional initial/default wallpaper path
-
-[wallpaper.automation]
-enabled                    = true
-interval_seconds           = 1000     # seconds between changes
-recursive                  = false    # include subdirectories when picking random wallpapers
-
-[theme]
-mode   = "dark"                     # dark | light | auto
-builtin = "Rosé Pine"               # Ayu | Catppuccin | Dracula | Eldritch | Gruvbox |
-                                    # Kanagawa | Noctalia | Nord | Rosé Pine | Tokyo-Night
-pure_black_dark = true              # anchor dark surfaces to true black (OLED); applies to
-                                    # every palette source, not just wallpaper-generated ones
-
-[backdrop]
-blur_intensity = 0.4
-enabled = true
-
-[notification]
-background_opacity = 0.8
-offset_x = 0
-offset_y = 64
-scale    = 1.1
-position = "bottom_center"
-
-[osd]
-offset_x = 0
-offset_y = 64
-scale    = 1.1
-background_opacity = 0.8
-position = "bottom_center"
-
-[lockscreen]
-monitors = ["{{main_connector}}"]
-
-[calendar]
-enabled = true
-
-[weather]
-enabled = true
-unit    = "imperial"
-
 [audio]
 enable_sounds = true                # master toggle for UI feedback sounds
 sound_volume = 0.25                 # 0.0 - 1.0
 
-[location]
-address = "{{location}}"
-
-[idle]
-behavior_order = ["screen-off"]
-
-[idle.behavior.screen-off]
-action = "screen_off"
+[backdrop]
+blur_intensity = 0.4
 enabled = true
-timeout = 600
 
 [bar.default]
 position = "left"
@@ -138,6 +23,33 @@ end = ["tray", "clipboard", "control-center"]
 
 [bar.default.monitor.{{secondary_connector}}]
 enabled = false
+
+[brightness]
+enable_ddcutil         = true
+
+[brightness.monitor.{{main_connector}}]
+backend = "ddcutil"
+
+[calendar]
+enabled = true
+
+[[control_center.shortcuts]]
+type = "wifi"
+
+[[control_center.shortcuts]]
+type = "bluetooth"
+
+[[control_center.shortcuts]]
+type = "notification"
+
+[[control_center.shortcuts]]
+type = "dark_mode"
+
+[[control_center.shortcuts]]
+type = "audio"
+
+[[control_center.shortcuts]]
+type = "mic_mute"
 
 [desktop_widgets]
 schema_version = 2
@@ -346,23 +258,114 @@ background = false
 color = "secondary"
 title = "RAM"
 
-[[control_center.shortcuts]]
-type = "wifi"
+[idle]
+behavior_order = ["screen-off"]
 
-[[control_center.shortcuts]]
-type = "bluetooth"
+[idle.behavior.screen-off]
+action = "screen_off"
+enabled = true
+timeout = 600
 
-[[control_center.shortcuts]]
-type = "notification"
+[location]
+address = "{{location}}"
 
-[[control_center.shortcuts]]
-type = "dark_mode"
+[lockscreen]
+monitors = ["{{main_connector}}"]
 
-[[control_center.shortcuts]]
-type = "audio"
+[notification]
+background_opacity = 0.8
+offset_x = 0
+offset_y = 64
+scale    = 1.1
+position = "bottom_center"
 
-[[control_center.shortcuts]]
-type = "mic_mute"
+[osd]
+offset_x = 0
+offset_y = 64
+scale    = 1.1
+background_opacity = 0.8
+position = "bottom_center"
+
+[shell]
+font_family            = "{{sans_font}}"
+time_format            = "{:%I:%M %p}" # default shell UI time format
+polkit_agent           = true
+password_style         = "default"    # default | random
+settings_show_advanced = true         # show advanced settings by default in Settings
+app_icon_colorize      = false        # recolor application icons across the shell
+
+[shell.panel]
+transparency_mode      = "glass"      # solid | soft | glass; controls floating-panel opacity and card translucency
+clipboard_placement    = "attached"   # attached | floating
+
+[shell.launcher]
+categories             = false        # show category filters in the launcher
+show_app_origin_indicator = false     # show package origin indicators on application results
+app_grid               = true         # show app icon grid view when results are apps only
+
+[[shell.session.actions]]
+action = "logout"
+countdown_seconds = 0.0
+enabled = true
+shortcut = "1"
+variant = "default"
+
+[[shell.session.actions]]
+action = "reboot"
+countdown_seconds = 0.0
+enabled = true
+shortcut = "2"
+variant = "default"
+
+[[shell.session.actions]]
+action = "shutdown"
+countdown_seconds = 0.0
+enabled = true
+shortcut = "3"
+variant = "destructive"
+
+[[shell.session.actions]]
+action = "lock"
+enabled = false
+shortcut = "4"
+countdown_seconds = 0.0
+variant = "default"
+
+[[shell.session.actions]]
+action = "lock_and_suspend"
+enabled = false
+shortcut = "5"
+countdown_seconds = 0.0
+variant = "default"
+
+[theme]
+mode   = "dark"                     # dark | light | auto
+builtin = "Rosé Pine"               # Ayu | Catppuccin | Dracula | Eldritch | Gruvbox |
+                                    # Kanagawa | Noctalia | Nord | Rosé Pine | Tokyo-Night
+pure_black_dark = true
+
+[theme.templates]
+builtin_ids = [ "alacritty", "gtk3", "gtk4", "starship", "umbriel" ]
+community_ids = [ "discord", "inkscape", "neovim", "obsidian", "vscode", "steam", "zathura", "whitesur-icons", "bat", "fzf" ]
+
+[wallpaper]
+fill_mode           = "center"                  # center | crop | fit | stretch | repeat | span
+transition          = ["fade", "wipe", "disc", "stripes", "zoom", "honeycomb"]
+directory           = "{{image_directory}}"        # empty = XDG Pictures directory
+directory_light     = "{{image_directory}}/light"  # optional day-mode directory
+directory_dark      = "{{image_directory}}/dark"   # optional night-mode directory
+
+[wallpaper.default]
+path = "{{default_image}}"                      # optional initial/default wallpaper path
+
+[wallpaper.automation]
+enabled                    = true
+interval_seconds           = 1000     # seconds between changes
+recursive                  = false    # include subdirectories when picking random wallpapers
+
+[weather]
+enabled = true
+unit    = "imperial"
 
 [widget.control-center]
 glyph = "settings-2"

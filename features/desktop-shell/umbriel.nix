@@ -6,5 +6,6 @@
       package = pkgs.umbriel;
       portalPackage = pkgs.xdg-desktop-portal-umbriel;
     };
+    environment.systemPackages = with pkgs; [xwayland-satellite];
   };
 }

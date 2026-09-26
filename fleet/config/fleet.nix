@@ -46,8 +46,10 @@
     };
   };
 
-  wallpaper = {
-    directory = ../../resources/wallpapers;
-    image = ../../resources/wallpapers/dark/dark-silk.jpeg;
+  wallpaper = let
+    directory = "~/Projects/fleet/resources/wallpapers";
+  in {
+    inherit directory;
+    image = "${directory}/dark/dark-silk.jpeg";
   };
 }
