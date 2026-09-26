@@ -169,3 +169,20 @@ cd_ls_hook() {
   fi
 }
 add-zsh-hook chpwd cd_ls_hook
+
+reload_noctalia_fzf() {
+    local target="${XDG_CONFIG_HOME:-$HOME/.config}/fzf/themes/noctalia.sh"
+    
+    # 1. Fast escape if the file doesn't exist
+    [[ -f "$target" ]] || return 0
+    
+    # 2. Extract the modification time (works natively on Linux/NixOS)
+    local current_mtime=$(stat -c %Y "$target" 2>/dev/null)
+    
+    # 3. Only source the file if the mtime is different from our last check
+    if [[ "$current_mtime" != "$_NOCTALIA_FZF_LAST_MTIME" ]]; then
+        source "$target"
+        export _NOCTALIA_FZF_LAST_MTIME="$current_mtime"
+    fi
+}
+add-zsh-hook precmd reload_noctalia_fzf

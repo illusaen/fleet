@@ -7,10 +7,6 @@ destination = "$XDG_CONFIG_HOME/alacritty/alacritty.toml"
 template = "alacritty.toml"
 
 [[items]]
-destination = "$XDG_CONFIG_HOME/bat/themes/Base16.tmTheme"
-template = "bat-base16.tmTheme"
-
-[[items]]
 source = "bat-config"
 destination = "$XDG_CONFIG_HOME/bat/config"
 hook = "bat cache --build"
@@ -19,10 +15,6 @@ hook = "bat cache --build"
 destination = "$XDG_STATE_HOME/nix-theme/interface.dconf"
 template = "dconf"
 hook = "dconf load /org/gnome/desktop/interface/ < $XDG_STATE_HOME/nix-theme/interface.dconf"
-
-[[items]]
-source = "gh-config.yaml"
-destination = "$XDG_CONFIG_HOME/gh/config.yaml"
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/gh/hosts.yaml"
@@ -83,14 +75,6 @@ template = "umbriel-config.toml"
 [[items]]
 destination = "$XDG_CONFIG_HOME/vesktop/settings/quickCss.css"
 template = "vencord.css"
-
-[[items]]
-source = "vencord-settings.json"
-destination = "$XDG_CONFIG_HOME/vesktop/settings/settings.json"
-
-[[items]]
-source = "vesktop-settings.json"
-destination = "$XDG_CONFIG_HOME/vesktop/settings.json"
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/Code/User/settings.json"

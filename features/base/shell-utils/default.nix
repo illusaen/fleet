@@ -19,6 +19,7 @@ in {
       eza
       fd
       fzf
+      killall
       ripgrep
       neovim
       wget

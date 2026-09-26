@@ -89,7 +89,6 @@
 
       sessionVariables = {
         GTK_THEME = gtk.name;
-        QT_QPA_PLATFORMTHEME = "qt6ct";
         XCURSOR_SIZE = toString cursor.size;
         XCURSOR_THEME = cursor.name;
       };
@@ -125,7 +124,7 @@
               cursor-theme = cursor.name;
               cursor-size = lib.gvariant.mkUint32 cursor.size;
             };
-            "org/gnome/desktop/wm/preferences"."button-layout" = "close:";
+            "org/gnome/desktop/wm/preferences"."button-layout" = ":";
           };
         }
       ];
