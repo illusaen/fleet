@@ -52,6 +52,9 @@ name = "TERMINAL"
 [[scratchpad]]
 name = "CHAT"
 
+[[scratchpad]]
+name = "NOTES"
+
 [layout]
 mode = "scrolling"
 extent_presets = [0.333, 0.6, 1]
@@ -197,6 +200,14 @@ default_floating_size = { width = 0.2, height = 0.75 }
 default_position = { x = 0, y = 0, anchor = "right" }
 
 [[window_rule]]
+match.app_id = "^md.obsidian.Obsidian$"
+default_scratchpad = "NOTES"
+default_output = "{{main}}"
+default_floating = true
+default_floating_size = { width = 0.2, height = 0.75 }
+default_position = { x = 0, y = 0, anchor = "right" }
+
+[[window_rule]]
 match.app_id = "^steam.*$"
 default_workspace = "GAME"
 
@@ -224,6 +235,7 @@ blur = false
 [keybinds]
 "Alt+Shift+T" = "scratchpad-toggle:TERMINAL"
 "Alt+Shift+Ctrl+T" = "scratchpad-toggle:CHAT"
+"Mod+Alt+Shift+T" = "scratchpad-toggle:NOTES"
 "Mod+Q" = "window-close"
 "Ctrl+Alt+Delete" = "session-quit"
 "Alt+Shift+4" = "spawn:noctalia msg screenshot-region"

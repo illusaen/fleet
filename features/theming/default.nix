@@ -116,7 +116,18 @@
     programs.dconf = {
       enable = true;
       profiles.user.databases = [
-        {settings."org/gnome/desktop/wm/preferences"."button-layout" = "close:";}
+        {
+          settings = {
+            "org/gnome/desktop/interface" = {
+              font-name = "${fonts.sans.name} ${toString fonts.sizes.applications}";
+              gtk-theme = gtk.name;
+              icon-theme = icon.name;
+              cursor-theme = cursor.name;
+              cursor-size = lib.gvariant.mkUint32 cursor.size;
+            };
+            "org/gnome/desktop/wm/preferences"."button-layout" = "close:";
+          };
+        }
       ];
     };
 
