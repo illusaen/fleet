@@ -12,6 +12,9 @@
           support32Bit = true;
         };
         pulse.enable = true;
+        wireplumber.extraConfig."10-default-volume" = {
+          "wireplumber.settings"."device.routes.default-sink-volume" = 0.25;
+        };
       };
     };
 

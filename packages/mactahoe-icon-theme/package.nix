@@ -7,6 +7,7 @@
   jdupes,
   boldPanelIcons ? true,
   themeVariants ? [],
+  ...
 }: let
   pname = "MacTahoe-icon-theme";
 in

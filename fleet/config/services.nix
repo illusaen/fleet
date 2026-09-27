@@ -4,6 +4,11 @@
     port = 443;
   };
 
+  ace-step = {
+    primary = "odin";
+    port = 7860;
+  };
+
   llama-cpp = {
     primary = "odin";
     port = 8080;

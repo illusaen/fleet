@@ -19,6 +19,7 @@
   darkerColor ? false, # default = false
   highDefinition ? true, # default = false
   installLibadwaita ? true,
+  ...
 }: let
   pname = "mactahoe-gtk-theme";
   installArgs =

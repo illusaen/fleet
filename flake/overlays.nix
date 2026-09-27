@@ -12,7 +12,7 @@
   inputs.umbriel.overlays.default
   inputs.umbriel.inputs.xdg-desktop-portal-umbriel.overlays.default
 
-  (import ./packages.nix {inherit lib;})
+  (import ./packages.nix {inherit lib inputs;})
 
   (_final: prev: {
     nautilus = prev.nautilus.overrideAttrs (oldAttrs: {

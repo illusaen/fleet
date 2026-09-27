@@ -1,6 +1,7 @@
 {
   stdenvNoCC,
   fetchFromGitHub,
+  ...
 }:
 stdenvNoCC.mkDerivation {
   pname = "mactahoe-cursors";
