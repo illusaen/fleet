@@ -66,14 +66,14 @@ time_format = "%H:%M"
 
 [palettes.noctalia]
 # Standard colors
-blue      = "#e8b9d5"
+blue      = "#e7b9d5"
 red       = "#ffb4ab"
 green     = "#bec2ff"
 yellow    = "#c5c4dd"
 cyan      = "#c5c4dd"
 magenta   = "#bec2ff"
-white     = "#e4e1e9"
-black     = "#46464f"
+white     = "#e2e2e2"
+black     = "#474747"
 
 # Extended palette (Catppuccin-compatible names)
 rosewater = "#c5c4dd"
@@ -84,22 +84,22 @@ maroon    = "#ffb4ab"
 peach     = "#c5c4dd"
 teal      = "#c5c4dd"
 sky       = "#c5c4dd"
-sapphire  = "#e8b9d5"
+sapphire  = "#e7b9d5"
 lavender  = "#bec2ff"
 
 # Text shades
-text      = "#e4e1e9"
-subtext1  = "#e4e1e9"
-subtext0  = "#91909a"
+text      = "#e2e2e2"
+subtext1  = "#e2e2e2"
+subtext0  = "#919191"
 
 # Surface shades
-overlay2  = "#91909a"
-overlay1  = "#91909a"
-overlay0  = "#46464f"
-surface2  = "#46464f"
-surface1  = "#46464f"
-surface0  = "#000000"
-base      = "#000000"
-mantle    = "#000000"
-crust     = "#000000"
+overlay2  = "#919191"
+overlay1  = "#919191"
+overlay0  = "#474747"
+surface2  = "#474747"
+surface1  = "#474747"
+surface0  = "#131313"
+base      = "#131313"
+mantle    = "#131313"
+crust     = "#131313"
 # <<< NOCTALIA STARSHIP PALETTE <<<

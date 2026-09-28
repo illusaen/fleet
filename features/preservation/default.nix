@@ -54,6 +54,7 @@
         "Downloads"
         "Projects"
         "Pictures"
+        "Music"
       ];
     };
 

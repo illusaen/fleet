@@ -26,11 +26,14 @@ trust_level = "trusted"
 [projects."/home/wendy/Projects/pydot"]
 trust_level = "trusted"
 
+[projects."/home/wendy/Projects/dots"]
+trust_level = "trusted"
+
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "permissions", "approval-mode", "five-hour-limit", "weekly-limit"]
 status_line_use_colors = true
 screen_reader_detection_done = true
-theme = "noctalia"
+theme = "dracula"
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4

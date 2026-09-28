@@ -11,6 +11,7 @@
   linuxPackages,
   cudaPackages,
   tbb,
+  libsndfile,
   makeWrapper,
   ffmpeg_8,
 }: let
@@ -111,6 +112,31 @@
   };
 
   pythonOverlay = final: prev: {
+    ace-step = prev.ace-step.overrideAttrs (old: {
+      postInstall =
+        (old.postInstall or "")
+        + ''
+          substituteInPlace "$out/${python312.sitePackages}/acestep/acestep_v15_pipeline.py" \
+            --replace-fail \
+              'output_dir = os.path.join(project_root, "gradio_outputs")' \
+              'output_dir = os.environ.get("ACESTEP_OUTPUT_DIR", os.path.join(os.getcwd(), "gradio_outputs"))'
+          substituteInPlace \
+            "$out/${python312.sitePackages}/acestep/ui/gradio/api/api_routes.py" \
+            "$out/${python312.sitePackages}/acestep/ui/gradio/events/results/generation_info.py" \
+            --replace-fail \
+              'DEFAULT_RESULTS_DIR = os.path.join(PROJECT_ROOT, "gradio_outputs").replace("\\", "/")' \
+              'DEFAULT_RESULTS_DIR = os.environ.get("ACESTEP_OUTPUT_DIR", os.path.join(os.getcwd(), "gradio_outputs")).replace("\\", "/")'
+          substituteInPlace "$out/${python312.sitePackages}/acestep/inference.py" \
+            --replace-fail \
+              'results_root = os.path.join(os.getcwd(), "gradio_outputs")' \
+              'results_root = os.environ.get("ACESTEP_OUTPUT_DIR", os.path.join(os.getcwd(), "gradio_outputs"))'
+          substituteInPlace "$out/${python312.sitePackages}/acestep/ui/gradio/events/results/session_artifacts.py" \
+            --replace-fail \
+              'results_root = Path.cwd() / "gradio_outputs"' \
+              'results_root = Path(os.environ.get("ACESTEP_OUTPUT_DIR", Path.cwd() / "gradio_outputs"))'
+        '';
+    });
+
     torchcodec = (addBuildInputs prev "torchcodec" [final.torch ffmpeg_8]).overrideAttrs (old: {
       postInstall =
         (old.postInstall or "")
@@ -163,6 +189,7 @@ in
     postFixup = ''
       wrapProgram $out/bin/acestep \
         --prefix PATH : "${lib.makeBinPath [ffmpeg_8]}" \
+        --prefix LD_LIBRARY_PATH : "/run/opengl-driver/lib:${lib.makeLibraryPath [libsndfile]}" \
         --prefix NIX_LD_LIBRARY_PATH : "${lib.makeLibraryPath nvidiaLibs}" \
         --set ACESTEP_LM_BACKEND vllm \
         --set ACESTEP_DEVICE cuda \
