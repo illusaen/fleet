@@ -7,7 +7,7 @@
     wrappedYtDlp = pkgs.writeShellApplication {
       name = "ytd";
       text = ''
-        exec ${pkgs.yt-dlp}/bin/yt-dlp -f bestaudio --cookies-from-browser chrome+gnomekeyring --no-playlist -P "~/Music/yt-dlp" "$@"
+        exec ${pkgs.yt-dlp}/bin/yt-dlp -f bestaudio --cookies-from-browser chrome+gnomekeyring --no-playlist -P "$HOME/Music/yt-dlp" -o "%(uploader)s - %(fulltitle)s.%(ext)s" "$@"
       '';
     };
     music = pkgs.mpv.override {scripts = with pkgs.mpvScripts; [mpris uosc visualizer];};
