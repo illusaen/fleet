@@ -130,6 +130,10 @@
             --replace-fail \
               'results_root = os.path.join(os.getcwd(), "gradio_outputs")' \
               'results_root = os.environ.get("ACESTEP_OUTPUT_DIR", os.path.join(os.getcwd(), "gradio_outputs"))'
+          substituteInPlace "$out/${python312.sitePackages}/acestep/ui/gradio/events/generation/service_init.py" \
+            --replace-fail \
+              'checkpoint_dir = os.path.join(project_root, "checkpoints")' \
+              'checkpoint_dir = os.path.expanduser(os.environ.get("ACESTEP_CHECKPOINTS_DIR", os.path.join(project_root, "checkpoints")))'
           substituteInPlace "$out/${python312.sitePackages}/acestep/ui/gradio/events/results/session_artifacts.py" \
             --replace-fail \
               'results_root = Path.cwd() / "gradio_outputs"' \
@@ -180,6 +184,14 @@
     cudaPackages.cudatoolkit
     cudaPackages.cudnn
   ];
+
+  # PyTorch's cuDNN wheel loads its component libraries (such as
+  # libcudnn_graph.so) by name at runtime.  autoPatchelf fixes direct ELF
+  # dependencies, but it cannot see these dlopen calls, so make the matching
+  # wheel directory available to the dynamic loader.  Use the wheel rather
+  # than cudaPackages.cudnn here to keep all cuDNN components on the same
+  # version as the libcudnn.so linked by torch.
+  cudnnWheelLib = "${pythonSet.nvidia-cudnn-cu12}/${python312.sitePackages}/nvidia/cudnn/lib";
 in
   (mkApplication {
     venv = pythonSet.mkVirtualEnv "ace-step-env" workspace.deps.default;
@@ -188,12 +200,14 @@ in
     nativeBuildInputs = old.nativeBuildInputs ++ [makeWrapper];
     postFixup = ''
       wrapProgram $out/bin/acestep \
-        --prefix PATH : "${lib.makeBinPath [ffmpeg_8]}" \
-        --prefix LD_LIBRARY_PATH : "/run/opengl-driver/lib:${lib.makeLibraryPath [libsndfile]}" \
+        --prefix PATH : "${lib.makeBinPath [ffmpeg_8 stdenv.cc]}" \
+        --prefix LD_LIBRARY_PATH : "/run/opengl-driver/lib:${lib.makeLibraryPath [libsndfile]}:${cudnnWheelLib}" \
         --prefix NIX_LD_LIBRARY_PATH : "${lib.makeLibraryPath nvidiaLibs}" \
         --set ACESTEP_LM_BACKEND vllm \
         --set ACESTEP_DEVICE cuda \
         --set ACESTEP_LM_MODEL_PATH acestep-5Hz-lm-0.6B \
-        --set ACESTEP_CONFIG_PATH acestep-v15-turbo
+        --set ACESTEP_CONFIG_PATH acestep-v15-turbo \
+        --set CC ${stdenv.cc}/bin/cc \
+        --set TRITON_LIBCUDA_PATH /run/opengl-driver/lib
     '';
   })
