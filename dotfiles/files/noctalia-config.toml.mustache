@@ -343,6 +343,8 @@ variant = "default"
 [theme]
 mode   = "dark"                     # dark | light | auto
 wallpaper_scheme  = "m3-rainbow"
+community_palette = "Mizuki-Akiyama"
+source = "community"
 
 [theme.templates]
 builtin_ids = [ "alacritty", "gtk3", "gtk4", "starship", "umbriel" ]
@@ -363,7 +365,7 @@ directory_dark      = "{{image_directory}}/dark"   # optional night-mode directo
 path = "{{default_image}}"                      # optional initial/default wallpaper path
 
 [wallpaper.automation]
-enabled                    = true
+enabled                    = false
 interval_seconds           = 1000     # seconds between changes
 recursive                  = false    # include subdirectories when picking random wallpapers
 

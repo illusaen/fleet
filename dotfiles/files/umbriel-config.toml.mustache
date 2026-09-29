@@ -7,6 +7,7 @@ enabled = true
 mode = "5120x2160@100.035"
 position = [0, 0]
 workspaces = "dynamic"
+hdr = "on"
 
 [output."{{secondary}}"]
 enabled = true
@@ -144,7 +145,7 @@ default_workspace = "CODE"
 [[window_rule]]
 match.app_id = "^code$"
 default_workspace = "CODE"
-default_scrolling_extent = 0.45
+default_scrolling_extent = 0.4
 
 [[window_rule]]
 match.app_id = "^1password$"
@@ -225,8 +226,8 @@ blur = false
 "Mod+Right" = "window-focus-right"
 
 "Mod+Shift+Left" = "column-move-left"
-"Mod+Shift+Down" = "window-move-down"
-"Mod+Shift+Up" = "window-move-up"
+"Mod+Shift+Down" = "column-move-to-workspace-next" # "window-move-down"
+"Mod+Shift+Up" = "column-move-to-workspace-previous" # "window-move-up"
 "Mod+Shift+Right" = "column-move-right"
 
 "Mod+Home" = "workspace-previous"
