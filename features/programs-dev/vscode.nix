@@ -48,6 +48,7 @@
           bradlc.vscode-tailwindcss
           ms-python.python
           rust-lang.rust-analyzer
+          arcticicestudio.nord-visual-studio-code
         ])
         ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
           {
