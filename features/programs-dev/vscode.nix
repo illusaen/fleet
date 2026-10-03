@@ -48,9 +48,14 @@
           bradlc.vscode-tailwindcss
           ms-python.python
           rust-lang.rust-analyzer
-          arcticicestudio.nord-visual-studio-code
         ])
         ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+          {
+            publisher = "monokai";
+            name = "theme-monokai-pro-vscode";
+            version = "2.0.15";
+            hash = "sha256-w2o+mCbERKxrCXkljMFLT9fYx/EEOr0OLoax0U5NW3g=";
+          }
           {
             publisher = "VanCoding";
             name = "vscode-treefmt-nix";

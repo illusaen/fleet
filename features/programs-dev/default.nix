@@ -2,13 +2,13 @@
   imports = [./vscode.nix ./zathura.nix];
 
   modules.nixos = {pkgs, ...}: {
-    environment.systemPackages = with pkgs; [codex inkscape image-roll obsidian];
+    environment.systemPackages = with pkgs; [codex inkscape image-roll];
     xdg.mime.defaultApplications."image/*" = "com.github.weclaw1.ImageRoll.desktop";
-    persistUser.directories = [".codex" ".config/obsidian" ".var/app/com.orcaslicer.OrcaSlicer"];
+    persistUser.directories = [".codex" ".var/app/com.orcaslicer.OrcaSlicer"];
     persist.directories = ["/var/lib/flatpak"];
     systemdAutostart = [{package = pkgs.obsidian;}];
 
-    # Using flatpak for bambu studio because the network plugin constantly crashes
+    # Using flatpak for 3d printing because the network plugin constantly crashes
     services.flatpak.enable = true;
 
     # OrcaSlicer
