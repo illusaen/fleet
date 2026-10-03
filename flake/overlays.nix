@@ -6,7 +6,7 @@
   inputs.agenix.overlays.default
   inputs.colmena.overlays.default
   inputs.millennium.overlays.default
-  inputs.pydot.overlays.default
+  inputs.dots.overlays.default
   inputs.noctalia.overlays.default
   inputs.noctalia-greeter.overlays.default
   inputs.umbriel.overlays.default

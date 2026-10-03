@@ -1,10 +1,11 @@
-version = 1
+version = 2
 clobber = true
 keep = 3
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/alacritty/alacritty.toml"
-template = "alacritty.toml"
+source = "alacritty.toml.mustache"
+render = true
 
 [[items]]
 source = "bat-config"
@@ -17,36 +18,44 @@ destination = "$HOME/.codex/config.toml"
 
 [[items]]
 destination = "$XDG_STATE_HOME/nix-theme/interface.dconf"
-template = "dconf"
-hook = "dconf load /org/gnome/desktop/interface/ < $XDG_STATE_HOME/nix-theme/interface.dconf"
+source = "dconf.mustache"
+hook = "dconf load /org/gnome/desktop/interface/ < ~/.local/state/nix-theme/interface.dconf"
+render = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/gh/hosts.yaml"
-template = "gh-hosts.yaml"
+source = "gh-hosts.yaml.mustache"
+render = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/git/config"
-template = "gitconfig"
+source = "gitconfig.mustache"
+render = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/gtk-3.0/bookmarks"
-template = "gtk3-bookmarks"
+source = "gtk3-bookmarks.mustache"
+render = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/gtk-3.0/settings.ini"
-template = "gtk3-settings.ini"
+source = "gtk3-settings.ini.mustache"
+render = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/gtk-4.0/gtk-dark.css"
-template = "gtk4-dark.css"
+source = "gtk4-dark.css.mustache"
+render = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/gtk-4.0/gtk.css"
-template = "gtk4.css"
+source = "gtk4.css.mustache"
+render = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/gtk-4.0/settings.ini"
-template = "gtk4-settings.ini"
+source = "gtk4-settings.ini.mustache"
+render = true
 
 [[items]]
 source = "hidden-files"
@@ -66,7 +75,8 @@ destination = "$XDG_CONFIG_HOME/nvim/lua/plugins/init.lua"
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/noctalia/config.toml"
-template = "noctalia-config.toml"
+source = "noctalia-config.toml.mustache"
+render = true
 
 [[items]]
 source = "starship-config.toml"
@@ -74,16 +84,20 @@ destination = "$XDG_CONFIG_HOME/starship.toml"
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/umbriel/config.toml"
-template = "umbriel-config.toml"
+source = "umbriel-config.toml.mustache"
+render = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/vesktop/settings/quickCss.css"
-template = "vencord.css"
+source = "vencord.css.mustache"
+render = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/Code/User/settings.json"
-template = "vscode-settings.json"
+source = "vscode-settings.json.mustache"
+render = true
 
 [[items]]
 destination = "$XDG_CONFIG_HOME/zathura/zathurarc"
-template = "zathurarc"
+source = "zathurarc.mustache"
+render = true

@@ -357,12 +357,12 @@ output_path = "$XDG_STATE_HOME/nix-theme/vscode.json"
 [wallpaper]
 fill_mode           = "center"                  # center | crop | fit | stretch | repeat | span
 transition          = ["fade", "wipe", "disc", "stripes", "zoom", "honeycomb"]
-directory           = "{{image_directory}}"        # empty = XDG Pictures directory
-directory_light     = "{{image_directory}}/light"  # optional day-mode directory
-directory_dark      = "{{image_directory}}/dark"   # optional night-mode directory
+directory           = "{{wallpaper_directory}}"        # empty = XDG Pictures directory
+directory_light     = "{{wallpaper_directory}}/light"  # optional day-mode directory
+directory_dark      = "{{wallpaper_directory}}/dark"   # optional night-mode directory
 
 [wallpaper.default]
-path = "{{default_image}}"                      # optional initial/default wallpaper path
+path = "{{default_wallpaper}}"                      # optional initial/default wallpaper path
 
 [wallpaper.automation]
 enabled                    = false

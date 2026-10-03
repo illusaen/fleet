@@ -11,13 +11,6 @@
     inherit (fleet) fonts;
     inherit (fleet.theming) cursor gtk icon;
 
-    themeNames = lib.pipe ../../dotfiles/themes [
-      builtins.readDir
-      (lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".yaml" name))
-      builtins.attrNames
-      (map (lib.removeSuffix ".yaml"))
-    ];
-
     localThemePackage = theme: pkgs.local.${theme.packageName};
 
     themeContext = pkgs.writeText "nix-theme-context.json" (builtins.toJSON (let
@@ -34,7 +27,7 @@
 
       application_font_size = fonts.sizes.applications;
       terminal_font_size = fonts.sizes.terminal;
-      larger_font_size = builtins.floor (fonts.sizes.terminal * 1.1);
+      large_font_size = builtins.floor (fonts.sizes.terminal * 1.1);
       mono_font = mono.name;
       sans_font = sans.name;
       serif_font = serif.name;
@@ -45,13 +38,14 @@
       ssh_private_key = host.privateKey;
       location = lib.last (lib.splitString "/" fleet.timeZone);
 
-      main = main.name;
-      secondary = secondary.name;
+      main_monitor = main.name;
+      secondary_monitor = secondary.name;
       main_connector = main.connector;
       secondary_connector = secondary.connector;
 
-      image_directory = toString wallpaper.directory;
-      default_image = fleet.wallpaper.image;
+      wallpaper_directory = toString wallpaper.directory;
+      default_wallpaper = fleet.wallpaper.image;
+      prefer_dark = true;
     }));
 
     themeApply = pkgs.writeShellApplication {
@@ -59,21 +53,7 @@
       text = ''
         export NIX_CONFIG_FOLDER="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
         export NIX_THEME_CONTEXT=${lib.escapeShellArg themeContext}
-        exec ${pkgs.pydot}/bin/pydot --root "$NIX_CONFIG_FOLDER/dotfiles" "$@"
-      '';
-    };
-
-    themeSelect = pkgs.writeShellApplication {
-      name = "theme-select";
-      runtimeInputs = [
-        pkgs.noctalia
-        themeApply
-      ];
-      text = ''
-        set -euo pipefail
-        theme="$(printf '%s\n' ${lib.escapeShellArgs themeNames} | noctalia dmenu --prompt 'Theme: ')"
-        [ -n "$theme" ] || exit 0
-        exec theme-apply -t "$theme"
+        exec ${pkgs.dots}/bin/dots --root "$NIX_CONFIG_FOLDER/dotfiles" "$@"
       '';
     };
   in {
@@ -83,7 +63,6 @@
         (localThemePackage gtk)
         (localThemePackage icon)
         themeApply
-        themeSelect
       ];
 
       sessionVariables = {

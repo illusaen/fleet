@@ -44,8 +44,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     preservation.url = "github:nix-community/preservation";
-    pydot = {
-      url = "path:/home/wendy/Projects/pydot";
+    dots = {
+      url = "path:/home/wendy/Projects/dots";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.devshell.follows = "devshell";
     };
