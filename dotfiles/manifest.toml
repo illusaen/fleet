@@ -19,7 +19,7 @@ destination = "$HOME/.codex/config.toml"
 [[items]]
 destination = "$XDG_STATE_HOME/nix-theme/interface.dconf"
 source = "dconf.mustache"
-hook = "dconf load /org/gnome/desktop/interface/ < ~/.local/state/nix-theme/interface.dconf"
+hook = "if [ -n \"${DBUS_SESSION_BUS_ADDRESS:-}\" ]; then dconf load /org/gnome/desktop/interface/ < $XDG_STATE_HOME/nix-theme/interface.dconf; else dbus-run-session -- dconf load /org/gnome/desktop/interface/ < $XDG_STATE_HOME/nix-theme/interface.dconf; fi"
 render = true
 
 [[items]]

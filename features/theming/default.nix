@@ -97,13 +97,6 @@
       profiles.user.databases = [
         {
           settings = {
-            "org/gnome/desktop/interface" = {
-              font-name = "${fonts.sans.name} ${toString fonts.sizes.applications}";
-              gtk-theme = gtk.name;
-              icon-theme = icon.name;
-              cursor-theme = cursor.name;
-              cursor-size = lib.gvariant.mkUint32 cursor.size;
-            };
             "org/gnome/desktop/wm/preferences"."button-layout" = ":";
           };
         }
@@ -115,6 +108,12 @@
       wantedBy = ["multi-user.target"];
       after = ["local-fs.target"];
       before = ["display-manager.service"];
+      path = [
+        pkgs.bash
+        pkgs.bat
+        pkgs.dbus
+        pkgs.dconf
+      ];
       serviceConfig = {
         Type = "oneshot";
         User = user.name;
