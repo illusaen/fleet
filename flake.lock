@@ -97,14 +97,17 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1791057195,
-        "narHash": "sha256-WjDLU2FMGZ3YKs23psHECRSBzphBW+FjkNRcLhgMFWw=",
-        "path": "/home/wendy/Projects/dots",
-        "type": "path"
+        "lastModified": 1791062660,
+        "narHash": "sha256-5Vr0uffBNXScUeGf0XIFxZIu1HmW3NYnne+LMrU6rSk=",
+        "ref": "refs/heads/main",
+        "rev": "6e6788ce6db40cc3845a825fdee807f837aaa976",
+        "revCount": 44,
+        "type": "git",
+        "url": "ssh://git@github.com/illusaen/dots.git"
       },
       "original": {
-        "path": "/home/wendy/Projects/dots",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/illusaen/dots.git"
       }
     },
     "fenix": {

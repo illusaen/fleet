@@ -48,21 +48,23 @@
       prefer_dark = true;
     }));
 
-    themeApply = pkgs.writeShellApplication {
-      name = "theme-apply";
-      text = ''
-        export NIX_CONFIG_FOLDER="''${NIX_CONFIG_FOLDER:-$HOME/Projects/fleet}"
-        export NIX_THEME_CONTEXT=${lib.escapeShellArg themeContext}
-        exec ${pkgs.dots}/bin/dots --root "$NIX_CONFIG_FOLDER/dotfiles" "$@"
-      '';
-    };
+    themedDots = pkgs.dots.overrideAttrs (oldAttrs: {
+      nativeBuildInputs = (oldAttrs.nativeBuildInputs or []) ++ [pkgs.makeWrapper];
+      postFixup =
+        (oldAttrs.postFixup or "")
+        + ''
+          wrapProgram $out/bin/dots \
+            --set NIX_CONFIG_FOLDER ${lib.escapeShellArg "${config.users.users.${user.name}.home}/Projects/fleet/dotfiles"} \
+            --set NIX_THEME_CONTEXT ${lib.escapeShellArg themeContext}
+        '';
+    });
   in {
     environment = {
       systemPackages = [
         (localThemePackage cursor)
         (localThemePackage gtk)
         (localThemePackage icon)
-        themeApply
+        themedDots
       ];
 
       sessionVariables = {
@@ -117,7 +119,7 @@
         Type = "oneshot";
         User = user.name;
         Environment = "HOME=${config.users.users.${user.name}.home}";
-        ExecStart = lib.getExe themeApply;
+        ExecStart = "${lib.getExe themedDots} --mode link --debug";
       };
     };
   };

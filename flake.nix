@@ -32,6 +32,11 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    dots = {
+      url = "git+ssh://git@github.com/illusaen/dots.git";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.devshell.follows = "devshell";
+    };
     # Intentionally not following nixpkgs since millennium repo states bun sensitive to versions
     millennium.url = "github:illusaen/Millennium?dir=packages/nix";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -44,11 +49,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     preservation.url = "github:nix-community/preservation";
-    dots = {
-      url = "path:/home/wendy/Projects/dots";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.devshell.follows = "devshell";
-    };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
