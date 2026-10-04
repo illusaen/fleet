@@ -97,11 +97,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1791062660,
-        "narHash": "sha256-5Vr0uffBNXScUeGf0XIFxZIu1HmW3NYnne+LMrU6rSk=",
+        "lastModified": 1791081803,
+        "narHash": "sha256-UM23sNmRY4Rjvl2Uzj9PYXYHrCwlwaq/h2S4h+rnNOk=",
         "ref": "refs/heads/main",
-        "rev": "6e6788ce6db40cc3845a825fdee807f837aaa976",
-        "revCount": 44,
+        "rev": "922b51b93f7e3b7d6c45fcc52b1c9283a1a3368d",
+        "revCount": 45,
         "type": "git",
         "url": "ssh://git@github.com/illusaen/dots.git"
       },

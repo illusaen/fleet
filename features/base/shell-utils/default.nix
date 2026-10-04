@@ -21,7 +21,6 @@ in {
       fzf
       killall
       ripgrep
-      neovim
       wget
       zoxide
       (
@@ -51,6 +50,12 @@ in {
   }: {
     programs.nix-ld.enable = true;
 
+    programs.neovim = {
+      enable = true;
+      defaultEditor = true;
+      vimAlias = true;
+    };
+
     environment.systemPackages = [
       (
         pkgs.makeDesktopItem {
@@ -61,39 +66,6 @@ in {
           categories = ["Development"];
         }
       )
-      # (
-      #   pkgs.writeShellApplication {
-      #     name = "scratchpad-alacritty";
-      #     runtimeInputs = [pkgs.coreutils pkgs.jq];
-      #     text = ''
-      #       get_window_id() {
-      #         ${lib.getExe pkgs.umbriel} windows --json |
-      #           jq -r 'first(.[] | select(.app_id == "scratchpad-alacritty") | .id) // empty'
-      #       }
-
-      #       window_id="$(get_window_id)"
-      #       if [[ -z "$window_id" ]]; then
-      #         ${lib.getExe pkgs.alacritty} --class scratchpad-alacritty &
-
-      #         for _ in {1..100}; do
-      #           window_id="$(get_window_id)"
-      #           [[ -n "$window_id" ]] && break
-      #           sleep 0.05
-      #         done
-
-      #         if [[ -z "$window_id" ]]; then
-      #           echo "scratchpad-alacritty: Alacritty window did not appear" >&2
-      #           exit 1
-      #         fi
-      #       fi
-
-      #       # The main output is left of the secondary output. This focuses it
-      #       # when necessary and is a harmless no-op when it is already focused.
-      #       ${lib.getExe pkgs.umbriel} msg output-focus-left 2>/dev/null || true
-      #       ${lib.getExe pkgs.umbriel} msg scratchpad-toggle:TERMINAL
-      #     '';
-      #   }
-      # )
     ];
 
     environment.sessionVariables = {
@@ -110,6 +82,12 @@ in {
       PROJECTS_FOLDER = projectsFolder;
       # PAM expands $HOME, but not references to other session variables.
       NIX_CONFIG_FOLDER = "${projectsFolder}/fleet";
+
+      XDG_CONFIG_HOME = "$HOME/.config";
+      XDG_CACHE_HOME = "$HOME/.cache";
+      XDG_DATA_HOME = "$HOME/.local/share";
+      XDG_STATE_HOME = "$HOME/.local/state";
+
       EDITOR = "nvim";
     };
 

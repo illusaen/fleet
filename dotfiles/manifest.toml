@@ -74,6 +74,14 @@ source = "neovim-plugin.lua"
 destination = "$XDG_CONFIG_HOME/nvim/lua/plugins/init.lua"
 
 [[items]]
+destination = "$XDG_DATA_HOME/noctalia/plugins/sysdash/init.luau"
+source = "noctalia-plugin-sysmon/init.luau"
+
+[[items]]
+destination = "$XDG_DATA_HOME/noctalia/plugins/sysdash/plugin.toml"
+source = "noctalia-plugin-sysmon/plugin.toml"
+
+[[items]]
 destination = "$XDG_CONFIG_HOME/noctalia/config.toml"
 source = "noctalia-config.toml.mustache"
 render = true
