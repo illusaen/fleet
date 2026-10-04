@@ -13,8 +13,6 @@
     security.pam.services.login.enableGnomeKeyring = true;
     security.pam.services.greetd.enableGnomeKeyring = true;
 
-    # programs.noctalia-greeter.passwordless-sync-users = {};
-
     services.displayManager.noctalia-greeter = {
       enable = true;
       package = pkgs.noctalia-greeter;

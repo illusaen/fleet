@@ -5,8 +5,10 @@
   ddcutil,
   dconf,
   i2c-tools,
+  coreutils,
   jq,
   umbriel,
+  alacritty,
   ...
 }: let
   pythonScript = name: script: runtimeInputs:
@@ -37,5 +39,12 @@ in
         ];
         text = builtins.readFile ./scripts/umbriel-cycle-focus.sh;
       })
+      (
+        writeShellApplication {
+          name = "scratchpad-alacritty";
+          runtimeInputs = [coreutils jq umbriel alacritty];
+          text = builtins.readFile ./scripts/scratchpad-alacritty.sh;
+        }
+      )
     ];
   }

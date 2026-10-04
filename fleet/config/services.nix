@@ -4,10 +4,10 @@
     port = 443;
   };
 
-  llama-cpp = {
-    primary = "odin";
-    port = 8080;
-  };
+  # llama-cpp = {
+  #   primary = "odin";
+  #   port = 8080;
+  # };
 
   navidrome = {
     primary = "huginn";

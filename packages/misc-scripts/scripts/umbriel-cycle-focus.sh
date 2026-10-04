@@ -9,7 +9,11 @@ if ! windows="$("$umbriel_command" windows --json)"; then
 fi
 
 focus_scratchpad() {
-  "$umbriel_command" msg "scratchpad-focus-next:$1" >/dev/null 2>&1
+  local scratchpad=$1
+
+  "$umbriel_command" msg "scratchpad-focus-next:$scratchpad" >/dev/null 2>&1 || return
+  "$umbriel_command" windows --json | jq -e --arg scratchpad "$scratchpad" \
+    'any(.[]; .active and (.scratchpad // "") == $scratchpad)' >/dev/null
 }
 
 # Prefer the scratchpad that currently owns keyboard focus. This matters when
@@ -22,9 +26,9 @@ if [[ -n "$active_scratchpad" ]] && focus_scratchpad "$active_scratchpad"; then
   exit 0
 fi
 
-# Umbriel rejects scratchpad-focus-next for hidden scratchpads, so trying each
-# populated scratchpad is a reliable visibility check even though the windows
-# IPC does not expose visibility directly.
+# The msg IPC reports success even when scratchpad-focus-next does nothing for
+# a hidden scratchpad. focus_scratchpad therefore verifies that the requested
+# scratchpad became active before treating the action as handled.
 mapfile -t scratchpads < <(
   jq -r '[.[] | .scratchpad // empty | select(. != "")] | unique[]' <<<"$windows"
 )
