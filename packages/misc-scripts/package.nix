@@ -5,6 +5,8 @@
   ddcutil,
   dconf,
   i2c-tools,
+  jq,
+  umbriel,
   ...
 }: let
   pythonScript = name: script: runtimeInputs:
@@ -27,5 +29,13 @@ in
         ddcutil
         i2c-tools
       ])
+      (writeShellApplication {
+        name = "umbriel-cycle-focus";
+        runtimeInputs = [
+          jq
+          umbriel
+        ];
+        text = builtins.readFile ./scripts/umbriel-cycle-focus.sh;
+      })
     ];
   }
