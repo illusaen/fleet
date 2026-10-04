@@ -96,9 +96,7 @@
       enable = true;
       profiles.user.databases = [
         {
-          settings = {
-            "org/gnome/desktop/wm/preferences"."button-layout" = ":";
-          };
+          settings."org/gnome/desktop/wm/preferences"."button-layout" = ":";
         }
       ];
     };

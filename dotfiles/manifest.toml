@@ -93,6 +93,10 @@ source = "vencord.css.mustache"
 render = true
 
 [[items]]
+destination = "$XDG_STATE_HOME/nix-theme/vscode-noctalia-template.json"
+source = "vscode-noctalia-template.json"
+
+[[items]]
 destination = "$XDG_CONFIG_HOME/Code/User/settings.json"
 source = "vscode-settings.json.mustache"
 render = true
